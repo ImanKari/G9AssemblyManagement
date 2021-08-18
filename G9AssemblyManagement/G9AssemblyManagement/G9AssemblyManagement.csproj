@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>netstandard1.3;netstandard1.4;netstandard1.5;netstandard1.6;netstandard2.0;netstandard2.1</TargetFrameworks>
+	  <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 	  <Version>1.0.0.0</Version>
 	  <Authors>Iman Kari</Authors>
 	  <Company>G9Studio</Company>
@@ -20,6 +20,7 @@
 	  <PackageIcon>G9-Icon.png</PackageIcon>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageIconUrl />
+	  <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +38,10 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Helper\" />
   </ItemGroup>
 
 </Project>
