@@ -14,19 +14,52 @@ namespace G9AssemblyManagement
 
         #region ### Methods ###
 
-        public static IList<Type> GetInheritedTypesOfType<TType>(
+        /// <summary>
+        ///     Method to get inherited types from a type
+        /// </summary>
+        /// <typeparam name="TType">Specifies type to find inherited types.</typeparam>
+        /// <param name="ignoreAbstractType">If set it 'true', method ignores abstract type in find.</param>
+        /// <param name="ignoreInterfaceType">If set it 'true', method ignores interface type in find.</param>
+        /// <param name="assemblies">
+        ///     Specifies custom assembly to search inherited types, if set 'null', method search inherited
+        ///     types in all assemblies.
+        /// </param>
+        /// <returns>Collection of types inherited specifies type.</returns>
+        public static IList<Type> GetInheritedTypesFromType<TType>(
             bool ignoreAbstractType = true, bool ignoreInterfaceType = true, params Assembly[] assemblies)
         {
-            return GetInheritedTypesOfType(typeof(TType), ignoreAbstractType, ignoreInterfaceType,  assemblies);
+            return GetInheritedTypesFromType(typeof(TType), ignoreAbstractType, ignoreInterfaceType, assemblies);
         }
 
-        public static IList<Type> GetInheritedTypesOfType(this object objectItem,
+        /// <summary>
+        ///     Extension method to get inherited types from a type
+        /// </summary>
+        /// <param name="objectItem">Specifies an object to get type and find inherited types.</param>
+        /// <param name="ignoreAbstractType">If set it 'true', method ignores abstract type in find.</param>
+        /// <param name="ignoreInterfaceType">If set it 'true', method ignores interface type in find.</param>
+        /// <param name="assemblies">
+        ///     Specifies custom assembly to search inherited types, if set 'null', method search inherited
+        ///     types in all assemblies.
+        /// </param>
+        /// <returns>Collection of types inherited specifies type.</returns>
+        public static IList<Type> GetInheritedTypesFromType(this object objectItem,
             bool ignoreAbstractType = true, bool ignoreInterfaceType = true, params Assembly[] assemblies)
         {
-            return GetInheritedTypesOfType(objectItem.GetType(), ignoreAbstractType, ignoreInterfaceType, assemblies);
+            return GetInheritedTypesFromType(objectItem.GetType(), ignoreAbstractType, ignoreInterfaceType, assemblies);
         }
 
-        public static IList<Type> GetInheritedTypesOfType(Type type,
+        /// <summary>
+        ///     Method to get inherited types from a type
+        /// </summary>
+        /// <param name="type">Specifies type to find inherited types.</param>
+        /// <param name="ignoreAbstractType">If set it 'true', method ignores abstract type in find.</param>
+        /// <param name="ignoreInterfaceType">If set it 'true', method ignores interface type in find.</param>
+        /// <param name="assemblies">
+        ///     Specifies custom assembly to search inherited types, if set 'null', method search inherited
+        ///     types in all assemblies.
+        /// </param>
+        /// <returns>Collection of types inherited specifies type.</returns>
+        public static IList<Type> GetInheritedTypesFromType(Type type,
             bool ignoreAbstractType = true, bool ignoreInterfaceType = true, params Assembly[] assemblies)
         {
             // Set assemblies

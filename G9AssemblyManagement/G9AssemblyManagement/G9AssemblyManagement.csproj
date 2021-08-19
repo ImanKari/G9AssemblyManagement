@@ -12,7 +12,10 @@
 	  <RepositoryUrl>https://github.com/ImanKari/G9AssemblyManagement</RepositoryUrl>
 	  <RepositoryType>GitHub</RepositoryType>
 	  <PackageTags>Assembly Management dependency injection attribute</PackageTags>
-	  <PackageReleaseNotes></PackageReleaseNotes>
+	  <PackageReleaseNotes>-- Added: Assembly handler core
+-- Added: Method to get inherited types from a type like interface or class (Any type like generic)
+-- Added: Programming comments
+-- Added: NUnit test</PackageReleaseNotes>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <AssemblyVersion>1.0.0.0</AssemblyVersion>
 	  <FileVersion>1.0.0.0</FileVersion>
@@ -20,7 +23,9 @@
 	  <PackageIcon>G9-Icon.png</PackageIcon>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageIconUrl />
-	  <LangVersion>8.0</LangVersion>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+	  <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,5 +48,9 @@
   <ItemGroup>
     <Folder Include="Helper\" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="Set &quot;NugetLocalTargetPath=I:\LocalNugetPackages\&quot;&#xD;&#xA;if exist &quot;%25NugetLocalTargetPath%25&quot; (&#xD;&#xA;  xcopy &quot;bin\$(ConfigurationName)\*.nupkg&quot; &quot;%25NugetLocalTargetPath%25&quot; /C /Y&#xD;&#xA;) else (&#xD;&#xA;  echo 'Post-build event command line' : warning -9: 'Nuget target path not exist!'&#xD;&#xA;)" />
+  </Target>
 
 </Project>
