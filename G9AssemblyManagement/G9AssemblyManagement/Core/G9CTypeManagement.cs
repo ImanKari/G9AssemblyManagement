@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -17,31 +16,22 @@ namespace G9AssemblyManagement.Core
         /// <param name="baseType">Specify base type</param>
         /// <param name="assemblies">Specify assemblies for search</param>
         /// <param name="ignoreAbstractType">If true => ignore abstract type</param>
-        /// <param name="IgnoreInterfaceType">If true => ignore interface typeA</param>
+        /// <param name="ignoreInterfaceType">If true => ignore interface typeA</param>
         /// <returns>List of types</returns>
-
-        #region GetDerivedTypes
-
         public static List<Type> GetDerivedTypes(Type baseType, bool ignoreAbstractType = true,
-            bool IgnoreInterfaceType = true, params Assembly[] assemblies)
+            bool ignoreInterfaceType = true, params Assembly[] assemblies)
         {
             var derivedTypes = new List<Type>();
             foreach (var assembly in assemblies)
             {
                 // Get all types from the given assembly
                 var types = assembly.GetTypes();
-
-                for (int i = 0, count = types.Length; i < count; i++)
-                {
-                    var type = types[i];
-                    if (IsInheritOf(type, baseType, ignoreAbstractType, IgnoreInterfaceType)) derivedTypes.Add(type);
-                }
+                derivedTypes.AddRange(types.Where(type =>
+                    IsInheritOf(type, baseType, ignoreAbstractType, ignoreInterfaceType)));
             }
 
             return derivedTypes;
         }
-
-        #endregion
 
         /// <summary>
         ///     Specify type is sub class
@@ -51,43 +41,41 @@ namespace G9AssemblyManagement.Core
         /// <param name="ignoreAbstractType">If true => ignore abstract type</param>
         /// <param name="ignoreInterfaceType">If true => ignore interface typeA</param>
         /// <returns></returns>
-
-        #region IsSubclassOf
-
         private static bool IsInheritOf(Type type, Type baseType, bool ignoreAbstractType, bool ignoreInterfaceType)
         {
+            // If one of types is null or type equal with base type
             if (type == null || baseType == null || type == baseType)
                 return false;
 
+            // Check validation for ignoring
+            if (ignoreAbstractType && type.IsAbstract || ignoreInterfaceType && type.IsInterface)
+                return false;
+
+            // Generic type
             if (!baseType.IsGenericType)
             {
                 if (!type.IsGenericType)
-                {
-                    if (!ignoreAbstractType && type.IsAbstract || !ignoreInterfaceType && type.IsInterface)
-                        return false;
                     return baseType.IsInterface
                         ? type.GetInterfaces().Contains(baseType)
                         : type.IsSubclassOf(baseType);
-                }
             }
             else
             {
-                if (ignoreAbstractType && type.IsAbstract || ignoreInterfaceType && type.IsInterface) return false;
+                // Interface
                 if (baseType.IsInterface)
                     return type.GetInterfaces().Any(i =>
                         i.IsGenericType && i.GetGenericTypeDefinition() == baseType);
+
+                // Set base type generic definition
                 baseType = baseType.GetGenericTypeDefinition();
             }
 
+            // Check generic base type in loop
             type = type.BaseType;
             var objectType = typeof(object);
             while (type != objectType && type != null)
             {
                 var currentType = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
-
-                if (type.Name == "G9CGenericInterfaceTest" || currentType.Name == "G9CGenericInterfaceTest")
-                    Debug.WriteLine("asdsad");
-
                 if (currentType == baseType)
                     return true;
 
@@ -96,7 +84,5 @@ namespace G9AssemblyManagement.Core
 
             return false;
         }
-
-        #endregion
     }
 }
