@@ -1,14 +1,9 @@
-using System;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using G9AssemblyManagement;
 using G9AssemblyManagement_NUnitTest.DataType;
 using G9AssemblyManagement_NUnitTest.Inherit;
+using G9AssemblyManagement_NUnitTest.InstanceTest;
 using NUnit.Framework;
 
 namespace G9AssemblyManagement_NUnitTest
@@ -75,7 +70,46 @@ namespace G9AssemblyManagement_NUnitTest
                 G9CAssemblyManagement.GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>), false, false,
                     Assembly.GetExecutingAssembly());
             Assert.True(getInheritGenericInterfaceTypeWithoutIgnoreInterfaceAndAbstractType.Count == 3);
-            Assert.True(getInheritGenericInterfaceTypeWithoutIgnoreInterfaceAndAbstractType.All(s => typesName.Contains(s.Name)));
+            Assert.True(
+                getInheritGenericInterfaceTypeWithoutIgnoreInterfaceAndAbstractType.All(s =>
+                    typesName.Contains(s.Name)));
+        }
+
+        [Test]
+        [Order(2)]
+        public void TestG9AttrAddListenerOnGenerate()
+        {
+            // New instance of class
+            var firstTestClass = new G9CInstanceTest();
+
+            // Get instances of type - three way
+            // The first way
+            var firstTestClassInstances1 = G9CAssemblyManagement.GetInstancesOfType<G9CInstanceTest>();
+            Assert.True(firstTestClassInstances1.First().GetClassName() == nameof(G9CInstanceTest));
+            // The second way
+            var firstTestClassInstances2 = G9CAssemblyManagement.GetInstancesOfType(typeof(G9CInstanceTest))
+                .Select(s => (G9CInstanceTest) s);
+            Assert.True(firstTestClassInstances2.First().GetClassName() == nameof(G9CInstanceTest));
+            // The third way
+            var firstTestClassInstances3 = firstTestClass.GetInstancesOfType().Select(s => (G9CInstanceTest) s);
+            Assert.True(firstTestClassInstances3.First().GetClassName() == nameof(G9CInstanceTest));
+
+
+            // New instance of class
+            var firstName = "Iman";
+            var firstTestStruct = new G9DtInstanceTest(firstName);
+
+            // Get instances of type - three way
+            // The first way
+            var firstTestStructInstances1 = G9CAssemblyManagement.GetInstancesOfType<G9DtInstanceTest>();
+            Assert.True(firstTestStructInstances1.First().GetFirstName() == firstName);
+            // The second way
+            var firstTestStructInstances2 = G9CAssemblyManagement.GetInstancesOfType(typeof(G9DtInstanceTest))
+                .Select(s => (G9DtInstanceTest) s);
+            Assert.True(firstTestStructInstances2.First().GetFirstName() == firstName);
+            // The third way
+            var firstTestStructInstances3 = firstTestStruct.GetInstancesOfType().Select(s => (G9DtInstanceTest) s);
+            Assert.True(firstTestStructInstances3.First().GetFirstName() == firstName);
         }
     }
 }

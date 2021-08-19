@@ -14,6 +14,8 @@ namespace G9AssemblyManagement
 
         #region ### Methods ###
 
+        #region GetInheritedTypesFromType Methods
+
         /// <summary>
         ///     Method to get inherited types from a type
         /// </summary>
@@ -67,6 +69,68 @@ namespace G9AssemblyManagement
                 ? AppDomain.CurrentDomain.GetAssemblies()
                 : assemblies;
             return G9CTypeManagement.GetDerivedTypes(type, ignoreAbstractType, ignoreInterfaceType, assemblies);
+        }
+
+        #endregion
+
+        /// <summary>
+        ///     Method for assign a instance of type
+        /// </summary>
+        /// <param name="instance">Specifies an instance of type</param>
+        public static void AssignInstanceOfType(object instance)
+        {
+            G9CAssemblyHandler.AssignInstanceOfType(instance);
+        }
+
+        /// <summary>
+        ///     Method for unassign a instance of type
+        /// </summary>
+        /// <param name="instance">Specifies an instance of type</param>
+        public static void UnassignInstanceOfType(object instance)
+        {
+            G9CAssemblyHandler.UnassignInstanceOfType(instance);
+        }
+
+        /// <summary>
+        ///     Method to get total instances of type
+        /// </summary>
+        /// <typeparam name="TType">
+        ///     Specifies type to find instances of type.
+        ///     <para />
+        ///     Notice: The specified type must be one of the inherited types (class or struct).
+        /// </typeparam>
+        /// <returns>Return collection of instances of type.</returns>
+        public static IList<TType> GetInstancesOfType<TType>()
+        {
+            return G9CAssemblyHandler.GetInstancesOfType<TType>();
+        }
+
+        /// <summary>
+        ///     Method to get total instances of type
+        /// </summary>
+        /// <param name="type">
+        ///     Specifies type to find instances of type.
+        ///     <para />
+        ///     Notice: The specified type must be one of the inherited types (class or struct).
+        /// </param>
+        /// <returns>Return collection of instances of type.</returns>
+        public static IList<object> GetInstancesOfType(Type type)
+        {
+            return G9CAssemblyHandler.GetInstancesOfType(type);
+        }
+
+        /// <summary>
+        ///     Method to get total instances of type
+        /// </summary>
+        /// <param name="objectItem">
+        ///     Specifies an object to get type and find instances of type.
+        ///     <para />
+        ///     Notice: The specified object item must be one of the inherited types (class or struct).
+        /// </param>
+        /// <returns>Return collection of instances of type.</returns>
+        public static IList<object> GetInstancesOfType(this object objectItem)
+        {
+            return G9CAssemblyHandler.GetInstancesOfType(objectItem.GetType());
         }
 
         #endregion
