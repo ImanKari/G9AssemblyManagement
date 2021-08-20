@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-using G9AssemblyManagement;
-using G9AssemblyManagement.Abstract;
+﻿using G9AssemblyManagement;
 
 namespace G9AssemblyManagement_NUnitTest.InstanceTest
 {
@@ -10,7 +7,7 @@ namespace G9AssemblyManagement_NUnitTest.InstanceTest
         public G9DtInstanceTest(string firstName)
         {
             FirstName = firstName;
-            G9CAssemblyManagement.AssignInstanceOfType(this);
+            G9CAssemblyManagement.Instances.AssignInstanceOfType(this);
         }
 
         public readonly string FirstName;

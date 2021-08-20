@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using G9AssemblyManagement.Abstract;
+﻿using G9AssemblyManagement.Abstract;
 
 namespace G9AssemblyManagement_NUnitTest.InstanceTest
 {

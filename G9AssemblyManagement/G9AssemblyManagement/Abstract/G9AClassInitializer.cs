@@ -16,16 +16,16 @@ namespace G9AssemblyManagement.Abstract
             G9CAssemblyHandler.AssignInstanceOfType(this);
         }
 
-        /// <summary>
-        ///     Deconstructor
-        /// </summary>
-        ~G9AClassInitializer()
+        /// <inheritdoc />
+        public virtual void Dispose()
         {
             G9CAssemblyHandler.UnassignInstanceOfType(this);
         }
 
-        /// <inheritdoc />
-        public virtual void Dispose()
+        /// <summary>
+        ///     Deconstructor
+        /// </summary>
+        ~G9AClassInitializer()
         {
             G9CAssemblyHandler.UnassignInstanceOfType(this);
         }
