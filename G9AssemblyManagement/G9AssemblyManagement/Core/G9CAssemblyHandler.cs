@@ -62,8 +62,6 @@ namespace G9AssemblyManagement.Core
         /// <typeparam name="TType">
         ///     Specifies type to find instances of type.
         /// </typeparam>
-        /// <para />
-        /// Notice: The specified type must be one of the inherited types (class or struct).
         /// <returns>Return collection of instances of type.</returns>
         public static IList<TType> GetInstancesOfType<TType>()
         {
@@ -76,8 +74,6 @@ namespace G9AssemblyManagement.Core
         /// </summary>
         /// <param name="type">
         ///     Specifies type to find instances of type.
-        ///     <para />
-        ///     Notice: The specified type must be one of the inherited types (class or struct).
         /// </param>
         /// <returns>Return collection of instances of type.</returns>
         public static IList<object> GetInstancesOfType(Type type)
@@ -88,9 +84,6 @@ namespace G9AssemblyManagement.Core
             if (Equals(fullName, null))
                 throw new ArgumentNullException(nameof(type),
                     $"Parameter '{nameof(type)}', FullName of type is null!");
-            if (!type.IsClass && !type.IsValueType)
-                throw new ArgumentException("The specified type must be one of the inherited types (class or struct).",
-                    nameof(type));
             var hashCode = fullName.GetHashCode();
             lock (lookObject)
             {

@@ -96,8 +96,6 @@ namespace G9AssemblyManagement
         /// </summary>
         /// <typeparam name="TType">
         ///     Specifies type to find instances of type.
-        ///     <para />
-        ///     Notice: The specified type must be one of the inherited types (class or struct).
         /// </typeparam>
         /// <returns>Return collection of instances of type.</returns>
         public static IList<TType> GetInstancesOfType<TType>()
@@ -110,8 +108,6 @@ namespace G9AssemblyManagement
         /// </summary>
         /// <param name="type">
         ///     Specifies type to find instances of type.
-        ///     <para />
-        ///     Notice: The specified type must be one of the inherited types (class or struct).
         /// </param>
         /// <returns>Return collection of instances of type.</returns>
         public static IList<object> GetInstancesOfType(Type type)
@@ -124,8 +120,6 @@ namespace G9AssemblyManagement
         /// </summary>
         /// <param name="objectItem">
         ///     Specifies an object to get type and find instances of type.
-        ///     <para />
-        ///     Notice: The specified object item must be one of the inherited types (class or struct).
         /// </param>
         /// <returns>Return collection of instances of type.</returns>
         public static IList<object> GetInstancesOfType(this object objectItem)
