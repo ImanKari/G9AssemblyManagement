@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using G9AssemblyManagement;
 using G9AssemblyManagement.Helper;
 using G9AssemblyManagement_NUnitTest.DataType;
 using G9AssemblyManagement_NUnitTest.Inherit;
+using G9AssemblyManagement_NUnitTest.InstanceListener;
 using G9AssemblyManagement_NUnitTest.InstanceTest;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
@@ -170,6 +173,115 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(instances.Count == 0);
             instances = G9CAssemblyManagement.Instances.GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 0);
+        }
+
+        [Test]
+        [Order(2)]
+        public void TestInstanceListener()
+        {
+            var exceptionMessage = "Just for test, receive it in 'On receive exception'";
+            // Save count of receive new instance
+            var instanceCount = 0;
+            var instanceListener = G9CAssemblyManagement.Instances.AssignInstanceListener<G9CInstanceListenerTest>
+            (
+                // On assign
+                newInstance =>
+                {
+                    Assert.True(newInstance.GetUseCounter() == 1);
+                    instanceCount++;
+                },
+                // On unassign
+                instance =>
+                {
+                    Assert.True(instance.GetUseCounter() == 2);
+                    instanceCount--;
+                    throw new Exception(exceptionMessage);
+                },
+                // On receive exception
+                ex =>
+                {
+                    Debug.WriteLine(ex.Message);
+                    Assert.True(ex.Message == exceptionMessage);
+                    // Ignore
+                }
+            );
+            // At first is 0
+            Assert.True(instanceCount == 0);
+            // New instance
+            var testClass1 = new G9CInstanceListenerTest();
+            Assert.True(instanceCount == 1);
+            // Dispose Test
+            testClass1.Dispose();
+            Assert.True(instanceCount == 0);
+            // Initialize 3 class test
+            var arrayClass = new object[]
+            {
+                new G9CInstanceListenerTest(),
+                new G9CInstanceListenerTest(),
+                new G9CInstanceListenerTest()
+            };
+            Assert.True(instanceCount == 3);
+
+            // Stop listener test
+            instanceListener.StopListener();
+            var arrayClass2 = new object[]
+            {
+                new G9CInstanceListenerTest(),
+                new G9CInstanceListenerTest(),
+                new G9CInstanceListenerTest()
+            };
+            Assert.True(instanceCount == 3);
+
+            // Resume listener test
+            instanceListener.ResumeListener();
+            var arrayClass3 = new object[]
+            {
+                new G9CInstanceListenerTest(),
+                new G9CInstanceListenerTest(),
+                new G9CInstanceListenerTest()
+            };
+            Assert.True(instanceCount == 6);
+
+            // Dispose listener test
+            instanceListener.Dispose();
+            var arrayClass4 = new object[]
+            {
+                new G9CInstanceListenerTest(),
+                new G9CInstanceListenerTest(),
+                new G9CInstanceListenerTest()
+            };
+            Assert.True(instanceCount == 6);
+
+            // Test dispose exception
+            try
+            {
+                instanceListener.ResumeListener();
+            }
+            catch (Exception e)
+            {
+                Assert.True(e is ObjectDisposedException);
+            }
+
+            // Test block area
+            if (true)
+            {
+                // Test listener -> receive all instance initialized (justListenToNewInstance = false)
+                instanceCount = 0;
+                var instanceListener2 = G9CAssemblyManagement.Instances.AssignInstanceListener<G9CInstanceListenerTest>
+                (
+                    // On assign
+                    newInstance =>
+                    {
+                        newInstance.GetUseCounter();
+                        instanceCount++;
+                    }, justListenToNewInstance: false
+                );
+                Assert.True(G9CAssemblyManagement.Instances.GetInstancesOfType<G9CInstanceListenerTest>().Count ==
+                            instanceCount);
+            }
+
+            // Automatic dispose listener after block area 
+            GC.Collect();
         }
     }
 }

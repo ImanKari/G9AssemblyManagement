@@ -46,7 +46,6 @@
 
   <ItemGroup>
     <Folder Include="Abstract\" />
-    <Folder Include="DataType\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
