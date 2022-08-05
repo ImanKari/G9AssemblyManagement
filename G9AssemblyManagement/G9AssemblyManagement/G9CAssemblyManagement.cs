@@ -16,6 +16,7 @@ namespace G9AssemblyManagement
         {
             Types = new G9CTypesHelper();
             Instances = new G9CInstanceHelper();
+            Reflection = new G9CReflectionHelper();
         }
 
         #endregion
@@ -31,6 +32,11 @@ namespace G9AssemblyManagement
         ///     Access to instance utilities
         /// </summary>
         public static readonly G9CInstanceHelper Instances;
+
+        /// <summary>
+        ///     Access to reflection utilities
+        /// </summary>
+        public static readonly G9CReflectionHelper Reflection;
 
         #endregion
     }

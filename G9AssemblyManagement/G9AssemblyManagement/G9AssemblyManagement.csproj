@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-	  <Version>1.0.0.3</Version>
+	  <TargetFrameworks>net35;net40;net45;netstandard2.0;netstandard2.1</TargetFrameworks>
+	  <Version>1.1.0.0</Version>
 	  <Authors>Iman Kari</Authors>
 	  <Company>G9Studio</Company>
 	  <Product>G9 Assembly Management</Product>
@@ -12,12 +12,13 @@
 	  <RepositoryUrl>https://github.com/ImanKari/G9AssemblyManagement</RepositoryUrl>
 	  <RepositoryType>GitHub</RepositoryType>
 	  <PackageTags>Assembly Management dependency injection attribute</PackageTags>
-	  <PackageReleaseNotes>-- Divide the main class into different scopes
--- Add NUnit test
--- Clean solution and code</PackageReleaseNotes>
+	  <PackageReleaseNotes>-- Supported various target frameworks (net35;net40;net45;netstandard2.0;netstandard2.1)
+-- Implemented properties handler for objects
+-- Implemented fields handler for objects
+-- Completed tests</PackageReleaseNotes>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <AssemblyVersion>1.0.0.3</AssemblyVersion>
-	  <FileVersion>1.0.0.3</FileVersion>
+	  <AssemblyVersion>1.1.0.0</AssemblyVersion>
+	  <FileVersion>1.1.0.0</FileVersion>
 	  <ApplicationIcon></ApplicationIcon>
 	  <PackageIcon>G9-Icon.png</PackageIcon>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
@@ -46,6 +47,7 @@
 
   <ItemGroup>
     <Folder Include="Abstract\" />
+    <Folder Include="DataType\Parents\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

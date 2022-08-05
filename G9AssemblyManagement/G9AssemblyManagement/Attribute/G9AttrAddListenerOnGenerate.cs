@@ -17,7 +17,7 @@ namespace G9AssemblyManagement.Attribute
         /// <summary>
         /// </summary>
         /// <param name="customNickname"></param>
-        public G9AttrAddListenerOnGenerateAttribute([CallerMemberName] string customNickname = null)
+        public G9AttrAddListenerOnGenerateAttribute(/*[CallerMemberName]*/ string customNickname = null)
         {
         }
 
