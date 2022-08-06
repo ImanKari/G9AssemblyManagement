@@ -30,13 +30,13 @@ namespace G9AssemblyManagement_NUnitTest.ObjectMembers
             return a + b;
         }
 
-        private void TestMethod2(out string a, ref DateTime b)
+        internal void TestMethod2(out string a, ref DateTime b)
         {
             a = "OKAY";
             b = DateTime.MaxValue;
         }
 
-        public TType TestGenericMethod<TType>()
+        public static TType TestGenericMethod<TType>()
         {
             return default;
         }

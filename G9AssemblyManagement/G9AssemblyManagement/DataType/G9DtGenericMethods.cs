@@ -52,7 +52,17 @@ namespace G9AssemblyManagement.DataType
         public TType CallMethodWithResult<TType>(Type[] genericTypes, params object[] optionalParametersArray)
         {
             var genericMethod = MethodInfo.MakeGenericMethod(genericTypes);
-            return (TType) genericMethod.Invoke(_targetObject, optionalParametersArray);
+            var result = genericMethod.Invoke(_targetObject, optionalParametersArray);
+            try
+            {
+                return (TType)result;
+            }
+            catch (NullReferenceException e)
+            {
+                throw new ArgumentException(
+                    $"The specified type for the result is incorrect. The specified result type is: '{typeof(TType)}'.",
+                    e);
+            }
         }
 
         /// <summary>

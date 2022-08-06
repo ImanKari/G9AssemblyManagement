@@ -6,6 +6,9 @@ using G9AssemblyManagement.Enums;
 
 namespace G9AssemblyManagement.Helper
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class G9CReflectionHelper
     {
         /// <summary>

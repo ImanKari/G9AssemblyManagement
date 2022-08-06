@@ -9,7 +9,7 @@ namespace G9AssemblyManagement_NUnitTest.ObjectMembers
         private string StringTest2 = "B";
 
         public decimal DecimalTest1 { set; get; } = 999.999m;
-        private decimal DecimalTest2 { set; get; } = 369.963m;
+        private decimal DecimalTest2 { get; } = 369.963m;
 
         public static IPAddress StaticIpAddressTest1 = IPAddress.Any;
         private static IPAddress StaticIpAddressTest2 { set; get; } = IPAddress.None;
@@ -19,13 +19,13 @@ namespace G9AssemblyManagement_NUnitTest.ObjectMembers
             return a + b;
         }
 
-        private void TestMethod2(out string a, ref DateTime b)
+        protected void TestMethod2(out string a, ref DateTime b)
         {
             a = "OKAY";
             b = DateTime.MaxValue;
         }
 
-        public TType TestGenericMethod<TType>()
+        public static TType TestGenericMethod<TType>()
         {
             return default;
         }

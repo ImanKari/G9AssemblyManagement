@@ -7,36 +7,23 @@ namespace G9AssemblyManagement
     /// </summary>
     public static class G9CAssemblyManagement
     {
-        #region ### Methods ###
-
-        /// <summary>
-        ///     Constructor
-        /// </summary>
-        static G9CAssemblyManagement()
-        {
-            Types = new G9CTypesHelper();
-            Instances = new G9CInstanceHelper();
-            Reflection = new G9CReflectionHelper();
-        }
-
-        #endregion
 
         #region ### Fields And Properties
 
         /// <summary>
         ///     Access to type utilities
         /// </summary>
-        public static readonly G9CTypesHelper Types;
+        public static readonly G9CTypesHelper Types = new G9CTypesHelper();
 
         /// <summary>
         ///     Access to instance utilities
         /// </summary>
-        public static readonly G9CInstanceHelper Instances;
+        public static readonly G9CInstanceHelper Instances = new G9CInstanceHelper();
 
         /// <summary>
         ///     Access to reflection utilities
         /// </summary>
-        public static readonly G9CReflectionHelper Reflection;
+        public static readonly G9CReflectionHelper Reflection = new G9CReflectionHelper();
 
         #endregion
     }

@@ -436,8 +436,8 @@ namespace G9AssemblyManagement_NUnitTest
                         (decimal)fieldsOfObject1[1].GetPropertyValue() == 369.963m &&
                         fieldsOfObject1[1].GetPropertyValue<decimal>() == 369.963m);
             Assert.True(fieldsOfObject2[2].PropertyName == "StaticIpAddressTest2" &&
-                        (IPAddress)fieldsOfObject2[2].GetPropertyValue() == IPAddress.None &&
-                        fieldsOfObject2[2].GetPropertyValue<IPAddress>() == IPAddress.None);
+                        Equals((IPAddress)fieldsOfObject2[2].GetPropertyValue(), IPAddress.None) &&
+                        Equals(fieldsOfObject2[2].GetPropertyValue<IPAddress>(), IPAddress.None));
 
             // Bad type test (InvalidCastException)
             try
@@ -468,6 +468,172 @@ namespace G9AssemblyManagement_NUnitTest
             // Access to all properties
             // it has one public property + one private property + one private static property
             Assert.True(fieldsOfObject5.Count == 3);
+        }
+
+        [Test]
+        [Order(5)]
+        public void TestGetMethodsOfObject()
+        {
+            // Create objects from class and struct
+            var object1 = new G9CObjectMembersTest();
+            var object2 = new G9DtObjectMembersTest("A", "B", (decimal)999.999, (decimal)369.963, IPAddress.Any,
+                IPAddress.None);
+            var object3 = new G9DtObjectMembersTest("A", "B", (decimal)999.999, (decimal)369.963, IPAddress.Any,
+                IPAddress.None);
+            var object4 = new G9CObjectMembersTest();
+
+            // Get Methods
+            var fieldsOfObject1 = object1.GetMethodsOfObject(G9EAccessModifier.Public);
+            var fieldsOfObject2 = object2.GetMethodsOfObject(G9EAccessModifier.NonPublic);
+            var fieldsOfObject3 = object3.GetMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
+            var fieldsOfObject4 = object4.GetMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
+
+            // Notice
+            // 1- Each object has some built-in public methods (GetType() - ToString() - Equals() - GetHashCode())
+            // 2- Each object has some built-in private method (MemberwiseClone() - Finalize())
+            // 3- Each object with the property can have auto-made methods for the "set" or "get" processes of properties.
+
+            // It has one public method + 4 built-in public methods + 2 auto-made property public methods
+            Assert.True(fieldsOfObject1.Count == 7);
+
+            // It has one non public method (internal) + 2 built-in private methods + one auto-made property method (just has getter)
+            Assert.True(fieldsOfObject2.Count == 4);
+
+            // Get Public/Private/static methods
+            fieldsOfObject1 = object1.GetMethodsOfObject();
+            fieldsOfObject2 = object2.GetMethodsOfObject();
+
+            // They have 13 methods in total (public method + private methods + (internal/protected) methods + public static methods + built-in methods)
+            Assert.True(fieldsOfObject1.Count == 13 && fieldsOfObject2.Count == 13);
+
+            // Get and test value from methods
+            Assert.True(fieldsOfObject1[5].MethodName == nameof(G9CObjectMembersTest.TestMethod1) &&
+                        fieldsOfObject1[5].CallMethodWithResult<int>(6, 3) == 9);
+
+            // Bad argument type test (ArgumentException)
+            try
+            {
+                _ = fieldsOfObject1[5].CallMethodWithResult<int>("6", 3);
+            }
+            catch (Exception ex)
+            {
+                // Object of type 'System.String' cannot be converted to type 'System.Int32'.
+                Assert.True(ex is ArgumentException);
+            }
+
+            // Mismatch argument count test (TargetParameterCountException)
+            try
+            {
+                _ = fieldsOfObject1[5].CallMethodWithResult<int>(3);
+            }
+            catch (Exception ex)
+            {
+                // Parameter count mismatch.
+                Assert.True(ex is TargetParameterCountException);
+            }
+
+            // It don't have public static method
+            Assert.True(fieldsOfObject3.Count == 0);
+
+            // It have just two private static (Backing Property setter/getter) method
+            Assert.True(fieldsOfObject4.Count == 2);
+        }
+
+        [Test]
+        [Order(6)]
+        public void TestGetGenericMethodsOfObject()
+        {
+            // Create objects from class and struct
+            var object1 = new G9CObjectMembersTest();
+            var object2 = new G9DtObjectMembersTest("A", "B", (decimal)999.999, (decimal)369.963, IPAddress.Any,
+                IPAddress.None);
+            var object3 = new G9DtObjectMembersTest("A", "B", (decimal)999.999, (decimal)369.963, IPAddress.Any,
+                IPAddress.None);
+            var object4 = new G9CObjectMembersTest();
+
+            // Get Methods
+            var fieldsOfObject1 = object1.GetGenericMethodsOfObject(G9EAccessModifier.Public);
+            var fieldsOfObject2 = object2.GetGenericMethodsOfObject(G9EAccessModifier.NonPublic);
+            var fieldsOfObject3 =
+                object3.GetGenericMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
+            var fieldsOfObject4 =
+                object4.GetGenericMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
+
+            // It don't have a public generic method
+            Assert.True(fieldsOfObject1.Count == 0);
+
+            // It has one non public generic method (private)
+            Assert.True(fieldsOfObject2.Count == 1);
+
+            // Get Public/Private/static methods
+            fieldsOfObject1 = object1.GetGenericMethodsOfObject();
+            fieldsOfObject2 = object2.GetGenericMethodsOfObject();
+
+            // They have one public static generic method as well as one private generic method
+            Assert.True(fieldsOfObject1.Count == 2 && fieldsOfObject2.Count == 2);
+
+            // Get and test value from methods
+            Assert.True(fieldsOfObject1[0].MethodName == nameof(G9CObjectMembersTest.TestGenericMethod) &&
+                        fieldsOfObject1[0]
+                            .CallMethodWithResult<G9DtObjectMembersTest>(new[] { typeof(G9DtObjectMembersTest) })
+                            .Equals(
+                                default(G9DtObjectMembersTest)));
+
+            Assert.True(fieldsOfObject1[1].MethodName == nameof(G9CObjectMembersTest.TestGenericMethod) &&
+                        fieldsOfObject1[1].CallMethodWithResult<(int, string, IPAddress)>(
+                            new[] { typeof(int), typeof(string), typeof(IPAddress) }, 1, "Iman",
+                            IPAddress.Broadcast) ==
+                        (1, "Iman", IPAddress.Broadcast));
+
+            // Bad result type test (ArgumentException)
+            try
+            {
+                _ = fieldsOfObject1[0]
+                    .CallMethodWithResult<G9DtObjectMembersTest>(new[] { typeof(string) });
+            }
+            catch (Exception ex)
+            {
+                // The specified type for the result is incorrect. The specified result type is: 'G9AssemblyManagement_NUnitTest.ObjectMembers.G9DtObjectMembersTest'.
+                Assert.True(ex is ArgumentException);
+            }
+
+            // Mismatch argument count test (ArgumentException)
+            try
+            {
+                _ = fieldsOfObject1[1]
+                    .CallMethodWithResult<(int, string)>(new[] { typeof(int), typeof(string) }, 1, "Iman");
+            }
+            catch (Exception ex)
+            {
+                // The type or method has 3 generic parameter(s), but 2 generic argument(s) were provided. A generic argument must be provided for each generic parameter.
+                Assert.True(ex is ArgumentException);
+            }
+
+            // It has one public static generic method
+            Assert.True(fieldsOfObject3.Count == 1);
+
+            // It don't have a private static generic method
+            Assert.True(fieldsOfObject4.Count == 0);
+        }
+
+        [Test]
+        [Order(7)]
+        public void TestGetAllMembersOfObject()
+        {
+            // Create objects from class and struct
+            var object1 = new G9CObjectMembersTest();
+            var object2 = new G9DtObjectMembersTest("A", "B", (decimal)999.999, (decimal)369.963, IPAddress.Any,
+                IPAddress.None);
+
+            // Get Methods
+            var fieldsOfObject1 = object1.GetAllMembersOfObject();
+            var fieldsOfObject2 = object2.GetAllMembersOfObject();
+
+            // Test count of members
+            Assert.True(fieldsOfObject1.Fields.Count == 6 && fieldsOfObject1.Properties.Count == 3 &&
+                        fieldsOfObject1.Methods.Count == 13 && fieldsOfObject1.GenericMethods.Count == 2);
+            Assert.True(fieldsOfObject2.Fields.Count == 6 && fieldsOfObject2.Properties.Count == 3 &&
+                        fieldsOfObject2.Methods.Count == 13 && fieldsOfObject2.GenericMethods.Count == 2);
         }
     }
 }
