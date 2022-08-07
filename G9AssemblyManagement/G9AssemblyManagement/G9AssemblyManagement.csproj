@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFrameworks>net35;net40;net45;net451;net452;net46;netstandard2.0;netstandard2.1</TargetFrameworks>
-	  <Version>1.1.1.0</Version>
+	  <Version>1.1.2.0</Version>
 	  <Authors>Iman Kari</Authors>
 	  <Company>G9Studio</Company>
 	  <Product>G9 Assembly Management</Product>
@@ -12,15 +12,12 @@
 	  <RepositoryUrl>https://github.com/ImanKari/G9AssemblyManagement</RepositoryUrl>
 	  <RepositoryType>GitHub</RepositoryType>
 	  <PackageTags>Assembly Management dependency injection attribute</PackageTags>
-	  <PackageReleaseNotes>-- Supported various target frameworks (net35;net40;net45;net451;net452;net46;netstandard2.0;netstandard2.1)
--- Implemented methods handler for objects
--- Implemented generic methods handler for objects
--- Implemented properties handler for objects
--- Implemented fields handler for objects
+	  <PackageReleaseNotes>-- Fixed multi-thread request problem
+-- Rewritten comments
 -- Completed tests</PackageReleaseNotes>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <AssemblyVersion>1.1.1.0</AssemblyVersion>
-	  <FileVersion>1.1.1.0</FileVersion>
+	  <AssemblyVersion>1.1.2.0</AssemblyVersion>
+	  <FileVersion>1.1.2.0</FileVersion>
 	  <ApplicationIcon></ApplicationIcon>
 	  <PackageIcon>G9-Icon.png</PackageIcon>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>

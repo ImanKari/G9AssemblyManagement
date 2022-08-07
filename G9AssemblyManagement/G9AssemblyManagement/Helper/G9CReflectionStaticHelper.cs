@@ -4,74 +4,85 @@ using G9AssemblyManagement.Enums;
 
 namespace G9AssemblyManagement.Helper
 {
+    /// <summary>
+    ///     Helper class for reflections
+    /// </summary>
     public static class G9CReflectionStaticHelper
     {
-        private static readonly G9CReflectionHelper _accessToReflectionHelper = new G9CReflectionHelper();
+        /// <summary>
+        ///     A static field for access to reflection helper
+        /// </summary>
+        private static readonly G9CReflectionHelper AccessToReflectionHelper = new G9CReflectionHelper();
 
         /// <summary>
         ///     Method to get fields of object
         /// </summary>
-        /// <typeparam name="TObject">Specifies type of object</typeparam>
-        /// <param name="targetObject">Specifies object to find fields</param>
-        /// <param name="specifiedModifiers">Specifies which modifier types are to be included in the search</param>
-        /// <returns>Access to collection of fields</returns>
-        public static IList<G9DtFields> GetFieldsOfObject<TObject>(this TObject targetObject, G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything)
+        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
+        /// <param name="targetObject">Specifies an object to find fields</param>
+        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
+        /// <returns>A collection of fields</returns>
+        public static IList<G9DtFields> G9GetFieldsOfObject<TObject>(this TObject targetObject,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything)
             where TObject : new()
         {
-            return _accessToReflectionHelper.GetFieldsOfObject(targetObject, specifiedModifiers);
+            return AccessToReflectionHelper.G9GetFieldsOfObject(targetObject, specifiedModifiers);
         }
 
         /// <summary>
-        ///     Method to get properties of object
+        ///     Method to get properties of an object
         /// </summary>
-        /// <typeparam name="TObject">Specifies type of object</typeparam>
-        /// <param name="targetObject">Specifies object to find properties</param>
-        /// <param name="specifiedModifiers">Specifies which modifier types are to be included in the search</param>
-        /// <returns>Access to collection of properties</returns>
-        public static IList<G9DtProperties> GetPropertiesOfObject<TObject>(this TObject targetObject, G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything)
+        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
+        /// <param name="targetObject">Specifies an object to find properties</param>
+        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
+        /// <returns>A collection of properties</returns>
+        public static IList<G9DtProperties> G9GetPropertiesOfObject<TObject>(this TObject targetObject,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything)
             where TObject : new()
         {
-            return _accessToReflectionHelper.GetPropertiesOfObject(targetObject, specifiedModifiers);
+            return AccessToReflectionHelper.G9GetPropertiesOfObject(targetObject, specifiedModifiers);
         }
 
         /// <summary>
-        ///     Method to get Methods of object
+        ///     Method to get Methods of an object
         /// </summary>
-        /// <typeparam name="TObject">Specifies type of object</typeparam>
-        /// <param name="targetObject">Specifies object to find Methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifier types are to be included in the search</param>
-        /// <returns>Access to collection of Methods</returns>
-        public static IList<G9DtMethods> GetMethodsOfObject<TObject>(this TObject targetObject, G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything)
+        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
+        /// <param name="targetObject">Specifies an object to find methods</param>
+        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
+        /// <returns>A collection of methods</returns>
+        public static IList<G9DtMethods> G9GetMethodsOfObject<TObject>(this TObject targetObject,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything)
             where TObject : new()
         {
-            return _accessToReflectionHelper.GetMethodsOfObject(targetObject, specifiedModifiers);
+            return AccessToReflectionHelper.G9GetMethodsOfObject(targetObject, specifiedModifiers);
         }
 
         /// <summary>
-        ///     Method to get generic methods of object
+        ///     Method to get generic methods of an object
         /// </summary>
-        /// <typeparam name="TObject">Specifies type of object</typeparam>
-        /// <param name="targetObject">Specifies object to find generic Methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifier types are to be included in the search</param>
-        /// <returns>Access to collection of generic Methods</returns>
-        public static IList<G9DtGenericMethods> GetGenericMethodsOfObject<TObject>(this TObject targetObject, G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything)
+        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
+        /// <param name="targetObject">Specifies an object to find generic methods</param>
+        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
+        /// <returns>A collection of generic methods</returns>
+        public static IList<G9DtGenericMethods> G9GetGenericMethodsOfObject<TObject>(this TObject targetObject,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything)
             where TObject : new()
         {
-            return _accessToReflectionHelper.GetGenericMethodsOfObject(targetObject, specifiedModifiers);
+            return AccessToReflectionHelper.G9GetGenericMethodsOfObject(targetObject, specifiedModifiers);
         }
 
 
         /// <summary>
-        ///     Method to get all members of object
+        ///     Method to get all members of an object
         /// </summary>
-        /// <typeparam name="TObject">Specifies type of object</typeparam>
-        /// <param name="targetObject">Specifies object to find all members</param>
-        /// <param name="specifiedModifiers">Specifies which modifier types are to be included in the search</param>
-        /// <returns>Access to all members of object</returns>
-        public static G9DtObjectMembers GetAllMembersOfObject<TObject>(this TObject targetObject, G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything)
+        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
+        /// <param name="targetObject">Specifies an object to find generic members</param>
+        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
+        /// <returns>An object with members array</returns>
+        public static G9DtObjectMembers G9GetAllMembersOfObject<TObject>(this TObject targetObject,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything)
             where TObject : new()
         {
-            return _accessToReflectionHelper.GetAllMembersOfObject(targetObject, specifiedModifiers);
+            return AccessToReflectionHelper.G9GetAllMembersOfObject(targetObject, specifiedModifiers);
         }
     }
 }

@@ -22,14 +22,14 @@ namespace G9AssemblyManagement.Core
         /// <summary>
         ///     Collection to save all instances of assigned type
         /// </summary>
-        private static readonly SortedDictionary<int, List<object>> CollectionOfAllInstances =
-            new SortedDictionary<int, List<object>>();
+        private static readonly Dictionary<int, List<object>> CollectionOfAllInstances =
+            new Dictionary<int, List<object>>();
 
         /// <summary>
         ///     Collection to save all listener of assigned type
         /// </summary>
-        private static readonly SortedDictionary<int, List<G9DtInstanceListener<object>>> CollectionOfAllListeners =
-            new SortedDictionary<int, List<G9DtInstanceListener<object>>>();
+        private static readonly Dictionary<int, List<G9DtInstanceListener<object>>> CollectionOfAllListeners =
+            new Dictionary<int, List<G9DtInstanceListener<object>>>();
 
         #endregion
 
@@ -41,15 +41,14 @@ namespace G9AssemblyManagement.Core
         /// <param name="instance">Specifies an instance of type</param>
         public static void AssignInstanceOfType(object instance)
         {
-            var fullName = instance?.GetType().FullName;
-            if (string.IsNullOrEmpty(fullName)) return;
-            var hashCode = fullName.GetHashCode();
+            if (instance == null) return;
+            var hashCode = instance.GetType().GetHashCode();
             lock (TypeLookObject)
             {
                 if (CollectionOfAllInstances.ContainsKey(hashCode))
                     CollectionOfAllInstances[hashCode].Add(instance);
                 else
-                    CollectionOfAllInstances.Add(hashCode, new List<object> {instance});
+                    CollectionOfAllInstances.Add(hashCode, new List<object> { instance });
                 OnAssignNewInstance(hashCode, instance);
             }
         }
@@ -60,12 +59,12 @@ namespace G9AssemblyManagement.Core
         /// <param name="instance">Specifies an instance of type</param>
         public static void UnassignInstanceOfType(object instance)
         {
-            var fullName = instance?.GetType().FullName;
-            if (string.IsNullOrEmpty(fullName)) return;
-            var hashCode = fullName.GetHashCode();
+            if (instance == null) return;
+            var hashCode = instance.GetType().GetHashCode();
             lock (TypeLookObject)
             {
                 if (!CollectionOfAllInstances.ContainsKey(hashCode)) return;
+                if (!CollectionOfAllInstances[hashCode].Contains(instance)) return;
                 CollectionOfAllInstances[hashCode].Remove(instance);
                 if (CollectionOfAllInstances[hashCode].Count == 0)
                     CollectionOfAllInstances.Remove(hashCode);
@@ -83,7 +82,7 @@ namespace G9AssemblyManagement.Core
         public static IList<TType> GetInstancesOfType<TType>()
         {
             var type = typeof(TType);
-            return GetInstancesOfType(type).Select(s => (TType) s).ToArray();
+            return GetInstancesOfType(type).Select(s => (TType)s).ToArray();
         }
 
         /// <summary>
@@ -97,11 +96,7 @@ namespace G9AssemblyManagement.Core
         {
             if (Equals(type, null))
                 throw new ArgumentNullException(nameof(type), $"Parameter '{nameof(type)}' can't be null.");
-            var fullName = type.FullName;
-            if (string.IsNullOrEmpty(fullName))
-                throw new ArgumentNullException(nameof(type),
-                    $"Parameter '{nameof(type)}', FullName of type is null!");
-            var hashCode = fullName.GetHashCode();
+            var hashCode = type.GetHashCode();
             lock (TypeLookObject)
             {
                 if (!CollectionOfAllInstances.ContainsKey(hashCode)) return new List<object>();
@@ -268,16 +263,14 @@ namespace G9AssemblyManagement.Core
             bool justListenToNewInstance = true)
         {
             var type = typeof(TType);
-            var fullName = type.FullName;
-            if (string.IsNullOrEmpty(fullName))
-                throw new ArgumentNullException(nameof(TType),
-                    $"Parameter '{nameof(TType)}', FullName of type is null!");
-            var hashCode = fullName.GetHashCode();
+            if (Equals(type, null))
+                throw new ArgumentNullException(nameof(type), $"Parameter '{nameof(type)}' can't be null.");
+            var hashCode = type.GetHashCode();
             var instanceListenerItem =
                 new G9DtInstanceListener<TType>(Guid.NewGuid(), hashCode, onAssignInstanceCallback,
                     UnassignInstanceListener, onUnassignInstanceCallback, onExceptionCallback);
 
-            AddInstanceListener(hashCode, (G9DtInstanceListener<object>) instanceListenerItem, () =>
+            AddInstanceListener(hashCode, (G9DtInstanceListener<object>)instanceListenerItem, () =>
             {
                 if (!justListenToNewInstance)
                     PushTotalInstancesOfTypeToCallback(onAssignInstanceCallback);
@@ -311,11 +304,10 @@ namespace G9AssemblyManagement.Core
             Action<object> onAssignInstanceCallback, Action<object> onUnassignInstanceCallback = null,
             Action<Exception> onExceptionCallback = null, bool justListenToNewInstance = true)
         {
-            var fullName = type.FullName;
-            if (string.IsNullOrEmpty(fullName))
-                throw new ArgumentNullException(nameof(type),
-                    $"Parameter '{nameof(type)}', FullName of type is null!");
-            var hashCode = fullName.GetHashCode();
+            if (Equals(type, null))
+                throw new ArgumentNullException(nameof(type), $"Parameter '{nameof(type)}' can't be null.");
+            var hashCode = type.GetHashCode();
+
             var instanceListenerItem =
                 new G9DtInstanceListener<object>(Guid.NewGuid(), hashCode, onAssignInstanceCallback,
                     UnassignInstanceListener, onUnassignInstanceCallback, onExceptionCallback);
@@ -344,7 +336,7 @@ namespace G9AssemblyManagement.Core
                     CollectionOfAllListeners[hashCode].Add(instanceListenerItem);
                 else
                     CollectionOfAllListeners.Add(hashCode,
-                        new List<G9DtInstanceListener<object>> {instanceListenerItem});
+                        new List<G9DtInstanceListener<object>> { instanceListenerItem });
                 callBackExecuteBeforeExitLock?.Invoke();
             }
         }

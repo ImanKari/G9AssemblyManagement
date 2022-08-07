@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using G9AssemblyManagement;
 using G9AssemblyManagement.Enums;
 using G9AssemblyManagement.Helper;
@@ -31,13 +33,13 @@ namespace G9AssemblyManagement_NUnitTest
             // Test get inherited types from class type
             var typesName = new[] { nameof(G9CClassInheritTest) };
             var objectItem = new G9CTestType();
-            var getInheritClassType = objectItem.GetInheritedTypesFromType();
+            var getInheritClassType = objectItem.G9GetInheritedTypesFromType();
             Assert.True(getInheritClassType.Count == 1);
             Assert.True(getInheritClassType.All(s => typesName.Contains(s.Name)));
 
             // Test get inherited types from interface type
             typesName = new[] { nameof(G9CInterfaceInheritTest), nameof(G9DtStructInheritTest) };
-            var getInheritInterfaceType = G9CAssemblyManagement.Types.GetInheritedTypesFromType<G9ITestType>();
+            var getInheritInterfaceType = G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType<G9ITestType>();
             Assert.True(getInheritInterfaceType.Count == 2);
             Assert.True(getInheritInterfaceType.All(s => typesName.Contains(s.Name)));
 
@@ -45,7 +47,8 @@ namespace G9AssemblyManagement_NUnitTest
             typesName = new[]
                 { nameof(G9CGenericAbstractClassInheritAbstractTest), nameof(G9CGenericAbstractClassTest) };
             var getInheritGenericAbstractClassType =
-                G9CAssemblyManagement.Types.GetInheritedTypesFromType(typeof(G9ATestGenericAbstractClass<,,,>));
+                G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType(
+                    typeof(G9ATestGenericAbstractClass<,,,>));
             Assert.True(getInheritGenericAbstractClassType.Count == 2);
             Assert.True(getInheritGenericAbstractClassType.All(s => typesName.Contains(s.Name)));
 
@@ -56,7 +59,8 @@ namespace G9AssemblyManagement_NUnitTest
                 nameof(G9CGenericAbstractClassInheritAbstractTest)
             };
             var getInheritGenericAbstractClassTypeWithoutIgnoreInterfaceAndAbstractType =
-                G9CAssemblyManagement.Types.GetInheritedTypesFromType(typeof(G9ATestGenericAbstractClass<,,,>), false,
+                G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType(typeof(G9ATestGenericAbstractClass<,,,>),
+                    false,
                     false);
             Assert.True(getInheritGenericAbstractClassTypeWithoutIgnoreInterfaceAndAbstractType.Count == 3);
             Assert.True(
@@ -66,7 +70,8 @@ namespace G9AssemblyManagement_NUnitTest
             // Test get inherited types from generic interface (in custom assembly)
             typesName = new[] { nameof(G9CGenericInterfaceTest), nameof(G9CGenericInterfaceInheritInterfaceTest) };
             var getInheritGenericInterfaceType =
-                G9CAssemblyManagement.Types.GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>), true, true,
+                G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>),
+                    true, true,
                     Assembly.GetExecutingAssembly());
             Assert.True(getInheritGenericInterfaceType.Count == 2);
             Assert.True(getInheritGenericInterfaceType.All(s => typesName.Contains(s.Name)));
@@ -78,7 +83,8 @@ namespace G9AssemblyManagement_NUnitTest
                 typeof(G9ITestGenericInterfaceInheritInterface<,,,,>).Name
             };
             var getInheritGenericInterfaceTypeWithoutIgnoreInterfaceAndAbstractType =
-                G9CAssemblyManagement.Types.GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>), false,
+                G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>),
+                    false,
                     false,
                     Assembly.GetExecutingAssembly());
             Assert.True(getInheritGenericInterfaceTypeWithoutIgnoreInterfaceAndAbstractType.Count == 3);
@@ -91,19 +97,21 @@ namespace G9AssemblyManagement_NUnitTest
         [Order(2)]
         public void TestG9AttrAddListenerOnGenerate()
         {
-            // New instance of class
+            // New instance of class 
             var firstTestClass = new G9CInstanceTest();
 
             // Get instances of type - three way
             // The first way
-            var firstTestClassInstances1 = G9CAssemblyManagement.Instances.GetInstancesOfType<G9CInstanceTest>();
+            var firstTestClassInstances1 =
+                G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CInstanceTest>();
             Assert.True(firstTestClassInstances1.First().GetClassName() == nameof(G9CInstanceTest));
             // The second way
-            var firstTestClassInstances2 = G9CAssemblyManagement.Instances.GetInstancesOfType(typeof(G9CInstanceTest))
+            var firstTestClassInstances2 = G9CAssemblyManagement.InstanceHandlers
+                .G9GetInstancesOfType(typeof(G9CInstanceTest))
                 .Select(s => (G9CInstanceTest)s);
             Assert.True(firstTestClassInstances2.First().GetClassName() == nameof(G9CInstanceTest));
             // The third way
-            var firstTestClassInstances3 = firstTestClass.GetInstancesOfType().Select(s => (G9CInstanceTest)s);
+            var firstTestClassInstances3 = firstTestClass.G9GetInstancesOfType().Select(s => (G9CInstanceTest)s);
             Assert.True(firstTestClassInstances3.First().GetClassName() == nameof(G9CInstanceTest));
 
 
@@ -113,14 +121,16 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Get instances of type - three way
             // The first way
-            var firstTestStructInstances1 = G9CAssemblyManagement.Instances.GetInstancesOfType<G9DtInstanceTest>();
+            var firstTestStructInstances1 =
+                G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9DtInstanceTest>();
             Assert.True(firstTestStructInstances1.First().GetFirstName() == firstName);
             // The second way
-            var firstTestStructInstances2 = G9CAssemblyManagement.Instances.GetInstancesOfType(typeof(G9DtInstanceTest))
+            var firstTestStructInstances2 = G9CAssemblyManagement.InstanceHandlers
+                .G9GetInstancesOfType(typeof(G9DtInstanceTest))
                 .Select(s => (G9DtInstanceTest)s);
             Assert.True(firstTestStructInstances2.First().GetFirstName() == firstName);
             // The third way
-            var firstTestStructInstances3 = firstTestStruct.GetInstancesOfType().Select(s => (G9DtInstanceTest)s);
+            var firstTestStructInstances3 = firstTestStruct.G9GetInstancesOfType().Select(s => (G9DtInstanceTest)s);
             Assert.True(firstTestStructInstances3.First().GetFirstName() == firstName);
 
 
@@ -130,27 +140,28 @@ namespace G9AssemblyManagement_NUnitTest
             var secondTestCustomType = new Trait(arrayValue[1], arrayValue[1]);
             var thirdTestCustomType = new Trait(arrayValue[2], arrayValue[2]);
             // Assign instances - Used for classes not implemented by us
-            G9CAssemblyManagement.Instances.AssignInstanceOfType(firstTestCustomType);
-            G9CAssemblyManagement.Instances.AssignInstanceOfType(secondTestCustomType);
-            G9CAssemblyManagement.Instances.AssignInstanceOfType(thirdTestCustomType);
+            G9CAssemblyManagement.InstanceHandlers.G9AssignInstanceOfType(firstTestCustomType);
+            G9CAssemblyManagement.InstanceHandlers.G9AssignInstanceOfType(secondTestCustomType);
+            G9CAssemblyManagement.InstanceHandlers.G9AssignInstanceOfType(thirdTestCustomType);
             // Get instances of custom type - three way
             // The first way
-            var firstTestCustomTypeInstances1 = G9CAssemblyManagement.Instances.GetInstancesOfType<Trait>();
+            var firstTestCustomTypeInstances1 = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<Trait>();
             Assert.True(firstTestCustomTypeInstances1.Count == 3);
             // The second way
-            var firstTestCustomTypeInstances2 = G9CAssemblyManagement.Instances.GetInstancesOfType(typeof(Trait))
+            var firstTestCustomTypeInstances2 = G9CAssemblyManagement.InstanceHandlers
+                .G9GetInstancesOfType(typeof(Trait))
                 .Select(s => (Trait)s);
             Assert.True(firstTestCustomTypeInstances2.Count() == 3);
             // The third way
-            var firstTestCustomTypeInstances3 = firstTestCustomType.GetInstancesOfType().Select(s => (Trait)s);
+            var firstTestCustomTypeInstances3 = firstTestCustomType.G9GetInstancesOfType().Select(s => (Trait)s);
             Assert.True(firstTestCustomTypeInstances3.Count() == 3);
             // Test values
             Assert.True(firstTestCustomTypeInstances1.All(s => arrayValue.Contains(s.Value)));
 
             // Test Unassigning
-            G9CAssemblyManagement.Instances.UnassignInstanceOfType(thirdTestCustomType);
-            G9CAssemblyManagement.Instances.UnassignInstanceOfType(secondTestCustomType);
-            firstTestCustomTypeInstances1 = G9CAssemblyManagement.Instances.GetInstancesOfType<Trait>();
+            G9CAssemblyManagement.InstanceHandlers.G9UnassignInstanceOfType(thirdTestCustomType);
+            G9CAssemblyManagement.InstanceHandlers.G9UnassignInstanceOfType(secondTestCustomType);
+            firstTestCustomTypeInstances1 = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<Trait>();
             Assert.True(firstTestCustomTypeInstances1.Count == 1);
 
             // Test automatic Unassigning (Notice: Worked just for types inherited from the abstract class "G9AClassInitializer")
@@ -161,21 +172,21 @@ namespace G9AssemblyManagement_NUnitTest
             using (var thirdClass = new G9CMultiInstanceTest())
             {
                 Assert.True(thirdClass.GetClassName() == nameof(G9CMultiInstanceTest));
-                instances = G9CAssemblyManagement.Instances.GetInstancesOfType<G9CMultiInstanceTest>();
+                instances = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CMultiInstanceTest>();
                 Assert.True(instances.Count == 3);
             }
 
             // Automatic unassigning after block using
-            instances = G9CAssemblyManagement.Instances.GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 2);
             // Automatic Unassigning with dispose
             secondClass.Dispose();
-            instances = G9CAssemblyManagement.Instances.GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 1);
             firstClass.Dispose();
-            instances = G9CAssemblyManagement.Instances.GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 0);
-            instances = G9CAssemblyManagement.Instances.GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 0);
         }
 
@@ -186,30 +197,31 @@ namespace G9AssemblyManagement_NUnitTest
             var exceptionMessage = "Just for test, receive it in 'On receive exception'";
             // Save count of receive new instance
             var instanceCount = 0;
-            var instanceListener = G9CAssemblyManagement.Instances.AssignInstanceListener<G9CInstanceListenerTest>
-            (
-                // On assign
-                newInstance =>
-                {
-                    Assert.True(newInstance.GetUseCounter() == 1);
-                    // ReSharper disable once AccessToModifiedClosure
-                    instanceCount++;
-                },
-                // On Unassigning
-                instance =>
-                {
-                    Assert.True(instance.GetUseCounter() == 2);
-                    instanceCount--;
-                    throw new Exception(exceptionMessage);
-                },
-                // On receive exception
-                ex =>
-                {
-                    Debug.WriteLine(ex.Message);
-                    Assert.True(ex.Message == exceptionMessage);
-                    // Ignore
-                }
-            );
+            var instanceListener =
+                G9CAssemblyManagement.InstanceHandlers.G9AssignInstanceListener<G9CInstanceListenerTest>
+                (
+                    // On assign
+                    newInstance =>
+                    {
+                        Assert.True(newInstance.GetUseCounter() == 1);
+                        // ReSharper disable once AccessToModifiedClosure
+                        instanceCount++;
+                    },
+                    // On Unassigning
+                    instance =>
+                    {
+                        Assert.True(instance.GetUseCounter() == 2);
+                        instanceCount--;
+                        throw new Exception(exceptionMessage);
+                    },
+                    // On receive exception
+                    ex =>
+                    {
+                        Debug.WriteLine(ex.Message);
+                        Assert.True(ex.Message == exceptionMessage);
+                        // Ignore
+                    }
+                );
             // At first is 0
             Assert.True(instanceCount == 0);
             // New instance
@@ -277,17 +289,19 @@ namespace G9AssemblyManagement_NUnitTest
                 // Test listener -> receive all instance initialized (justListenToNewInstance = false)
                 instanceCount = 0;
                 // ReSharper disable once UnusedVariable
-                var instanceListener2 = G9CAssemblyManagement.Instances.AssignInstanceListener<G9CInstanceListenerTest>
-                (
-                    // On assign
-                    newInstance =>
-                    {
-                        newInstance.GetUseCounter();
-                        instanceCount++;
-                    }, justListenToNewInstance: false
-                );
-                Assert.True(G9CAssemblyManagement.Instances.GetInstancesOfType<G9CInstanceListenerTest>().Count ==
-                            instanceCount);
+                var instanceListener2 = G9CAssemblyManagement.InstanceHandlers
+                    .G9AssignInstanceListener<G9CInstanceListenerTest>
+                    (
+                        // On assign
+                        newInstance =>
+                        {
+                            newInstance.GetUseCounter();
+                            instanceCount++;
+                        }, justListenToNewInstance: false
+                    );
+                Assert.True(
+                    G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CInstanceListenerTest>().Count ==
+                    instanceCount);
             }
 
             // Automatic dispose listener after block area 
@@ -296,6 +310,86 @@ namespace G9AssemblyManagement_NUnitTest
 
         [Test]
         [Order(4)]
+        public void TestSafeThreadShock()
+        {
+            var object1 = new G9CInstanceTest();
+            var object2 = new G9CThirdClass();
+
+            var h1 = object1.GetType().GetHashCode();
+            var h2 = object2.GetType().GetHashCode();
+
+            var count1 = 0;
+            var count2 = 0;
+
+            object1.G9AssignInstanceListener(
+                assignObjectItem =>
+                {
+                    count1++;
+                },
+                unassignObject =>
+                {
+                    count1--;
+                }, onErrorException => throw onErrorException);
+
+            object2.G9AssignInstanceListener(
+                assignObjectItem =>
+                {
+                    count2++;
+                },
+                unassignObject =>
+                {
+                    count2--;
+                }, onErrorException => throw onErrorException);
+
+
+            _ = Parallel.For(0, 99_999, index =>
+            {
+                using var newObject1 = new G9CInstanceTest();
+                using var newObject2 = new G9CThirdClass();
+                var hash1 = newObject1.GetType().GetHashCode();
+                var hash2 = newObject2.GetType().GetHashCode();
+
+                Assert.True(hash1 == h1);
+                Assert.True(hash2 == h2);
+            });
+
+            Assert.True(count1 == 0 && count2 == 0);
+
+            _ = Parallel.For(0, 99_999, index =>
+            {
+                var newObject1 = new G9CInstanceTest();
+                var newObject2 = new G9CThirdClass();
+                var hash1 = newObject1.GetType().GetHashCode();
+                var hash2 = newObject2.GetType().GetHashCode();
+
+                Assert.True(hash1 == h1);
+                Assert.True(hash2 == h2);
+
+                newObject1.Dispose();
+                newObject2.Dispose();
+            });
+
+            Assert.True(count1 == 0 && count2 == 0);
+
+            _ = Parallel.For(0, 999_999, index =>
+            {
+                using var newObject1 = new G9CInstanceTest();
+                using var newObject2 = new G9CThirdClass();
+                var hash1 = newObject1.GetType().GetHashCode();
+                var hash2 = newObject2.GetType().GetHashCode();
+
+                Assert.True(hash1 == h1);
+                Assert.True(hash2 == h2);
+
+                newObject1.Dispose();
+                newObject2.Dispose();
+            });
+
+            Assert.True(count1 == 0 && count2 == 0);
+        }
+
+        [Test]
+        [Order(5)]
         public void TestGetFieldsOfObject()
         {
             // Create objects from class and struct
@@ -309,11 +403,11 @@ namespace G9AssemblyManagement_NUnitTest
                 IPAddress.None);
 
             // Get fields
-            var fieldsOfObject1 = object1.GetFieldsOfObject(G9EAccessModifier.Public);
-            var fieldsOfObject2 = object2.GetFieldsOfObject(G9EAccessModifier.NonPublic);
-            var fieldsOfObject3 = object3.GetFieldsOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
-            var fieldsOfObject4 = object4.GetFieldsOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
-            var fieldsOfObject5 = object5.GetFieldsOfObject();
+            var fieldsOfObject1 = object1.G9GetFieldsOfObject(G9EAccessModifier.Public);
+            var fieldsOfObject2 = object2.G9GetFieldsOfObject(G9EAccessModifier.NonPublic);
+            var fieldsOfObject3 = object3.G9GetFieldsOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
+            var fieldsOfObject4 = object4.G9GetFieldsOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
+            var fieldsOfObject5 = object5.G9GetFieldsOfObject();
 
             // It has one public field
             Assert.True(fieldsOfObject1.Count == 1);
@@ -323,8 +417,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 3);
 
             // Get Public/Private/static fields
-            fieldsOfObject1 = object1.GetFieldsOfObject();
-            fieldsOfObject2 = object2.GetFieldsOfObject();
+            fieldsOfObject1 = object1.G9GetFieldsOfObject();
+            fieldsOfObject2 = object2.G9GetFieldsOfObject();
 
             // They have two public fields, two private fields and two static field (Two private fields are automated fields(Backing Field) for decimal properties)
             Assert.True(fieldsOfObject1.Count == 6 && fieldsOfObject2.Count == 6);
@@ -395,7 +489,7 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(4)]
+        [Order(6)]
         public void TestGetPropertiesOfObject()
         {
             // Create objects from class and struct
@@ -409,11 +503,12 @@ namespace G9AssemblyManagement_NUnitTest
                 IPAddress.None);
 
             // Get properties
-            var fieldsOfObject1 = object1.GetPropertiesOfObject(G9EAccessModifier.Public);
-            var fieldsOfObject2 = object2.GetPropertiesOfObject(G9EAccessModifier.NonPublic);
-            var fieldsOfObject3 = object3.GetPropertiesOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
-            var fieldsOfObject4 = object4.GetPropertiesOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
-            var fieldsOfObject5 = object5.GetPropertiesOfObject();
+            var fieldsOfObject1 = object1.G9GetPropertiesOfObject(G9EAccessModifier.Public);
+            var fieldsOfObject2 = object2.G9GetPropertiesOfObject(G9EAccessModifier.NonPublic);
+            var fieldsOfObject3 = object3.G9GetPropertiesOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
+            var fieldsOfObject4 =
+                object4.G9GetPropertiesOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
+            var fieldsOfObject5 = object5.G9GetPropertiesOfObject();
 
             // It has one public property
             Assert.True(fieldsOfObject1.Count == 1);
@@ -422,8 +517,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 1);
 
             // Get Public/Private/static properties
-            fieldsOfObject1 = object1.GetPropertiesOfObject();
-            fieldsOfObject2 = object2.GetPropertiesOfObject();
+            fieldsOfObject1 = object1.G9GetPropertiesOfObject();
+            fieldsOfObject2 = object2.G9GetPropertiesOfObject();
 
             // They have one public property + one private property + one private static property
             Assert.True(fieldsOfObject1.Count == 3 && fieldsOfObject2.Count == 3);
@@ -471,7 +566,7 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(5)]
+        [Order(7)]
         public void TestGetMethodsOfObject()
         {
             // Create objects from class and struct
@@ -483,10 +578,10 @@ namespace G9AssemblyManagement_NUnitTest
             var object4 = new G9CObjectMembersTest();
 
             // Get Methods
-            var fieldsOfObject1 = object1.GetMethodsOfObject(G9EAccessModifier.Public);
-            var fieldsOfObject2 = object2.GetMethodsOfObject(G9EAccessModifier.NonPublic);
-            var fieldsOfObject3 = object3.GetMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
-            var fieldsOfObject4 = object4.GetMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
+            var fieldsOfObject1 = object1.G9GetMethodsOfObject(G9EAccessModifier.Public);
+            var fieldsOfObject2 = object2.G9GetMethodsOfObject(G9EAccessModifier.NonPublic);
+            var fieldsOfObject3 = object3.G9GetMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
+            var fieldsOfObject4 = object4.G9GetMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
 
             // Notice
             // 1- Each object has some built-in public methods (GetType() - ToString() - Equals() - GetHashCode())
@@ -500,8 +595,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 4);
 
             // Get Public/Private/static methods
-            fieldsOfObject1 = object1.GetMethodsOfObject();
-            fieldsOfObject2 = object2.GetMethodsOfObject();
+            fieldsOfObject1 = object1.G9GetMethodsOfObject();
+            fieldsOfObject2 = object2.G9GetMethodsOfObject();
 
             // They have 13 methods in total (public method + private methods + (internal/protected) methods + public static methods + built-in methods)
             Assert.True(fieldsOfObject1.Count == 13 && fieldsOfObject2.Count == 13);
@@ -540,7 +635,7 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(6)]
+        [Order(8)]
         public void TestGetGenericMethodsOfObject()
         {
             // Create objects from class and struct
@@ -552,12 +647,12 @@ namespace G9AssemblyManagement_NUnitTest
             var object4 = new G9CObjectMembersTest();
 
             // Get Methods
-            var fieldsOfObject1 = object1.GetGenericMethodsOfObject(G9EAccessModifier.Public);
-            var fieldsOfObject2 = object2.GetGenericMethodsOfObject(G9EAccessModifier.NonPublic);
+            var fieldsOfObject1 = object1.G9GetGenericMethodsOfObject(G9EAccessModifier.Public);
+            var fieldsOfObject2 = object2.G9GetGenericMethodsOfObject(G9EAccessModifier.NonPublic);
             var fieldsOfObject3 =
-                object3.GetGenericMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
+                object3.G9GetGenericMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
             var fieldsOfObject4 =
-                object4.GetGenericMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
+                object4.G9GetGenericMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
 
             // It don't have a public generic method
             Assert.True(fieldsOfObject1.Count == 0);
@@ -566,8 +661,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 1);
 
             // Get Public/Private/static methods
-            fieldsOfObject1 = object1.GetGenericMethodsOfObject();
-            fieldsOfObject2 = object2.GetGenericMethodsOfObject();
+            fieldsOfObject1 = object1.G9GetGenericMethodsOfObject();
+            fieldsOfObject2 = object2.G9GetGenericMethodsOfObject();
 
             // They have one public static generic method as well as one private generic method
             Assert.True(fieldsOfObject1.Count == 2 && fieldsOfObject2.Count == 2);
@@ -617,7 +712,7 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(7)]
+        [Order(9)]
         public void TestGetAllMembersOfObject()
         {
             // Create objects from class and struct
@@ -626,8 +721,8 @@ namespace G9AssemblyManagement_NUnitTest
                 IPAddress.None);
 
             // Get Methods
-            var fieldsOfObject1 = object1.GetAllMembersOfObject();
-            var fieldsOfObject2 = object2.GetAllMembersOfObject();
+            var fieldsOfObject1 = object1.G9GetAllMembersOfObject();
+            var fieldsOfObject2 = object2.G9GetAllMembersOfObject();
 
             // Test count of members
             Assert.True(fieldsOfObject1.Fields.Count == 6 && fieldsOfObject1.Properties.Count == 3 &&

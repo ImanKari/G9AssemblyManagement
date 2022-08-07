@@ -107,7 +107,7 @@ namespace G9AssemblyManagement.DataType
         /// <inheritdoc />
         public void Dispose()
         {
-            if (_isDisposed) throw new ObjectDisposedException(GetType().Name);
+            if (_isDisposed) return;
             _disposeAction?.Invoke(TypeHashCode, Identity);
             _disposeAction = null;
             _stopAndResumeAction = null;
@@ -123,8 +123,8 @@ namespace G9AssemblyManagement.DataType
         public static explicit operator G9DtInstanceListener<object>(G9DtInstanceListener<TType> v)
         {
             var clone = new G9DtInstanceListener<object>(v.Identity, v.TypeHashCode,
-                o => v.OnAssignInstanceCallback((TType) o), v._disposeAction,
-                o => v.OnUnassignInstanceCallback((TType) o), v.OnExceptionCallback);
+                o => v.OnAssignInstanceCallback?.Invoke((TType)o), v._disposeAction,
+                o => v.OnUnassignInstanceCallback?.Invoke((TType)o), v.OnExceptionCallback);
             v._stopAndResumeAction = isActive =>
             {
                 if (isActive)

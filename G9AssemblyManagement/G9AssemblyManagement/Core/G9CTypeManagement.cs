@@ -11,13 +11,16 @@ namespace G9AssemblyManagement.Core
     internal static class G9CTypeManagement
     {
         /// <summary>
-        ///     Get derived types
+        ///     Method to find and get derived types
         /// </summary>
-        /// <param name="baseType">Specify base type</param>
-        /// <param name="assemblies">Specify assemblies for search</param>
-        /// <param name="ignoreAbstractType">If true => ignore abstract type</param>
-        /// <param name="ignoreInterfaceType">If true => ignore interface typeA</param>
-        /// <returns>List of types</returns>
+        /// <param name="baseType">Specifies type to find inherited types.</param>
+        /// <param name="ignoreAbstractType">If it's set 'true,' method ignores abstract type in the finding process.</param>
+        /// <param name="ignoreInterfaceType">If it's set 'true', method ignores interface type in the finding process.</param>
+        /// <param name="assemblies">
+        ///     Specifies custom "assembly" to search inherited types; if set 'null,' method searches inherited types in all
+        ///     assemblies.
+        /// </param>
+        /// <returns>A collection of types inherited by a specified type.</returns>
         public static List<Type> GetDerivedTypes(Type baseType, bool ignoreAbstractType = true,
             bool ignoreInterfaceType = true, params Assembly[] assemblies)
         {
@@ -34,12 +37,12 @@ namespace G9AssemblyManagement.Core
         }
 
         /// <summary>
-        ///     Specify type is sub class
+        ///     Method to check a type in terms of whether it's a subtype.
         /// </summary>
-        /// <param name="type">Specify type</param>
-        /// <param name="baseType">Specify base ty[e</param>
-        /// <param name="ignoreAbstractType">If true => ignore abstract type</param>
-        /// <param name="ignoreInterfaceType">If true => ignore interface typeA</param>
+        /// <param name="type">Specifies type for checking.</param>
+        /// <param name="baseType">Specifies type to find inherited types.</param>
+        /// <param name="ignoreAbstractType">If it's set 'true,' method ignores abstract type in the finding process.</param>
+        /// <param name="ignoreInterfaceType">If it's set 'true', method ignores interface type in the finding process.</param>
         /// <returns></returns>
         private static bool IsInheritOf(Type type, Type baseType, bool ignoreAbstractType, bool ignoreInterfaceType)
         {
@@ -48,7 +51,7 @@ namespace G9AssemblyManagement.Core
                 return false;
 
             // Check validation for ignoring
-            if (ignoreAbstractType && type.IsAbstract || ignoreInterfaceType && type.IsInterface)
+            if ((ignoreAbstractType && type.IsAbstract) || (ignoreInterfaceType && type.IsInterface))
                 return false;
 
             // Generic type

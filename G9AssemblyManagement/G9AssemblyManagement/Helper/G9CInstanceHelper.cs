@@ -11,19 +11,19 @@ namespace G9AssemblyManagement.Helper
     public class G9CInstanceHelper
     {
         /// <summary>
-        ///     Method for assign a instance of type
+        ///     Method for assigning an instance of type
         /// </summary>
         /// <param name="instance">Specifies an instance of type</param>
-        public void AssignInstanceOfType(object instance)
+        public void G9AssignInstanceOfType(object instance)
         {
             G9CAssemblyHandler.AssignInstanceOfType(instance);
         }
 
         /// <summary>
-        ///     Method for unassign a instance of type
+        ///     Method for unassigning an instance of type
         /// </summary>
         /// <param name="instance">Specifies an instance of type</param>
-        public void UnassignInstanceOfType(object instance)
+        public void G9UnassignInstanceOfType(object instance)
         {
             G9CAssemblyHandler.UnassignInstanceOfType(instance);
         }
@@ -32,10 +32,10 @@ namespace G9AssemblyManagement.Helper
         ///     Method to get total instances of type
         /// </summary>
         /// <typeparam name="TType">
-        ///     Specifies type to find instances of type.
+        ///     Specifies type to find instances of a type.
         /// </typeparam>
-        /// <returns>Return collection of instances of type.</returns>
-        public IList<TType> GetInstancesOfType<TType>()
+        /// <returns>A collection of instances of a type.</returns>
+        public IList<TType> G9GetInstancesOfType<TType>()
         {
             return G9CAssemblyHandler.GetInstancesOfType<TType>();
         }
@@ -44,10 +44,10 @@ namespace G9AssemblyManagement.Helper
         ///     Method to get total instances of type
         /// </summary>
         /// <param name="type">
-        ///     Specifies type to find instances of type.
+        ///     Specifies type to find instances of a type.
         /// </param>
         /// <returns>Return collection of instances of type.</returns>
-        public IList<object> GetInstancesOfType(Type type)
+        public IList<object> G9GetInstancesOfType(Type type)
         {
             return G9CAssemblyHandler.GetInstancesOfType(type);
         }
@@ -58,23 +58,21 @@ namespace G9AssemblyManagement.Helper
         /// </summary>
         /// <typeparam name="TType">Specifies a type to listen</typeparam>
         /// <param name="onAssignInstanceCallback">
-        ///     Specifies callback action, the callback will be executed automatically on assign
-        ///     new instance.
+        ///     Specifies callback action; the callback will be executed automatically on assigning a new instance.
         /// </param>
         /// <param name="onUnassignInstanceCallback">
-        ///     Specifies callback action, the callback will be executed automatically on
-        ///     unassign an instance.
+        ///     Specifies callback action; the callback will be executed automatically on unassigning an instance.
         /// </param>
         /// <param name="onExceptionCallback">
-        ///     Specifies callback action, the callback will be executed automatically on receive
-        ///     exception. if don't set it, core ignoring the exception.
+        ///     Specifies callback action; the callback will be executed automatically on receiving an exception. If it doesn't
+        ///     set, the core will ignore the exception.
         /// </param>
         /// <param name="justListenToNewInstance">
-        ///     If set to true, the callback is executed just to find a new instance. otherwise,
-        ///     callback executes per all old instances (if exists) and then listens to the new instance.
+        ///     If set to true, the callback will execute to find a new instance. Otherwise, the callback executes per all old
+        ///     instances (if anything exists) and then listens to the new instance.
         /// </param>
-        /// <returns>Instance listener type, to handle listener</returns>
-        public G9DtInstanceListener<TType> AssignInstanceListener<TType>(Action<TType> onAssignInstanceCallback,
+        /// <returns>Instance listener object to handle</returns>
+        public G9DtInstanceListener<TType> G9AssignInstanceListener<TType>(Action<TType> onAssignInstanceCallback,
             Action<TType> onUnassignInstanceCallback = null, Action<Exception> onExceptionCallback = null,
             bool justListenToNewInstance = true)
         {
@@ -87,23 +85,21 @@ namespace G9AssemblyManagement.Helper
         /// </summary>
         /// <param name="type">Specifies a type to listen</param>
         /// <param name="onAssignInstanceCallback">
-        ///     Specifies callback action, the callback will be executed automatically on assign
-        ///     new instance.
+        ///     Specifies callback action; the callback will be executed automatically on assigning a new instance.
         /// </param>
         /// <param name="onUnassignInstanceCallback">
-        ///     Specifies callback action, the callback will be executed automatically on
-        ///     unassign an instance.
+        ///     Specifies callback action; the callback will be executed automatically on unassigning an instance.
         /// </param>
         /// <param name="onExceptionCallback">
-        ///     Specifies callback action, the callback will be executed automatically on receive
-        ///     exception. if don't set it, core ignoring the exception.
+        ///     Specifies callback action; the callback will be executed automatically on receiving an exception. If it doesn't
+        ///     set, the core will ignore the exception.
         /// </param>
         /// <param name="justListenToNewInstance">
-        ///     If set to true, the callback is executed just to find a new instance. otherwise,
-        ///     callback executes per all old instances (if exists) and then listens to the new instance.
+        ///     If set to true, the callback will execute to find a new instance. Otherwise, the callback executes per all old
+        ///     instances (if anything exists) and then listens to the new instance.
         /// </param>
-        /// <returns>Instance listener type, to handle listener</returns>
-        public G9DtInstanceListener<object> AssignInstanceListener(Type type, Action<object> onAssignInstanceCallback,
+        /// <returns>Instance listener object to handle</returns>
+        public G9DtInstanceListener<object> G9AssignInstanceListener(Type type, Action<object> onAssignInstanceCallback,
             Action<object> onUnassignInstanceCallback = null,
             Action<Exception> onExceptionCallback = null,
             bool justListenToNewInstance = true)
