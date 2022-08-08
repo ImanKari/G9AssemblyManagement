@@ -474,6 +474,11 @@ namespace G9AssemblyManagement_NUnitTest
             // Access to all fields
             // All fields (4) + Backing Fields (2) are 6
             Assert.True(fieldsOfObject5.Count == 6);
+
+            // Test with custom filter
+            // Three fields have "1" in their name
+            fieldsOfObject5 = object5.G9GetFieldsOfObject(G9EAccessModifier.Everything, s => s.Name.Contains("1"));
+            Assert.True(fieldsOfObject5.Count == 3);
         }
 
         [Test]
@@ -551,6 +556,11 @@ namespace G9AssemblyManagement_NUnitTest
             // Access to all properties
             // it has one public property + one private property + one private static property
             Assert.True(fieldsOfObject5.Count == 3);
+
+            // Test custom filter
+            // Just one property has "1" in its name
+            fieldsOfObject5 = object5.G9GetPropertiesOfObject(G9EAccessModifier.Everything, s => s.Name.Contains("1"));
+            Assert.True(fieldsOfObject5.Count == 1);
         }
 
         [Test]
@@ -620,6 +630,11 @@ namespace G9AssemblyManagement_NUnitTest
 
             // It have just two private static (Backing Property setter/getter) method
             Assert.True(fieldsOfObject4.Count == 2);
+
+            // Test custom filter
+            // Three methods have "1" in their names (One normal method + 2 backing method for decimal properties)
+            fieldsOfObject1 = object1.G9GetMethodsOfObject(G9EAccessModifier.Everything, s => s.Name.Contains("1"));
+            Assert.True(fieldsOfObject1.Count == 3);
         }
 
         [Test]
@@ -697,6 +712,12 @@ namespace G9AssemblyManagement_NUnitTest
 
             // It don't have a private static generic method
             Assert.True(fieldsOfObject4.Count == 0);
+
+            // Test custom filter
+            // Just one generic method has three argumments
+            fieldsOfObject2 = object2.G9GetGenericMethodsOfObject(G9EAccessModifier.Everything,
+                s => s.GetGenericArguments().Length >= 3);
+            Assert.True(fieldsOfObject2.Count == 1);
         }
 
         [Test]
@@ -743,7 +764,8 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Create instance from a generic type with constructor
             var testObject4 = typeof(G9DtGenericTypeByConstructor<string, int, IPAddress>)
-                .G9CreateInstanceFromTypeWithParameters<G9DtGenericTypeByConstructor<string, int, IPAddress>>("G9TM", 999, IPAddress.IPv6None);
+                .G9CreateInstanceFromTypeWithParameters<G9DtGenericTypeByConstructor<string, int, IPAddress>>("G9TM",
+                    999, IPAddress.IPv6None);
             Assert.True(testObject4.ObjectType1 == "G9TM" && testObject4.ObjectType2 == 999 &&
                         Equals(testObject4.ObjectType3, IPAddress.IPv6None));
         }
