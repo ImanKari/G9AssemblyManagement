@@ -48,5 +48,15 @@ namespace G9AssemblyManagement.Helper
                 : assemblies;
             return G9CTypeManagement.GetDerivedTypes(type, ignoreAbstractType, ignoreInterfaceType, assemblies);
         }
+
+        /// <summary>
+        ///     Method to check a type that is a built-in .NET type or not
+        /// </summary>
+        /// <param name="type">Specifies type to check.</param>
+        /// <returns>The result will be true if the type is a built-in .NET type.</returns>
+        public bool G9IsTypeBuiltInDotNetType(Type type)
+        {
+            return type.Namespace != null && type.Namespace.StartsWith("System");
+        }
     }
 }

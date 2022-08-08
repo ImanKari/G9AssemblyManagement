@@ -23,7 +23,6 @@ namespace G9AssemblyManagement.Helper
         public IList<G9DtFields> G9GetFieldsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<FieldInfo, bool> customFilter = null)
-            where TObject : new()
         {
             return customFilter != null
                 ? targetObject.GetType()
@@ -46,7 +45,6 @@ namespace G9AssemblyManagement.Helper
         public IList<G9DtProperties> G9GetPropertiesOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<PropertyInfo, bool> customFilter = null)
-            where TObject : new()
         {
             return customFilter != null
                 ? targetObject.GetType()
@@ -71,7 +69,6 @@ namespace G9AssemblyManagement.Helper
         public IList<G9DtMethods> G9GetMethodsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null)
-            where TObject : new()
         {
             return customFilter != null
                 ? targetObject.GetType()
@@ -97,7 +94,6 @@ namespace G9AssemblyManagement.Helper
         public IList<G9DtGenericMethods> G9GetGenericMethodsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null)
-            where TObject : new()
         {
             return customFilter != null
                 ? targetObject.GetType()
@@ -130,7 +126,6 @@ namespace G9AssemblyManagement.Helper
             Func<PropertyInfo, bool> customFilterForProperties = null,
             Func<MethodInfo, bool> customFilterMethods = null,
             Func<MethodInfo, bool> customFilterForGenericMethods = null)
-            where TObject : new()
         {
             return new G9DtObjectMembers(
                 G9GetFieldsOfObject(targetObject, specifiedModifiers, customFilterForFields),

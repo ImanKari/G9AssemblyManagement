@@ -27,7 +27,6 @@ namespace G9AssemblyManagement.Helper
         public static IList<G9DtFields> G9GetFieldsOfObject<TObject>(this TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<FieldInfo, bool> customFilter = null)
-            where TObject : new()
         {
             return AccessToReflectionHelper.G9GetFieldsOfObject(targetObject, specifiedModifiers, customFilter);
         }
@@ -43,7 +42,6 @@ namespace G9AssemblyManagement.Helper
         public static IList<G9DtProperties> G9GetPropertiesOfObject<TObject>(this TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<PropertyInfo, bool> customFilter = null)
-            where TObject : new()
         {
             return AccessToReflectionHelper.G9GetPropertiesOfObject(targetObject, specifiedModifiers, customFilter);
         }
@@ -59,7 +57,6 @@ namespace G9AssemblyManagement.Helper
         public static IList<G9DtMethods> G9GetMethodsOfObject<TObject>(this TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null)
-            where TObject : new()
         {
             return AccessToReflectionHelper.G9GetMethodsOfObject(targetObject, specifiedModifiers, customFilter);
         }
@@ -75,7 +72,6 @@ namespace G9AssemblyManagement.Helper
         public static IList<G9DtGenericMethods> G9GetGenericMethodsOfObject<TObject>(this TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null)
-            where TObject : new()
         {
             return AccessToReflectionHelper.G9GetGenericMethodsOfObject(targetObject, specifiedModifiers, customFilter);
         }
@@ -98,7 +94,6 @@ namespace G9AssemblyManagement.Helper
             Func<PropertyInfo, bool> customFilterForProperties = null,
             Func<MethodInfo, bool> customFilterMethods = null,
             Func<MethodInfo, bool> customFilterForGenericMethods = null)
-            where TObject : new()
         {
             return AccessToReflectionHelper.G9GetAllMembersOfObject(targetObject, specifiedModifiers,
                 customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods);

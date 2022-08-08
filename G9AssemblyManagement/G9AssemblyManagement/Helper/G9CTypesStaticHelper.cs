@@ -9,7 +9,7 @@ namespace G9AssemblyManagement.Helper
     /// </summary>
     public static class G9CTypesStaticHelper
     {
-        /// <summary> 
+        /// <summary>
         ///     Extension method to get inherited types from a type
         /// </summary>
         /// <param name="objectItem">Specifies an object to get type and find inherited types.</param>
@@ -23,8 +23,19 @@ namespace G9AssemblyManagement.Helper
         public static IList<Type> G9GetInheritedTypesFromType(this object objectItem,
             bool ignoreAbstractType = true, bool ignoreInterfaceType = true, params Assembly[] assemblies)
         {
-            return G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType(objectItem.GetType(), ignoreAbstractType,
+            return G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType(objectItem.GetType(),
+                ignoreAbstractType,
                 ignoreInterfaceType, assemblies);
+        }
+
+        /// <summary>
+        ///     Method to check a type that is a built-in .NET type or not
+        /// </summary>
+        /// <param name="type">Specifies type to check.</param>
+        /// <returns>The result will be true if the type is a built-in .NET type.</returns>
+        public static bool G9IsTypeBuiltInDotNetType(this Type type)
+        {
+            return G9CAssemblyManagement.TypeHandlers.G9IsTypeBuiltInDotNetType(type);
         }
     }
 }
