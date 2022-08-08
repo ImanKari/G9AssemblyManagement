@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using G9AssemblyManagement;
 using G9AssemblyManagement.Enums;
@@ -14,6 +13,7 @@ using G9AssemblyManagement_NUnitTest.Inherit;
 using G9AssemblyManagement_NUnitTest.InstanceListener;
 using G9AssemblyManagement_NUnitTest.InstanceTest;
 using G9AssemblyManagement_NUnitTest.ObjectMembers;
+using G9AssemblyManagement_NUnitTest.Types;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 
@@ -322,24 +322,12 @@ namespace G9AssemblyManagement_NUnitTest
             var count2 = 0;
 
             object1.G9AssignInstanceListener(
-                assignObjectItem =>
-                {
-                    count1++;
-                },
-                unassignObject =>
-                {
-                    count1--;
-                }, onErrorException => throw onErrorException);
+                assignObjectItem => { count1++; },
+                unassignObject => { count1--; }, onErrorException => throw onErrorException);
 
             object2.G9AssignInstanceListener(
-                assignObjectItem =>
-                {
-                    count2++;
-                },
-                unassignObject =>
-                {
-                    count2--;
-                }, onErrorException => throw onErrorException);
+                assignObjectItem => { count2++; },
+                unassignObject => { count2--; }, onErrorException => throw onErrorException);
 
 
             _ = Parallel.For(0, 99_999, index =>
@@ -729,6 +717,35 @@ namespace G9AssemblyManagement_NUnitTest
                         fieldsOfObject1.Methods.Count == 13 && fieldsOfObject1.GenericMethods.Count == 2);
             Assert.True(fieldsOfObject2.Fields.Count == 6 && fieldsOfObject2.Properties.Count == 3 &&
                         fieldsOfObject2.Methods.Count == 13 && fieldsOfObject2.GenericMethods.Count == 2);
+        }
+
+        [Test]
+        [Order(10)]
+        public void TestCreateInstanceFromType()
+        {
+            // Create instance from a normal type
+            var testObject1 = G9CAssemblyManagement.InstanceHandlers.G9CreateInstanceFromType<G9DtNormalType>();
+            testObject1.Name = "Okay";
+            Assert.True(testObject1.Name == "Okay");
+
+            // Create instance from a generic type
+            var testObject2 =
+                typeof(G9DtGenericType<string>)
+                    .G9CreateInstanceFromType<G9DtGenericType<string>>();
+            testObject2.ValueOfType = "G9TM";
+            Assert.True(testObject2.ValueOfType == "G9TM");
+
+            // Create instance from a normal type with constructor
+            var testObject3 =
+                typeof(G9DtNormalTypeByConstructor).G9CreateInstanceFromTypeWithParameters<G9DtNormalTypeByConstructor>(
+                    "Hello G9TM");
+            Assert.True(testObject3.Name == "Hello G9TM");
+
+            // Create instance from a generic type with constructor
+            var testObject4 = typeof(G9DtGenericTypeByConstructor<string, int, IPAddress>)
+                .G9CreateInstanceFromTypeWithParameters<G9DtGenericTypeByConstructor<string, int, IPAddress>>("G9TM", 999, IPAddress.IPv6None);
+            Assert.True(testObject4.ObjectType1 == "G9TM" && testObject4.ObjectType2 == 999 &&
+                        Equals(testObject4.ObjectType3, IPAddress.IPv6None));
         }
     }
 }

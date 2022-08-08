@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using G9AssemblyManagement.Core;
 using G9AssemblyManagement.DataType;
 
 namespace G9AssemblyManagement.Helper
@@ -42,12 +41,37 @@ namespace G9AssemblyManagement.Helper
         ///     instances (if anything exists) and then listens to the new instance.
         /// </param>
         /// <returns>Instance listener object to handle</returns>
-        public static G9DtInstanceListener<TType> G9AssignInstanceListener<TType>(this TType objectInstance, Action<TType> onAssignInstanceCallback,
+        public static G9DtInstanceListener<TType> G9AssignInstanceListener<TType>(this TType objectInstance,
+            Action<TType> onAssignInstanceCallback,
             Action<TType> onUnassignInstanceCallback = null, Action<Exception> onExceptionCallback = null,
             bool justListenToNewInstance = true)
         {
-            return G9CAssemblyManagement.InstanceHandlers.G9AssignInstanceListener(onAssignInstanceCallback, onUnassignInstanceCallback,
+            return G9CAssemblyManagement.InstanceHandlers.G9AssignInstanceListener(onAssignInstanceCallback,
+                onUnassignInstanceCallback,
                 onExceptionCallback, justListenToNewInstance);
+        }
+
+        /// <summary>
+        ///     Method to create an instance from a type
+        /// </summary>
+        /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
+        /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
+        /// <returns>A created object from type</returns>
+        public static TType G9CreateInstanceFromType<TType>(this Type type) where TType : new()
+        {
+            return G9CAssemblyManagement.InstanceHandlers.G9CreateInstanceFromType<TType>();
+        }
+
+        /// <summary>
+        ///     Method to create an instance from a type with the constructor that has parameters
+        /// </summary>
+        /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
+        /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
+        /// <param name="parameters">Specifies constructor parameters</param>
+        /// <returns>A created object from type</returns>
+        public static TType G9CreateInstanceFromTypeWithParameters<TType>(this Type type, params object[] parameters)
+        {
+            return G9CAssemblyManagement.InstanceHandlers.G9CreateInstanceFromTypeWithParameters<TType>(parameters);
         }
     }
 }

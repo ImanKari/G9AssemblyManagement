@@ -107,5 +107,26 @@ namespace G9AssemblyManagement.Helper
             return G9CAssemblyHandler.AssignInstanceListener(type, onAssignInstanceCallback, onUnassignInstanceCallback,
                 onExceptionCallback, justListenToNewInstance);
         }
+
+        /// <summary>
+        ///     Method to create an instance from a type
+        /// </summary>
+        /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
+        /// <returns>A created object from type</returns>
+        public TType G9CreateInstanceFromType<TType>()
+        {
+            return Activator.CreateInstance<TType>();
+        }
+
+        /// <summary>
+        ///     Method to create an instance from a type with the constructor that has parameters
+        /// </summary>
+        /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
+        /// <param name="parameters">Specifies constructor parameters</param>
+        /// <returns>A created object from type</returns>
+        public TType G9CreateInstanceFromTypeWithParameters<TType>(params object[] parameters)
+        {
+            return (TType)Activator.CreateInstance(typeof(TType), parameters);
+        }
     }
 }
