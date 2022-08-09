@@ -59,7 +59,7 @@ namespace G9AssemblyManagement.Helper
         /// <returns>A created object from type</returns>
         public static TType G9CreateInstanceFromType<TType>(this Type type) where TType : new()
         {
-            return G9CAssemblyManagement.InstanceHandlers.G9CreateInstanceFromType<TType>();
+            return G9CAssemblyManagement.InstanceHandlers.G9CreateInstanceFromType<TType>(type);
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace G9AssemblyManagement.Helper
         /// <returns>A created object from type</returns>
         public static TType G9CreateInstanceFromTypeWithParameters<TType>(this Type type, params object[] parameters)
         {
-            return G9CAssemblyManagement.InstanceHandlers.G9CreateInstanceFromTypeWithParameters<TType>(parameters);
+            return G9CAssemblyManagement.InstanceHandlers.G9CreateInstanceFromTypeWithParameters<TType>(type, parameters);
         }
     }
 }

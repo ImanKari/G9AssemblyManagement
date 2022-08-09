@@ -412,23 +412,23 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject1.Count == 6 && fieldsOfObject2.Count == 6);
 
             // Get and test value from fields
-            Assert.True(fieldsOfObject1[0].FieldName == nameof(G9CObjectMembersTest.StringTest1) &&
-                        (string)fieldsOfObject1[0].GetFieldValue() == "A" &&
-                        fieldsOfObject1[0].GetFieldValue<string>() == "A");
-            Assert.True(fieldsOfObject1[1].FieldName == "StringTest2" &&
-                        (string)fieldsOfObject1[1].GetFieldValue() == "B" &&
-                        fieldsOfObject1[1].GetFieldValue<string>() == "B");
-            Assert.True(fieldsOfObject2[2].FieldName.Contains("BackingField") &&
-                        (decimal)fieldsOfObject2[2].GetFieldValue() == (decimal)999.999 &&
-                        fieldsOfObject2[2].GetFieldValue<decimal>() == (decimal)999.999);
-            Assert.True(fieldsOfObject2[3].FieldName.Contains("BackingField") &&
-                        (decimal)fieldsOfObject2[3].GetFieldValue() == (decimal)369.963 &&
-                        fieldsOfObject2[3].GetFieldValue<decimal>() == (decimal)369.963);
+            Assert.True(fieldsOfObject1[0].Name == nameof(G9CObjectMembersTest.StringTest1) &&
+                        (string)fieldsOfObject1[0].GetValue() == "A" &&
+                        fieldsOfObject1[0].GetValue<string>() == "A");
+            Assert.True(fieldsOfObject1[1].Name == "StringTest2" &&
+                        (string)fieldsOfObject1[1].GetValue() == "B" &&
+                        fieldsOfObject1[1].GetValue<string>() == "B");
+            Assert.True(fieldsOfObject2[2].Name.Contains("BackingField") &&
+                        (decimal)fieldsOfObject2[2].GetValue() == (decimal)999.999 &&
+                        fieldsOfObject2[2].GetValue<decimal>() == (decimal)999.999);
+            Assert.True(fieldsOfObject2[3].Name.Contains("BackingField") &&
+                        (decimal)fieldsOfObject2[3].GetValue() == (decimal)369.963 &&
+                        fieldsOfObject2[3].GetValue<decimal>() == (decimal)369.963);
 
             // Bad type test (InvalidCastException)
             try
             {
-                _ = fieldsOfObject2[3].GetFieldValue<int>();
+                _ = fieldsOfObject2[3].GetValue<int>();
             }
             catch (Exception ex)
             {
@@ -437,20 +437,20 @@ namespace G9AssemblyManagement_NUnitTest
             }
 
             // Set and test value for fields
-            fieldsOfObject1[0].SetFieldValue("Iman Kari");
-            Assert.True(fieldsOfObject1[0].FieldName == nameof(G9CObjectMembersTest.StringTest1) &&
-                        (string)fieldsOfObject1[0].GetFieldValue() == "Iman Kari" &&
-                        fieldsOfObject1[0].GetFieldValue<string>() == "Iman Kari");
+            fieldsOfObject1[0].SetValue("Iman Kari");
+            Assert.True(fieldsOfObject1[0].Name == nameof(G9CObjectMembersTest.StringTest1) &&
+                        (string)fieldsOfObject1[0].GetValue() == "Iman Kari" &&
+                        fieldsOfObject1[0].GetValue<string>() == "Iman Kari");
 
-            fieldsOfObject2[3].SetFieldValue((decimal)999.999);
-            Assert.True(fieldsOfObject2[3].FieldName.Contains("BackingField") &&
-                        (decimal)fieldsOfObject2[3].GetFieldValue() == (decimal)999.999 &&
-                        fieldsOfObject2[3].GetFieldValue<decimal>() == (decimal)999.999);
+            fieldsOfObject2[3].SetValue((decimal)999.999);
+            Assert.True(fieldsOfObject2[3].Name.Contains("BackingField") &&
+                        (decimal)fieldsOfObject2[3].GetValue() == (decimal)999.999 &&
+                        fieldsOfObject2[3].GetValue<decimal>() == (decimal)999.999);
 
             // Bad type test (ArgumentException)
             try
             {
-                fieldsOfObject2[3].SetFieldValue("Oops!");
+                fieldsOfObject2[3].SetValue("Oops!");
             }
             catch (Exception ex)
             {
@@ -459,17 +459,17 @@ namespace G9AssemblyManagement_NUnitTest
             }
 
             // Set static field value
-            fieldsOfObject2[5].SetFieldValue(IPAddress.Parse("192.168.1.1"));
-            Assert.True(fieldsOfObject2[5].GetFieldValue<IPAddress>().Equals(IPAddress.Parse("192.168.1.1")));
+            fieldsOfObject2[5].SetValue(IPAddress.Parse("192.168.1.1"));
+            Assert.True(fieldsOfObject2[5].GetValue<IPAddress>().Equals(IPAddress.Parse("192.168.1.1")));
 
             // It has one static public field
-            Assert.True(fieldsOfObject3.Count == 1 && fieldsOfObject3[0].FieldName == "StaticIpAddressTest1" &&
-                        fieldsOfObject3[0].GetFieldValue<IPAddress>().Equals(IPAddress.Any));
+            Assert.True(fieldsOfObject3.Count == 1 && fieldsOfObject3[0].Name == "StaticIpAddressTest1" &&
+                        fieldsOfObject3[0].GetValue<IPAddress>().Equals(IPAddress.Any));
 
             // It has one private static public field (BackingField)
             Assert.True(fieldsOfObject4.Count == 1 &&
-                        fieldsOfObject4[0].FieldName == "<StaticIpAddressTest2>k__BackingField" &&
-                        fieldsOfObject4[0].GetFieldValue<IPAddress>().Equals(IPAddress.None));
+                        fieldsOfObject4[0].Name == "<StaticIpAddressTest2>k__BackingField" &&
+                        fieldsOfObject4[0].GetValue<IPAddress>().Equals(IPAddress.None));
 
             // Access to all fields
             // All fields (4) + Backing Fields (2) are 6
@@ -517,20 +517,20 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject1.Count == 3 && fieldsOfObject2.Count == 3);
 
             // Get and test value from fields
-            Assert.True(fieldsOfObject1[0].PropertyName == nameof(G9CObjectMembersTest.DecimalTest1) &&
-                        (decimal)fieldsOfObject1[0].GetPropertyValue() == 999.999m &&
-                        fieldsOfObject1[0].GetPropertyValue<decimal>() == 999.999m);
-            Assert.True(fieldsOfObject1[1].PropertyName == "DecimalTest2" &&
-                        (decimal)fieldsOfObject1[1].GetPropertyValue() == 369.963m &&
-                        fieldsOfObject1[1].GetPropertyValue<decimal>() == 369.963m);
-            Assert.True(fieldsOfObject2[2].PropertyName == "StaticIpAddressTest2" &&
-                        Equals((IPAddress)fieldsOfObject2[2].GetPropertyValue(), IPAddress.None) &&
-                        Equals(fieldsOfObject2[2].GetPropertyValue<IPAddress>(), IPAddress.None));
+            Assert.True(fieldsOfObject1[0].Name == nameof(G9CObjectMembersTest.DecimalTest1) &&
+                        (decimal)fieldsOfObject1[0].GetValue() == 999.999m &&
+                        fieldsOfObject1[0].GetValue<decimal>() == 999.999m);
+            Assert.True(fieldsOfObject1[1].Name == "DecimalTest2" &&
+                        (decimal)fieldsOfObject1[1].GetValue() == 369.963m &&
+                        fieldsOfObject1[1].GetValue<decimal>() == 369.963m);
+            Assert.True(fieldsOfObject2[2].Name == "StaticIpAddressTest2" &&
+                        Equals((IPAddress)fieldsOfObject2[2].GetValue(), IPAddress.None) &&
+                        Equals(fieldsOfObject2[2].GetValue<IPAddress>(), IPAddress.None));
 
             // Bad type test (InvalidCastException)
             try
             {
-                _ = fieldsOfObject2[2].GetPropertyValue<int>();
+                _ = fieldsOfObject2[2].GetValue<int>();
             }
             catch (Exception ex)
             {
@@ -539,19 +539,19 @@ namespace G9AssemblyManagement_NUnitTest
             }
 
             // Set and test value for properties
-            fieldsOfObject1[0].SetPropertyValue(639.963m);
-            Assert.True(fieldsOfObject1[0].GetPropertyValue<decimal>() == 639.963m);
+            fieldsOfObject1[0].SetValue(639.963m);
+            Assert.True(fieldsOfObject1[0].GetValue<decimal>() == 639.963m);
 
-            fieldsOfObject2[2].SetPropertyValue(IPAddress.Broadcast);
-            Assert.True(fieldsOfObject2[2].GetPropertyValue<IPAddress>().Equals(IPAddress.Broadcast));
+            fieldsOfObject2[2].SetValue(IPAddress.Broadcast);
+            Assert.True(fieldsOfObject2[2].GetValue<IPAddress>().Equals(IPAddress.Broadcast));
 
             // It don't have public static property
             Assert.True(fieldsOfObject3.Count == 0);
 
             // It has one private public static property
             Assert.True(fieldsOfObject4.Count == 1 &&
-                        fieldsOfObject4[0].PropertyName == "StaticIpAddressTest2" &&
-                        fieldsOfObject4[0].GetPropertyValue<IPAddress>().Equals(IPAddress.None));
+                        fieldsOfObject4[0].Name == "StaticIpAddressTest2" &&
+                        fieldsOfObject4[0].GetValue<IPAddress>().Equals(IPAddress.None));
 
             // Access to all properties
             // it has one public property + one private property + one private static property

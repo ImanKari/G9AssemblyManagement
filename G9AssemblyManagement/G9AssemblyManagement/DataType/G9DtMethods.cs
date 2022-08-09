@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace G9AssemblyManagement.DataType
 {
@@ -49,7 +50,7 @@ namespace G9AssemblyManagement.DataType
         /// <returns>Return value</returns>
         public TType CallMethodWithResult<TType>(params object[] optionalParametersArray)
         {
-            return (TType) MethodInfo.Invoke(_targetObject, optionalParametersArray);
+            return (TType)MethodInfo.Invoke(_targetObject, optionalParametersArray);
         }
 
         /// <summary>
@@ -60,6 +61,20 @@ namespace G9AssemblyManagement.DataType
         public void CallMethod(params object[] optionalParametersArray)
         {
             MethodInfo.Invoke(_targetObject, optionalParametersArray);
+        }
+
+        /// <summary>
+        ///     Method to get specified attributes on a member
+        /// </summary>
+        /// <typeparam name="TType">Specifies the type of an attribute</typeparam>
+        /// <param name="inherit">
+        ///     true to search this member's inheritance chain to find the attributes; otherwise, false. This
+        ///     parameter is ignored for properties and events; see Remarks.
+        /// </param>
+        /// <returns>A collection of attributes if that existed</returns>
+        public IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : System.Attribute
+        {
+            return (IList<TType>)MethodInfo.GetCustomAttributes(typeof(TType), inherit);
         }
 
         #endregion

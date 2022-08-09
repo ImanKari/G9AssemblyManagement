@@ -1,18 +1,18 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using G9AssemblyManagement.Interfaces;
 
 namespace G9AssemblyManagement.DataType
 {
     /// <summary>
     ///     Data type for properties
     /// </summary>
-    public readonly struct G9DtProperties
+    public readonly struct G9DtProperties : G9IObjectMember
     {
         #region ### Fields And Properties ###
 
-        /// <summary>
-        ///     Specifies property name
-        /// </summary>
-        public readonly string PropertyName;
+        /// <inheritdoc />
+        public string Name { get; }
 
         /// <summary>
         ///     Access to property info
@@ -36,17 +36,13 @@ namespace G9AssemblyManagement.DataType
         /// <param name="targetObject">Specifies target object</param>
         public G9DtProperties(string propertyName, PropertyInfo propertyInfo, object targetObject)
         {
-            PropertyName = propertyName;
+            Name = propertyName;
             PropertyInfo = propertyInfo;
             _targetObject = targetObject;
         }
 
-        /// <summary>
-        ///     Method to set property value
-        /// </summary>
-        /// <typeparam name="TType">Type of value</typeparam>
-        /// <param name="value">Specifies value</param>
-        public void SetPropertyValue<TType>(TType value)
+        /// <inheritdoc />
+        public void SetValue<TType>(TType value)
         {
 #if (NET35 || NET40)
             PropertyInfo.SetValue(_targetObject, value, null);
@@ -55,30 +51,20 @@ namespace G9AssemblyManagement.DataType
 #endif
         }
 
-        /// <summary>
-        ///     Method to set property value
-        /// </summary>
-        /// <param name="value">Specifies value</param>
-        public void SetPropertyValue(object value)
+        /// <inheritdoc />
+        public void SetValue(object value)
         {
-            SetPropertyValue<object>(value);
+            SetValue<object>(value);
         }
 
-        /// <summary>
-        ///     Method to get property value
-        /// </summary>
-        /// <typeparam name="TType">Specifies value type</typeparam>
-        /// <returns>Return value</returns>
-        public TType GetPropertyValue<TType>()
+        /// <inheritdoc />
+        public TType GetValue<TType>()
         {
-            return (TType)GetPropertyValue();
+            return (TType)GetValue();
         }
 
-        /// <summary>
-        ///     Method to get property value
-        /// </summary>
-        /// <returns>Return value</returns>
-        public object GetPropertyValue()
+        /// <inheritdoc />
+        public object GetValue()
         {
 #if (NET35 || NET40)
             return PropertyInfo.GetValue(_targetObject, null);
@@ -87,6 +73,18 @@ namespace G9AssemblyManagement.DataType
 #endif
         }
 
-#endregion
+        /// <inheritdoc />
+        public IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : System.Attribute
+        {
+            return (IList<TType>)PropertyInfo.GetCustomAttributes(typeof(TType), inherit);
+        }
+
+        /// <inheritdoc />
+        public MemberInfo GetMemberInfo()
+        {
+            return PropertyInfo;
+        }
+
+        #endregion
     }
 }

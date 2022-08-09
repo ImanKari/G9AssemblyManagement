@@ -1,18 +1,18 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using G9AssemblyManagement.Interfaces;
 
 namespace G9AssemblyManagement.DataType
 {
     /// <summary>
     ///     Data type for fields
     /// </summary>
-    public readonly struct G9DtFields
+    public readonly struct G9DtFields : G9IObjectMember
     {
         #region ### Fields And Properties ###
 
-        /// <summary>
-        ///     Specifies field name
-        /// </summary>
-        public readonly string FieldName;
+        /// <inheritdoc />
+        public string Name { get; }
 
         /// <summary>
         ///     Access to field info
@@ -36,47 +36,45 @@ namespace G9AssemblyManagement.DataType
         /// <param name="targetObject">Specifies target object</param>
         public G9DtFields(string fieldName, FieldInfo fieldInfo, object targetObject)
         {
-            FieldName = fieldName;
+            Name = fieldName;
             FieldInfo = fieldInfo;
             _targetObject = targetObject;
         }
 
-        /// <summary>
-        ///     Method to set field value
-        /// </summary>
-        /// <typeparam name="TType">Type of value</typeparam>
-        /// <param name="value">Specifies value</param>
-        public void SetFieldValue<TType>(TType value)
+        /// <inheritdoc />
+        public void SetValue<TType>(TType value)
         {
             FieldInfo.SetValue(_targetObject, value);
         }
 
-        /// <summary>
-        ///     Method to set field value
-        /// </summary>
-        /// <param name="value">Specifies value</param>
-        public void SetFieldValue(object value)
+        /// <inheritdoc />
+        public void SetValue(object value)
         {
-            SetFieldValue<object>(value);
+            SetValue<object>(value);
         }
 
-        /// <summary>
-        ///     Method to get field value
-        /// </summary>
-        /// <typeparam name="TType">Specifies value type</typeparam>
-        /// <returns>Return value</returns>
-        public TType GetFieldValue<TType>()
+        /// <inheritdoc />
+        public TType GetValue<TType>()
         {
-            return (TType)GetFieldValue();
+            return (TType)GetValue();
         }
 
-        /// <summary>
-        ///     Method to get field value
-        /// </summary>
-        /// <returns>Return value</returns>
-        public object GetFieldValue()
+        /// <inheritdoc />
+        public object GetValue()
         {
             return FieldInfo.GetValue(_targetObject);
+        }
+
+        /// <inheritdoc />
+        public IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : System.Attribute
+        {
+            return (IList<TType>)FieldInfo.GetCustomAttributes(typeof(TType), inherit);
+        }
+
+        /// <inheritdoc />
+        public MemberInfo GetMemberInfo()
+        {
+            return FieldInfo;
         }
 
         #endregion
