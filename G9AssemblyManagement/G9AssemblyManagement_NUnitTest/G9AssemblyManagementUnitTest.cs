@@ -39,7 +39,7 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Test get inherited types from interface type
             typesName = new[] { nameof(G9CInterfaceInheritTest), nameof(G9DtStructInheritTest) };
-            var getInheritInterfaceType = G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType<G9ITestType>();
+            var getInheritInterfaceType = G9CAssemblyManagement.TypeHandlers.GetInheritedTypesFromType<G9ITestType>();
             Assert.True(getInheritInterfaceType.Count == 2);
             Assert.True(getInheritInterfaceType.All(s => typesName.Contains(s.Name)));
 
@@ -47,7 +47,7 @@ namespace G9AssemblyManagement_NUnitTest
             typesName = new[]
                 { nameof(G9CGenericAbstractClassInheritAbstractTest), nameof(G9CGenericAbstractClassTest) };
             var getInheritGenericAbstractClassType =
-                G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType(
+                G9CAssemblyManagement.TypeHandlers.GetInheritedTypesFromType(
                     typeof(G9ATestGenericAbstractClass<,,,>));
             Assert.True(getInheritGenericAbstractClassType.Count == 2);
             Assert.True(getInheritGenericAbstractClassType.All(s => typesName.Contains(s.Name)));
@@ -59,7 +59,7 @@ namespace G9AssemblyManagement_NUnitTest
                 nameof(G9CGenericAbstractClassInheritAbstractTest)
             };
             var getInheritGenericAbstractClassTypeWithoutIgnoreInterfaceAndAbstractType =
-                G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType(typeof(G9ATestGenericAbstractClass<,,,>),
+                G9CAssemblyManagement.TypeHandlers.GetInheritedTypesFromType(typeof(G9ATestGenericAbstractClass<,,,>),
                     false,
                     false);
             Assert.True(getInheritGenericAbstractClassTypeWithoutIgnoreInterfaceAndAbstractType.Count == 3);
@@ -70,7 +70,7 @@ namespace G9AssemblyManagement_NUnitTest
             // Test get inherited types from generic interface (in custom assembly)
             typesName = new[] { nameof(G9CGenericInterfaceTest), nameof(G9CGenericInterfaceInheritInterfaceTest) };
             var getInheritGenericInterfaceType =
-                G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>),
+                G9CAssemblyManagement.TypeHandlers.GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>),
                     true, true,
                     Assembly.GetExecutingAssembly());
             Assert.True(getInheritGenericInterfaceType.Count == 2);
@@ -83,7 +83,7 @@ namespace G9AssemblyManagement_NUnitTest
                 typeof(G9ITestGenericInterfaceInheritInterface<,,,,>).Name
             };
             var getInheritGenericInterfaceTypeWithoutIgnoreInterfaceAndAbstractType =
-                G9CAssemblyManagement.TypeHandlers.G9GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>),
+                G9CAssemblyManagement.TypeHandlers.GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>),
                     false,
                     false,
                     Assembly.GetExecutingAssembly());
@@ -91,6 +91,97 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(
                 getInheritGenericInterfaceTypeWithoutIgnoreInterfaceAndAbstractType.All(s =>
                     typesName.Contains(s.Name)));
+        }
+
+        [Test]
+        [Order(1)]
+        public void TestEfficientTypeFeatures()
+        {
+            // Some built-in .NET Types
+            var v1 = 1;
+            var v2 = 9.9f;
+            var v3 = DateTime.Now;
+            var v4 = new TimeSpan(9, 9, 9);
+            var v5 = IPAddress.Any;
+
+            // Checking they are built-in .NET types
+            // First way
+            Assert.True(
+                G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(v1.GetType()) &&
+                G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(v2.GetType()) &&
+                G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(v3.GetType()) &&
+                G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(v4.GetType()) &&
+                G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(v5.GetType())
+            );
+
+            // Second way
+            Assert.True(
+                v1.GetType().G9IsTypeBuiltInDotNetType() &&
+                v2.GetType().G9IsTypeBuiltInDotNetType() &&
+                v3.GetType().G9IsTypeBuiltInDotNetType() &&
+                v4.GetType().G9IsTypeBuiltInDotNetType() &&
+                v5.GetType().G9IsTypeBuiltInDotNetType()
+            );
+
+            // A custom object
+            var cObject = new G9CClassInheritTest();
+            // Checking they are built-in .NET types
+            // First way
+            Assert.False(G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(cObject.GetType()));
+            // First way
+            Assert.False(cObject.GetType().G9IsTypeBuiltInDotNetType());
+        }
+
+        [Test]
+        [Order(1)]
+        public void TestChangeTypeMethods()
+        {
+            var v1 = 'a';
+            var v2 = "G9TM";
+            var v3 = 9;
+            var v4 = 9.9f;
+            var v5 = new TimeSpan(9, 9, 9);
+            var v6 = IPAddress.IPv6Loopback;
+            var v7 = GenericParameterAttributes.NotNullableValueTypeConstraint;
+            var v7b = GenericParameterAttributes.NotNullableValueTypeConstraint;
+            var v8 = DateTime.Now;
+            var v9 = true;
+
+
+            var r1 = G9CAssemblyManagement.TypeHandlers.SmartChangeType<string>(v1);
+            var r2 = (string)G9CAssemblyManagement.TypeHandlers.SmartChangeType(v2, typeof(string));
+            var r3 = (string)v3.G9SmartChangeType(typeof(string));
+            var r4 = v4.G9SmartChangeType<string>();
+            var r5 = v5.G9SmartChangeType<string>();
+            var r6 = v6.G9SmartChangeType<string>();
+            var r7 = v7.G9SmartChangeType<string>();
+            var r7b = v7b.G9SmartChangeType<int>().ToString();
+            var r8 = v8.G9SmartChangeType<string>();
+            var r9 = v9.G9SmartChangeType<string>();
+
+            var b1 = G9CAssemblyManagement.TypeHandlers.SmartChangeType<char>(r1);
+            var b2 = (string)G9CAssemblyManagement.TypeHandlers.SmartChangeType(r2, typeof(string));
+            var b3 = (int)r3.G9SmartChangeType(typeof(int));
+            var b4 = r4.G9SmartChangeType<float>();
+            var b5 = r5.G9SmartChangeType<TimeSpan>();
+            var b6 = r6.G9SmartChangeType<IPAddress>();
+            var b7 = r7.G9SmartChangeType<GenericParameterAttributes>();
+            var b7b = r7b.G9SmartChangeType<GenericParameterAttributes>();
+            var b8 = r8.G9SmartChangeType<DateTime>();
+            var b9 = r9.G9SmartChangeType<bool>();
+
+            Assert.True(
+                v1 == b1 &&
+                v2 == b2 &&
+                v3 == b3 &&
+                v4 == b4 &&
+                v5 == b5 &&
+                v6.Equals(b6) &&
+                v7 == b7 &&
+                v7b == b7b &&
+                v8.ToString("s") == b8.ToString("s") &&
+                v9 == b9
+            );
         }
 
         [Test]
@@ -103,11 +194,11 @@ namespace G9AssemblyManagement_NUnitTest
             // Get instances of type - three way
             // The first way
             var firstTestClassInstances1 =
-                G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CInstanceTest>();
+                G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CInstanceTest>();
             Assert.True(firstTestClassInstances1.First().GetClassName() == nameof(G9CInstanceTest));
             // The second way
             var firstTestClassInstances2 = G9CAssemblyManagement.InstanceHandlers
-                .G9GetInstancesOfType(typeof(G9CInstanceTest))
+                .GetInstancesOfType(typeof(G9CInstanceTest))
                 .Select(s => (G9CInstanceTest)s);
             Assert.True(firstTestClassInstances2.First().GetClassName() == nameof(G9CInstanceTest));
             // The third way
@@ -122,11 +213,11 @@ namespace G9AssemblyManagement_NUnitTest
             // Get instances of type - three way
             // The first way
             var firstTestStructInstances1 =
-                G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9DtInstanceTest>();
+                G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9DtInstanceTest>();
             Assert.True(firstTestStructInstances1.First().GetFirstName() == firstName);
             // The second way
             var firstTestStructInstances2 = G9CAssemblyManagement.InstanceHandlers
-                .G9GetInstancesOfType(typeof(G9DtInstanceTest))
+                .GetInstancesOfType(typeof(G9DtInstanceTest))
                 .Select(s => (G9DtInstanceTest)s);
             Assert.True(firstTestStructInstances2.First().GetFirstName() == firstName);
             // The third way
@@ -140,16 +231,16 @@ namespace G9AssemblyManagement_NUnitTest
             var secondTestCustomType = new Trait(arrayValue[1], arrayValue[1]);
             var thirdTestCustomType = new Trait(arrayValue[2], arrayValue[2]);
             // Assign instances - Used for classes not implemented by us
-            G9CAssemblyManagement.InstanceHandlers.G9AssignInstanceOfType(firstTestCustomType);
-            G9CAssemblyManagement.InstanceHandlers.G9AssignInstanceOfType(secondTestCustomType);
-            G9CAssemblyManagement.InstanceHandlers.G9AssignInstanceOfType(thirdTestCustomType);
+            G9CAssemblyManagement.InstanceHandlers.AssignInstanceOfType(firstTestCustomType);
+            G9CAssemblyManagement.InstanceHandlers.AssignInstanceOfType(secondTestCustomType);
+            G9CAssemblyManagement.InstanceHandlers.AssignInstanceOfType(thirdTestCustomType);
             // Get instances of custom type - three way
             // The first way
-            var firstTestCustomTypeInstances1 = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<Trait>();
+            var firstTestCustomTypeInstances1 = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<Trait>();
             Assert.True(firstTestCustomTypeInstances1.Count == 3);
             // The second way
             var firstTestCustomTypeInstances2 = G9CAssemblyManagement.InstanceHandlers
-                .G9GetInstancesOfType(typeof(Trait))
+                .GetInstancesOfType(typeof(Trait))
                 .Select(s => (Trait)s);
             Assert.True(firstTestCustomTypeInstances2.Count() == 3);
             // The third way
@@ -159,9 +250,9 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(firstTestCustomTypeInstances1.All(s => arrayValue.Contains(s.Value)));
 
             // Test Unassigning
-            G9CAssemblyManagement.InstanceHandlers.G9UnassignInstanceOfType(thirdTestCustomType);
-            G9CAssemblyManagement.InstanceHandlers.G9UnassignInstanceOfType(secondTestCustomType);
-            firstTestCustomTypeInstances1 = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<Trait>();
+            G9CAssemblyManagement.InstanceHandlers.UnassignInstanceOfType(thirdTestCustomType);
+            G9CAssemblyManagement.InstanceHandlers.UnassignInstanceOfType(secondTestCustomType);
+            firstTestCustomTypeInstances1 = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<Trait>();
             Assert.True(firstTestCustomTypeInstances1.Count == 1);
 
             // Test automatic Unassigning (Notice: Worked just for types inherited from the abstract class "G9AClassInitializer")
@@ -172,21 +263,21 @@ namespace G9AssemblyManagement_NUnitTest
             using (var thirdClass = new G9CMultiInstanceTest())
             {
                 Assert.True(thirdClass.GetClassName() == nameof(G9CMultiInstanceTest));
-                instances = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CMultiInstanceTest>();
+                instances = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CMultiInstanceTest>();
                 Assert.True(instances.Count == 3);
             }
 
             // Automatic unassigning after block using
-            instances = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 2);
             // Automatic Unassigning with dispose
             secondClass.Dispose();
-            instances = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 1);
             firstClass.Dispose();
-            instances = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 0);
-            instances = G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 0);
         }
 
@@ -198,7 +289,7 @@ namespace G9AssemblyManagement_NUnitTest
             // Save count of receive new instance
             var instanceCount = 0;
             var instanceListener =
-                G9CAssemblyManagement.InstanceHandlers.G9AssignInstanceListener<G9CInstanceListenerTest>
+                G9CAssemblyManagement.InstanceHandlers.AssignInstanceListener<G9CInstanceListenerTest>
                 (
                     // On assign
                     newInstance =>
@@ -290,7 +381,7 @@ namespace G9AssemblyManagement_NUnitTest
                 instanceCount = 0;
                 // ReSharper disable once UnusedVariable
                 var instanceListener2 = G9CAssemblyManagement.InstanceHandlers
-                    .G9AssignInstanceListener<G9CInstanceListenerTest>
+                    .AssignInstanceListener<G9CInstanceListenerTest>
                     (
                         // On assign
                         newInstance =>
@@ -300,7 +391,7 @@ namespace G9AssemblyManagement_NUnitTest
                         }, justListenToNewInstance: false
                     );
                 Assert.True(
-                    G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType<G9CInstanceListenerTest>().Count ==
+                    G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CInstanceListenerTest>().Count ==
                     instanceCount);
             }
 
@@ -745,7 +836,7 @@ namespace G9AssemblyManagement_NUnitTest
         public void TestCreateInstanceFromType()
         {
             // Create instance from a normal type
-            var testObject1 = G9CAssemblyManagement.InstanceHandlers.G9CreateInstanceFromType<G9DtNormalType>();
+            var testObject1 = G9CAssemblyManagement.InstanceHandlers.CreateInstanceFromType<G9DtNormalType>();
             testObject1.Name = "Okay";
             Assert.True(testObject1.Name == "Okay");
 
@@ -768,6 +859,22 @@ namespace G9AssemblyManagement_NUnitTest
                     999, IPAddress.IPv6None);
             Assert.True(testObject4.ObjectType1 == "G9TM" && testObject4.ObjectType2 == 999 &&
                         Equals(testObject4.ObjectType3, IPAddress.IPv6None));
+
+            // Create uninitialized instance from types
+            var testObject5A = typeof(IPAddress).G9CreateUninitializedInstanceFromType<IPAddress>();
+            var testObject5B = G9CAssemblyManagement.InstanceHandlers.CreateUninitializedInstanceFromType<IPAddress>();
+            Assert.AreEqual(testObject5A, testObject5B);
+            // Testing initialize "IPAddress" type by the default method
+            try
+            {
+                G9CAssemblyManagement.InstanceHandlers.CreateInstanceFromType<object>(typeof(IPAddress));
+                Assert.Fail();
+            }
+            catch (Exception e)
+            {
+                // No parameterless constructor defined for type 'System.Net.IPAddress'.
+                Assert.True(e is MissingMethodException);
+            }
         }
     }
 }

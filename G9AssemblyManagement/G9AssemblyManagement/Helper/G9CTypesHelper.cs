@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using G9AssemblyManagement.Core;
@@ -22,10 +24,10 @@ namespace G9AssemblyManagement.Helper
         ///     assemblies.
         /// </param>
         /// <returns>A collection of types inherited by a specified type.</returns>
-        public IList<Type> G9GetInheritedTypesFromType<TType>(
+        public IList<Type> GetInheritedTypesFromType<TType>(
             bool ignoreAbstractType = true, bool ignoreInterfaceType = true, params Assembly[] assemblies)
         {
-            return G9GetInheritedTypesFromType(typeof(TType), ignoreAbstractType, ignoreInterfaceType, assemblies);
+            return GetInheritedTypesFromType(typeof(TType), ignoreAbstractType, ignoreInterfaceType, assemblies);
         }
 
         /// <summary>
@@ -39,14 +41,14 @@ namespace G9AssemblyManagement.Helper
         ///     assemblies.
         /// </param>
         /// <returns>A collection of types inherited by a specified type.</returns>
-        public IList<Type> G9GetInheritedTypesFromType(Type type,
+        public IList<Type> GetInheritedTypesFromType(Type type,
             bool ignoreAbstractType = true, bool ignoreInterfaceType = true, params Assembly[] assemblies)
         {
             // Set assemblies
             assemblies = Equals(assemblies, null) || !assemblies.Any()
                 ? AppDomain.CurrentDomain.GetAssemblies()
                 : assemblies;
-            return G9CTypeManagement.GetDerivedTypes(type, ignoreAbstractType, ignoreInterfaceType, assemblies);
+            return G9CTypeHandler.GetDerivedTypes(type, ignoreAbstractType, ignoreInterfaceType, assemblies);
         }
 
         /// <summary>
@@ -54,9 +56,66 @@ namespace G9AssemblyManagement.Helper
         /// </summary>
         /// <param name="type">Specifies type to check.</param>
         /// <returns>The result will be true if the type is a built-in .NET type.</returns>
-        public bool G9IsTypeBuiltInDotNetType(Type type)
+        public bool IsTypeBuiltInDotNetType(Type type)
         {
             return type.Namespace != null && type.Namespace.StartsWith("System");
+        }
+
+        /// <summary>
+        ///     Method to check a type in terms of being enumerable
+        ///     Note: By default, string type is ignored.
+        /// </summary>
+        /// <param name="type">Specifies a type for checking</param>
+        /// <param name="stringIsIgnored">Specifies that a string type as an enumerable type must be ignored or not.</param>
+        /// <returns>The result is true if it's an enumerable type</returns>
+        public bool IsEnumerableType(Type type, bool stringIsIgnored = true)
+        {
+            return stringIsIgnored
+                ? type.Name != nameof(String)
+                  && type.GetInterface(nameof(IEnumerable)) != null
+                : type.GetInterface(nameof(IEnumerable)) != null;
+        }
+
+        /// <summary>
+        ///     Method to change a type of object to another type.
+        ///     The method tries many ways to convert one type to another type.
+        /// </summary>
+        /// <typeparam name="TToType">Specifies the final type of object after conversion.</typeparam>
+        /// <param name="objectItem">Specifies current object.</param>
+        /// <param name="formatProvider">
+        ///     Specifies format provider
+        ///     Note: By default, format provide is CultureInfo.InvariantCulture
+        /// </param>
+        /// <returns>Converted object</returns>
+        public TToType SmartChangeType<TToType>(object objectItem, IFormatProvider formatProvider = null)
+        {
+            // Default format provider
+            if (formatProvider == null)
+                formatProvider = CultureInfo.InvariantCulture;
+
+            return (TToType)G9CTypeHandler.ParseTypeToAnotherType(objectItem, typeof(TToType), formatProvider);
+        }
+
+        /// <summary>
+        ///     Method to change a type of object to another type.
+        ///     The method tries many ways to convert one type to another type.
+        /// </summary>
+        /// <typeparam name="TCurrentType">Specifies current type of object.</typeparam>
+        /// <param name="objectItem">Specifies current object.</param>
+        /// <param name="toType">Specifies the final type of object after conversion.</param>
+        /// <param name="formatProvider">
+        ///     Specifies format provider
+        ///     Note: By default, format provide is CultureInfo.InvariantCulture
+        /// </param>
+        /// <returns>Converted object</returns>
+        public object SmartChangeType<TCurrentType>(TCurrentType objectItem, Type toType,
+            IFormatProvider formatProvider = null)
+        {
+            // Default format provider
+            if (formatProvider == null)
+                formatProvider = CultureInfo.InvariantCulture;
+
+            return G9CTypeHandler.ParseTypeToAnotherType(objectItem, toType, formatProvider);
         }
     }
 }

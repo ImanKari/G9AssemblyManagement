@@ -1,24 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using G9AssemblyManagement.Interfaces;
 
 namespace G9AssemblyManagement.DataType
 {
     /// <summary>
     ///     Data type for methods
     /// </summary>
-    public readonly struct G9DtMethods
+    public readonly struct G9DtMethods : G9IObjectMethodMember
     {
         #region ### Fields And Properties ###
 
-        /// <summary>
-        ///     Specifies method name
-        /// </summary>
-        public readonly string MethodName;
+        /// <inheritdoc />
+        public string MethodName { get; }
 
-        /// <summary>
-        ///     Access to method info
-        /// </summary>
-        public readonly MethodInfo MethodInfo;
+        /// <inheritdoc />
+        public MethodInfo MethodInfo { get; }
 
         /// <summary>
         ///     Access to target object
@@ -63,15 +60,7 @@ namespace G9AssemblyManagement.DataType
             MethodInfo.Invoke(_targetObject, optionalParametersArray);
         }
 
-        /// <summary>
-        ///     Method to get specified attributes on a member
-        /// </summary>
-        /// <typeparam name="TType">Specifies the type of an attribute</typeparam>
-        /// <param name="inherit">
-        ///     true to search this member's inheritance chain to find the attributes; otherwise, false. This
-        ///     parameter is ignored for properties and events; see Remarks.
-        /// </param>
-        /// <returns>A collection of attributes if that existed</returns>
+        /// <inheritdoc />
         public IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : System.Attribute
         {
             return (IList<TType>)MethodInfo.GetCustomAttributes(typeof(TType), inherit);

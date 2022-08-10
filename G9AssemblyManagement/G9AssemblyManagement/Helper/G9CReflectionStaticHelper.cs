@@ -28,7 +28,7 @@ namespace G9AssemblyManagement.Helper
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<FieldInfo, bool> customFilter = null)
         {
-            return AccessToReflectionHelper.G9GetFieldsOfObject(targetObject, specifiedModifiers, customFilter);
+            return AccessToReflectionHelper.GetFieldsOfObject(targetObject, specifiedModifiers, customFilter);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace G9AssemblyManagement.Helper
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<PropertyInfo, bool> customFilter = null)
         {
-            return AccessToReflectionHelper.G9GetPropertiesOfObject(targetObject, specifiedModifiers, customFilter);
+            return AccessToReflectionHelper.GetPropertiesOfObject(targetObject, specifiedModifiers, customFilter);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace G9AssemblyManagement.Helper
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null)
         {
-            return AccessToReflectionHelper.G9GetMethodsOfObject(targetObject, specifiedModifiers, customFilter);
+            return AccessToReflectionHelper.GetMethodsOfObject(targetObject, specifiedModifiers, customFilter);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace G9AssemblyManagement.Helper
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null)
         {
-            return AccessToReflectionHelper.G9GetGenericMethodsOfObject(targetObject, specifiedModifiers, customFilter);
+            return AccessToReflectionHelper.GetGenericMethodsOfObject(targetObject, specifiedModifiers, customFilter);
         }
 
 
@@ -95,7 +95,7 @@ namespace G9AssemblyManagement.Helper
             Func<MethodInfo, bool> customFilterMethods = null,
             Func<MethodInfo, bool> customFilterForGenericMethods = null)
         {
-            return AccessToReflectionHelper.G9GetAllMembersOfObject(targetObject, specifiedModifiers,
+            return AccessToReflectionHelper.GetAllMembersOfObject(targetObject, specifiedModifiers,
                 customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods);
         }
     }

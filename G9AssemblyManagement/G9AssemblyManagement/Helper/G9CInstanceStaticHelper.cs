@@ -18,7 +18,7 @@ namespace G9AssemblyManagement.Helper
         /// <returns>A collection of instances of a type.</returns>
         public static IList<object> G9GetInstancesOfType(this object objectItem)
         {
-            return G9CAssemblyManagement.InstanceHandlers.G9GetInstancesOfType(objectItem.GetType());
+            return G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType(objectItem.GetType());
         }
 
         /// <summary>
@@ -46,9 +46,19 @@ namespace G9AssemblyManagement.Helper
             Action<TType> onUnassignInstanceCallback = null, Action<Exception> onExceptionCallback = null,
             bool justListenToNewInstance = true)
         {
-            return G9CAssemblyManagement.InstanceHandlers.G9AssignInstanceListener(onAssignInstanceCallback,
+            return G9CAssemblyManagement.InstanceHandlers.AssignInstanceListener(onAssignInstanceCallback,
                 onUnassignInstanceCallback,
                 onExceptionCallback, justListenToNewInstance);
+        }
+
+        /// <summary>
+        ///     Method to create an uninitialized instance from a type
+        /// </summary>
+        /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
+        /// <returns>A created object from type</returns>
+        public static TType G9CreateUninitializedInstanceFromType<TType>(this Type type)
+        {
+            return G9CAssemblyManagement.InstanceHandlers.CreateUninitializedInstanceFromType<TType>(type);
         }
 
         /// <summary>
@@ -59,7 +69,7 @@ namespace G9AssemblyManagement.Helper
         /// <returns>A created object from type</returns>
         public static TType G9CreateInstanceFromType<TType>(this Type type) where TType : new()
         {
-            return G9CAssemblyManagement.InstanceHandlers.G9CreateInstanceFromType<TType>(type);
+            return G9CAssemblyManagement.InstanceHandlers.CreateInstanceFromType<TType>(type);
         }
 
         /// <summary>
@@ -71,7 +81,7 @@ namespace G9AssemblyManagement.Helper
         /// <returns>A created object from type</returns>
         public static TType G9CreateInstanceFromTypeWithParameters<TType>(this Type type, params object[] parameters)
         {
-            return G9CAssemblyManagement.InstanceHandlers.G9CreateInstanceFromTypeWithParameters<TType>(type, parameters);
+            return G9CAssemblyManagement.InstanceHandlers.CreateInstanceFromTypeWithParameters<TType>(type, parameters);
         }
     }
 }

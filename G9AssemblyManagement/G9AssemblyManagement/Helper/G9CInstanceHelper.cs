@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using G9AssemblyManagement.Core;
 using G9AssemblyManagement.DataType;
 
@@ -14,7 +15,7 @@ namespace G9AssemblyManagement.Helper
         ///     Method for assigning an instance of type
         /// </summary>
         /// <param name="instance">Specifies an instance of type</param>
-        public void G9AssignInstanceOfType(object instance)
+        public void AssignInstanceOfType(object instance)
         {
             G9CAssemblyHandler.AssignInstanceOfType(instance);
         }
@@ -23,7 +24,7 @@ namespace G9AssemblyManagement.Helper
         ///     Method for unassigning an instance of type
         /// </summary>
         /// <param name="instance">Specifies an instance of type</param>
-        public void G9UnassignInstanceOfType(object instance)
+        public void UnassignInstanceOfType(object instance)
         {
             G9CAssemblyHandler.UnassignInstanceOfType(instance);
         }
@@ -35,7 +36,7 @@ namespace G9AssemblyManagement.Helper
         ///     Specifies type to find instances of a type.
         /// </typeparam>
         /// <returns>A collection of instances of a type.</returns>
-        public IList<TType> G9GetInstancesOfType<TType>()
+        public IList<TType> GetInstancesOfType<TType>()
         {
             return G9CAssemblyHandler.GetInstancesOfType<TType>();
         }
@@ -47,7 +48,7 @@ namespace G9AssemblyManagement.Helper
         ///     Specifies type to find instances of a type.
         /// </param>
         /// <returns>Return collection of instances of type.</returns>
-        public IList<object> G9GetInstancesOfType(Type type)
+        public IList<object> GetInstancesOfType(Type type)
         {
             return G9CAssemblyHandler.GetInstancesOfType(type);
         }
@@ -72,7 +73,7 @@ namespace G9AssemblyManagement.Helper
         ///     instances (if anything exists) and then listens to the new instance.
         /// </param>
         /// <returns>Instance listener object to handle</returns>
-        public G9DtInstanceListener<TType> G9AssignInstanceListener<TType>(Action<TType> onAssignInstanceCallback,
+        public G9DtInstanceListener<TType> AssignInstanceListener<TType>(Action<TType> onAssignInstanceCallback,
             Action<TType> onUnassignInstanceCallback = null, Action<Exception> onExceptionCallback = null,
             bool justListenToNewInstance = true)
         {
@@ -99,7 +100,7 @@ namespace G9AssemblyManagement.Helper
         ///     instances (if anything exists) and then listens to the new instance.
         /// </param>
         /// <returns>Instance listener object to handle</returns>
-        public G9DtInstanceListener<object> G9AssignInstanceListener(Type type, Action<object> onAssignInstanceCallback,
+        public G9DtInstanceListener<object> AssignInstanceListener(Type type, Action<object> onAssignInstanceCallback,
             Action<object> onUnassignInstanceCallback = null,
             Action<Exception> onExceptionCallback = null,
             bool justListenToNewInstance = true)
@@ -109,11 +110,32 @@ namespace G9AssemblyManagement.Helper
         }
 
         /// <summary>
+        ///     Method to create an uninitialized instance from a type
+        /// </summary>
+        /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
+        /// <returns>A created object from type</returns>
+        public TType CreateUninitializedInstanceFromType<TType>()
+        {
+            return (TType)FormatterServices.GetUninitializedObject(typeof(TType));
+        }
+
+        /// <summary>
+        ///     Method to create an uninitialized instance from a type
+        /// </summary>
+        /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
+        /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
+        /// <returns>A created object from type</returns>
+        public TType CreateUninitializedInstanceFromType<TType>(Type type)
+        {
+            return (TType)FormatterServices.GetUninitializedObject(type);
+        }
+
+        /// <summary>
         ///     Method to create an instance from a type
         /// </summary>
         /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
         /// <returns>A created object from type</returns>
-        public TType G9CreateInstanceFromType<TType>()
+        public TType CreateInstanceFromType<TType>() where TType : new()
         {
             return Activator.CreateInstance<TType>();
         }
@@ -124,7 +146,7 @@ namespace G9AssemblyManagement.Helper
         /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
         /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
         /// <returns>A created object from type</returns>
-        public TType G9CreateInstanceFromType<TType>(Type type)
+        public TType CreateInstanceFromType<TType>(Type type) where TType : new()
         {
             return (TType)Activator.CreateInstance(type);
         }
@@ -135,7 +157,7 @@ namespace G9AssemblyManagement.Helper
         /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
         /// <param name="parameters">Specifies constructor parameters</param>
         /// <returns>A created object from type</returns>
-        public TType G9CreateInstanceFromTypeWithParameters<TType>(params object[] parameters)
+        public TType CreateInstanceFromTypeWithParameters<TType>(params object[] parameters) where TType : new()
         {
             return (TType)Activator.CreateInstance(typeof(TType), parameters);
         }
@@ -147,7 +169,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
         /// <param name="parameters">Specifies constructor parameters</param>
         /// <returns>A created object from type</returns>
-        public TType G9CreateInstanceFromTypeWithParameters<TType>(Type type, params object[] parameters)
+        public TType CreateInstanceFromTypeWithParameters<TType>(Type type, params object[] parameters)
         {
             return (TType)Activator.CreateInstance(type, parameters);
         }
