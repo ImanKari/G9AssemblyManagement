@@ -7,7 +7,7 @@ namespace G9AssemblyManagement_NUnitTest.InstanceTest
         public G9DtInstanceTest(string firstName)
         {
             FirstName = firstName;
-            G9CAssemblyManagement.InstanceHandlers.AssignInstanceOfType(this);
+            G9Assembly.InstanceTools.AssignInstanceOfType(this);
         } 
          
         public readonly string FirstName;

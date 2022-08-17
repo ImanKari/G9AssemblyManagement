@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using G9AssemblyManagement.Enums;
-using G9AssemblyManagement.Helper;
 
 namespace G9AssemblyManagement.Core
 {
@@ -176,11 +175,12 @@ namespace G9AssemblyManagement.Core
             if (specificType.GetMethods().Any(s => s.Name == nameof(TimeSpan.Parse)))
             {
                 var instance =
-                    G9CAssemblyManagement.InstanceHandlers.CreateUninitializedInstanceFromType<object>(specificType);
+                    G9Assembly.InstanceTools.CreateUninitializedInstanceFromType(specificType);
 
                 // The first search is related to the "Parse" method that has the same parameter type as the value type.
-                var methods = instance
-                    .G9GetMethodsOfObject(G9EAccessModifier.Everything,
+                var methods =
+                    G9Assembly.ObjectTools.GetMethodsOfObject(
+                        instance, G9EAccessModifier.Everything,
                         s =>
                             // Specifies name
                             s.Name == nameof(TimeSpan.Parse) &&
@@ -198,17 +198,17 @@ namespace G9AssemblyManagement.Core
                 if (valueTypeCode != TypeCode.String && methods == null)
                 {
                     value = value.ToString();
-                    methods = instance
-                        .G9GetMethodsOfObject(G9EAccessModifier.Everything,
-                            s =>
-                                // Specifies name
-                                (s.Name == nameof(TimeSpan.Parse) && s.GetParameters().Length == 2 &&
-                                 s.GetParameters()[0].ParameterType == typeof(string) &&
-                                 s.GetParameters()[1].ParameterType == typeof(IFormatProvider))
-                                ||
-                                // One math parameter
-                                (s.GetParameters().Length == 1 &&
-                                 s.GetParameters()[0].ParameterType == typeof(string)));
+                    methods = G9Assembly.ObjectTools.GetMethodsOfObject(instance,
+                        G9EAccessModifier.Everything,
+                        s =>
+                            // Specifies name
+                            (s.Name == nameof(TimeSpan.Parse) && s.GetParameters().Length == 2 &&
+                             s.GetParameters()[0].ParameterType == typeof(string) &&
+                             s.GetParameters()[1].ParameterType == typeof(IFormatProvider))
+                            ||
+                            // One math parameter
+                            (s.GetParameters().Length == 1 &&
+                             s.GetParameters()[0].ParameterType == typeof(string)));
                 }
 
                 // If methods existed, in this process, the "Parse" method would be executed one by one.
@@ -234,30 +234,6 @@ namespace G9AssemblyManagement.Core
             {
                 return Convert.ChangeType(value, specificType);
             }
-        }
-
-
-        /// <summary>
-        ///     Method to create custom modifier
-        /// </summary>
-        /// <param name="customModifier">Specifies custom modifiers are to be included in the search.</param>
-        /// <returns>Return a custom BindingFlags object</returns>
-        internal static BindingFlags CreateCustomModifier(
-            G9EAccessModifier customModifier = G9EAccessModifier.Everything)
-        {
-            if (customModifier == G9EAccessModifier.Everything)
-                return BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-
-            var defaultBindingFlags = (customModifier & G9EAccessModifier.Static) == G9EAccessModifier.Static
-                ? BindingFlags.Static
-                : BindingFlags.Instance;
-
-            if ((customModifier & G9EAccessModifier.Public) == G9EAccessModifier.Public)
-                defaultBindingFlags |= BindingFlags.Public;
-            if ((customModifier & G9EAccessModifier.NonPublic) == G9EAccessModifier.NonPublic)
-                defaultBindingFlags |= BindingFlags.NonPublic;
-
-            return defaultBindingFlags;
         }
     }
 }

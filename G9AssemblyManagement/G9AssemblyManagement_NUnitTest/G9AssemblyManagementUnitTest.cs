@@ -6,12 +6,13 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using G9AssemblyManagement;
+using G9AssemblyManagement.DataType;
 using G9AssemblyManagement.Enums;
-using G9AssemblyManagement.Helper;
 using G9AssemblyManagement_NUnitTest.DataType;
 using G9AssemblyManagement_NUnitTest.Inherit;
 using G9AssemblyManagement_NUnitTest.InstanceListener;
 using G9AssemblyManagement_NUnitTest.InstanceTest;
+using G9AssemblyManagement_NUnitTest.MismatchTypeTest;
 using G9AssemblyManagement_NUnitTest.ObjectMembers;
 using G9AssemblyManagement_NUnitTest.Types;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -33,13 +34,13 @@ namespace G9AssemblyManagement_NUnitTest
             // Test get inherited types from class type
             var typesName = new[] { nameof(G9CClassInheritTest) };
             var objectItem = new G9CTestType();
-            var getInheritClassType = objectItem.G9GetInheritedTypesFromType();
+            var getInheritClassType = G9Assembly.TypeTools.GetInheritedTypesFromType(typeof(G9CTestType));
             Assert.True(getInheritClassType.Count == 1);
             Assert.True(getInheritClassType.All(s => typesName.Contains(s.Name)));
 
             // Test get inherited types from interface type
             typesName = new[] { nameof(G9CInterfaceInheritTest), nameof(G9DtStructInheritTest) };
-            var getInheritInterfaceType = G9CAssemblyManagement.TypeHandlers.GetInheritedTypesFromType<G9ITestType>();
+            var getInheritInterfaceType = G9Assembly.TypeTools.GetInheritedTypesFromType<G9ITestType>();
             Assert.True(getInheritInterfaceType.Count == 2);
             Assert.True(getInheritInterfaceType.All(s => typesName.Contains(s.Name)));
 
@@ -47,7 +48,7 @@ namespace G9AssemblyManagement_NUnitTest
             typesName = new[]
                 { nameof(G9CGenericAbstractClassInheritAbstractTest), nameof(G9CGenericAbstractClassTest) };
             var getInheritGenericAbstractClassType =
-                G9CAssemblyManagement.TypeHandlers.GetInheritedTypesFromType(
+                G9Assembly.TypeTools.GetInheritedTypesFromType(
                     typeof(G9ATestGenericAbstractClass<,,,>));
             Assert.True(getInheritGenericAbstractClassType.Count == 2);
             Assert.True(getInheritGenericAbstractClassType.All(s => typesName.Contains(s.Name)));
@@ -59,7 +60,7 @@ namespace G9AssemblyManagement_NUnitTest
                 nameof(G9CGenericAbstractClassInheritAbstractTest)
             };
             var getInheritGenericAbstractClassTypeWithoutIgnoreInterfaceAndAbstractType =
-                G9CAssemblyManagement.TypeHandlers.GetInheritedTypesFromType(typeof(G9ATestGenericAbstractClass<,,,>),
+                G9Assembly.TypeTools.GetInheritedTypesFromType(typeof(G9ATestGenericAbstractClass<,,,>),
                     false,
                     false);
             Assert.True(getInheritGenericAbstractClassTypeWithoutIgnoreInterfaceAndAbstractType.Count == 3);
@@ -70,7 +71,7 @@ namespace G9AssemblyManagement_NUnitTest
             // Test get inherited types from generic interface (in custom assembly)
             typesName = new[] { nameof(G9CGenericInterfaceTest), nameof(G9CGenericInterfaceInheritInterfaceTest) };
             var getInheritGenericInterfaceType =
-                G9CAssemblyManagement.TypeHandlers.GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>),
+                G9Assembly.TypeTools.GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>),
                     true, true,
                     Assembly.GetExecutingAssembly());
             Assert.True(getInheritGenericInterfaceType.Count == 2);
@@ -83,7 +84,7 @@ namespace G9AssemblyManagement_NUnitTest
                 typeof(G9ITestGenericInterfaceInheritInterface<,,,,>).Name
             };
             var getInheritGenericInterfaceTypeWithoutIgnoreInterfaceAndAbstractType =
-                G9CAssemblyManagement.TypeHandlers.GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>),
+                G9Assembly.TypeTools.GetInheritedTypesFromType(typeof(G9ITestGenericInterface<,,,>),
                     false,
                     false,
                     Assembly.GetExecutingAssembly());
@@ -107,29 +108,29 @@ namespace G9AssemblyManagement_NUnitTest
             // Checking they are built-in .NET types
             // First way
             Assert.True(
-                G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(v1.GetType()) &&
-                G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(v2.GetType()) &&
-                G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(v3.GetType()) &&
-                G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(v4.GetType()) &&
-                G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(v5.GetType())
+                G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v1.GetType()) &&
+                G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v2.GetType()) &&
+                G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v3.GetType()) &&
+                G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v4.GetType()) &&
+                G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v5.GetType())
             );
 
             // Second way
             Assert.True(
-                v1.GetType().G9IsTypeBuiltInDotNetType() &&
-                v2.GetType().G9IsTypeBuiltInDotNetType() &&
-                v3.GetType().G9IsTypeBuiltInDotNetType() &&
-                v4.GetType().G9IsTypeBuiltInDotNetType() &&
-                v5.GetType().G9IsTypeBuiltInDotNetType()
+                G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v1.GetType()) &&
+                G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v2.GetType()) &&
+                G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v3.GetType()) &&
+                G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v4.GetType()) &&
+                G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v5.GetType())
             );
 
             // A custom object
             var cObject = new G9CClassInheritTest();
             // Checking they are built-in .NET types
             // First way
-            Assert.False(G9CAssemblyManagement.TypeHandlers.IsTypeBuiltInDotNetType(cObject.GetType()));
+            Assert.False(G9Assembly.TypeTools.IsTypeBuiltInDotNetType(cObject.GetType()));
             // First way
-            Assert.False(cObject.GetType().G9IsTypeBuiltInDotNetType());
+            Assert.False(G9Assembly.TypeTools.IsTypeBuiltInDotNetType(cObject.GetType()));
         }
 
         [Test]
@@ -148,27 +149,27 @@ namespace G9AssemblyManagement_NUnitTest
             var v9 = true;
 
 
-            var r1 = G9CAssemblyManagement.TypeHandlers.SmartChangeType<string>(v1);
-            var r2 = (string)G9CAssemblyManagement.TypeHandlers.SmartChangeType(v2, typeof(string));
-            var r3 = (string)v3.G9SmartChangeType(typeof(string));
-            var r4 = v4.G9SmartChangeType<string>();
-            var r5 = v5.G9SmartChangeType<string>();
-            var r6 = v6.G9SmartChangeType<string>();
-            var r7 = v7.G9SmartChangeType<string>();
-            var r7b = v7b.G9SmartChangeType<int>().ToString();
-            var r8 = v8.G9SmartChangeType<string>();
-            var r9 = v9.G9SmartChangeType<string>();
+            var r1 = G9Assembly.TypeTools.SmartChangeType<string>(v1);
+            var r2 = (string)G9Assembly.TypeTools.SmartChangeType(v2, typeof(string));
+            var r3 = G9Assembly.TypeTools.SmartChangeType<string>(v3);
+            var r4 = G9Assembly.TypeTools.SmartChangeType<string>(v4);
+            var r5 = G9Assembly.TypeTools.SmartChangeType<string>(v5);
+            var r6 = G9Assembly.TypeTools.SmartChangeType<string>(v6);
+            var r7 = G9Assembly.TypeTools.SmartChangeType<string>(v7);
+            var r7b = G9Assembly.TypeTools.SmartChangeType<string>(v7b);
+            var r8 = G9Assembly.TypeTools.SmartChangeType<string>(v8);
+            var r9 = G9Assembly.TypeTools.SmartChangeType<string>(v9);
 
-            var b1 = G9CAssemblyManagement.TypeHandlers.SmartChangeType<char>(r1);
-            var b2 = (string)G9CAssemblyManagement.TypeHandlers.SmartChangeType(r2, typeof(string));
-            var b3 = (int)r3.G9SmartChangeType(typeof(int));
-            var b4 = r4.G9SmartChangeType<float>();
-            var b5 = r5.G9SmartChangeType<TimeSpan>();
-            var b6 = r6.G9SmartChangeType<IPAddress>();
-            var b7 = r7.G9SmartChangeType<GenericParameterAttributes>();
-            var b7b = r7b.G9SmartChangeType<GenericParameterAttributes>();
-            var b8 = r8.G9SmartChangeType<DateTime>();
-            var b9 = r9.G9SmartChangeType<bool>();
+            var b1 = G9Assembly.TypeTools.SmartChangeType<char>(r1);
+            var b2 = (string)G9Assembly.TypeTools.SmartChangeType(r2, typeof(string));
+            var b3 = G9Assembly.TypeTools.SmartChangeType<int>(r3);
+            var b4 = G9Assembly.TypeTools.SmartChangeType<float>(r4);
+            var b5 = G9Assembly.TypeTools.SmartChangeType<TimeSpan>(r5);
+            var b6 = G9Assembly.TypeTools.SmartChangeType<IPAddress>(r6);
+            var b7 = G9Assembly.TypeTools.SmartChangeType<GenericParameterAttributes>(r7);
+            var b7b = G9Assembly.TypeTools.SmartChangeType<GenericParameterAttributes>(r7b);
+            var b8 = G9Assembly.TypeTools.SmartChangeType<DateTime>(r8);
+            var b9 = G9Assembly.TypeTools.SmartChangeType<bool>(r9);
 
             Assert.True(
                 v1 == b1 &&
@@ -194,16 +195,13 @@ namespace G9AssemblyManagement_NUnitTest
             // Get instances of type - three way
             // The first way
             var firstTestClassInstances1 =
-                G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CInstanceTest>();
+                G9Assembly.InstanceTools.GetInstancesOfType<G9CInstanceTest>();
             Assert.True(firstTestClassInstances1.First().GetClassName() == nameof(G9CInstanceTest));
             // The second way
-            var firstTestClassInstances2 = G9CAssemblyManagement.InstanceHandlers
+            var firstTestClassInstances2 = G9Assembly.InstanceTools
                 .GetInstancesOfType(typeof(G9CInstanceTest))
                 .Select(s => (G9CInstanceTest)s);
             Assert.True(firstTestClassInstances2.First().GetClassName() == nameof(G9CInstanceTest));
-            // The third way
-            var firstTestClassInstances3 = firstTestClass.G9GetInstancesOfType().Select(s => (G9CInstanceTest)s);
-            Assert.True(firstTestClassInstances3.First().GetClassName() == nameof(G9CInstanceTest));
 
 
             // New instance of class
@@ -213,16 +211,13 @@ namespace G9AssemblyManagement_NUnitTest
             // Get instances of type - three way
             // The first way
             var firstTestStructInstances1 =
-                G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9DtInstanceTest>();
+                G9Assembly.InstanceTools.GetInstancesOfType<G9DtInstanceTest>();
             Assert.True(firstTestStructInstances1.First().GetFirstName() == firstName);
             // The second way
-            var firstTestStructInstances2 = G9CAssemblyManagement.InstanceHandlers
+            var firstTestStructInstances2 = G9Assembly.InstanceTools
                 .GetInstancesOfType(typeof(G9DtInstanceTest))
                 .Select(s => (G9DtInstanceTest)s);
             Assert.True(firstTestStructInstances2.First().GetFirstName() == firstName);
-            // The third way
-            var firstTestStructInstances3 = firstTestStruct.G9GetInstancesOfType().Select(s => (G9DtInstanceTest)s);
-            Assert.True(firstTestStructInstances3.First().GetFirstName() == firstName);
 
 
             // New instance of custom type
@@ -231,28 +226,25 @@ namespace G9AssemblyManagement_NUnitTest
             var secondTestCustomType = new Trait(arrayValue[1], arrayValue[1]);
             var thirdTestCustomType = new Trait(arrayValue[2], arrayValue[2]);
             // Assign instances - Used for classes not implemented by us
-            G9CAssemblyManagement.InstanceHandlers.AssignInstanceOfType(firstTestCustomType);
-            G9CAssemblyManagement.InstanceHandlers.AssignInstanceOfType(secondTestCustomType);
-            G9CAssemblyManagement.InstanceHandlers.AssignInstanceOfType(thirdTestCustomType);
+            G9Assembly.InstanceTools.AssignInstanceOfType(firstTestCustomType);
+            G9Assembly.InstanceTools.AssignInstanceOfType(secondTestCustomType);
+            G9Assembly.InstanceTools.AssignInstanceOfType(thirdTestCustomType);
             // Get instances of custom type - three way
             // The first way
-            var firstTestCustomTypeInstances1 = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<Trait>();
+            var firstTestCustomTypeInstances1 = G9Assembly.InstanceTools.GetInstancesOfType<Trait>();
             Assert.True(firstTestCustomTypeInstances1.Count == 3);
             // The second way
-            var firstTestCustomTypeInstances2 = G9CAssemblyManagement.InstanceHandlers
+            var firstTestCustomTypeInstances2 = G9Assembly.InstanceTools
                 .GetInstancesOfType(typeof(Trait))
                 .Select(s => (Trait)s);
             Assert.True(firstTestCustomTypeInstances2.Count() == 3);
-            // The third way
-            var firstTestCustomTypeInstances3 = firstTestCustomType.G9GetInstancesOfType().Select(s => (Trait)s);
-            Assert.True(firstTestCustomTypeInstances3.Count() == 3);
             // Test values
             Assert.True(firstTestCustomTypeInstances1.All(s => arrayValue.Contains(s.Value)));
 
             // Test Unassigning
-            G9CAssemblyManagement.InstanceHandlers.UnassignInstanceOfType(thirdTestCustomType);
-            G9CAssemblyManagement.InstanceHandlers.UnassignInstanceOfType(secondTestCustomType);
-            firstTestCustomTypeInstances1 = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<Trait>();
+            G9Assembly.InstanceTools.UnassignInstanceOfType(thirdTestCustomType);
+            G9Assembly.InstanceTools.UnassignInstanceOfType(secondTestCustomType);
+            firstTestCustomTypeInstances1 = G9Assembly.InstanceTools.GetInstancesOfType<Trait>();
             Assert.True(firstTestCustomTypeInstances1.Count == 1);
 
             // Test automatic Unassigning (Notice: Worked just for types inherited from the abstract class "G9AClassInitializer")
@@ -263,21 +255,21 @@ namespace G9AssemblyManagement_NUnitTest
             using (var thirdClass = new G9CMultiInstanceTest())
             {
                 Assert.True(thirdClass.GetClassName() == nameof(G9CMultiInstanceTest));
-                instances = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CMultiInstanceTest>();
+                instances = G9Assembly.InstanceTools.GetInstancesOfType<G9CMultiInstanceTest>();
                 Assert.True(instances.Count == 3);
             }
 
             // Automatic unassigning after block using
-            instances = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9Assembly.InstanceTools.GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 2);
             // Automatic Unassigning with dispose
             secondClass.Dispose();
-            instances = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9Assembly.InstanceTools.GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 1);
             firstClass.Dispose();
-            instances = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9Assembly.InstanceTools.GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 0);
-            instances = G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CMultiInstanceTest>();
+            instances = G9Assembly.InstanceTools.GetInstancesOfType<G9CMultiInstanceTest>();
             Assert.True(instances.Count == 0);
         }
 
@@ -289,7 +281,7 @@ namespace G9AssemblyManagement_NUnitTest
             // Save count of receive new instance
             var instanceCount = 0;
             var instanceListener =
-                G9CAssemblyManagement.InstanceHandlers.AssignInstanceListener<G9CInstanceListenerTest>
+                G9Assembly.InstanceTools.AssignInstanceListener<G9CInstanceListenerTest>
                 (
                     // On assign
                     newInstance =>
@@ -380,7 +372,7 @@ namespace G9AssemblyManagement_NUnitTest
                 // Test listener -> receive all instance initialized (justListenToNewInstance = false)
                 instanceCount = 0;
                 // ReSharper disable once UnusedVariable
-                var instanceListener2 = G9CAssemblyManagement.InstanceHandlers
+                var instanceListener2 = G9Assembly.InstanceTools
                     .AssignInstanceListener<G9CInstanceListenerTest>
                     (
                         // On assign
@@ -391,7 +383,7 @@ namespace G9AssemblyManagement_NUnitTest
                         }, justListenToNewInstance: false
                     );
                 Assert.True(
-                    G9CAssemblyManagement.InstanceHandlers.GetInstancesOfType<G9CInstanceListenerTest>().Count ==
+                    G9Assembly.InstanceTools.GetInstancesOfType<G9CInstanceListenerTest>().Count ==
                     instanceCount);
             }
 
@@ -412,11 +404,11 @@ namespace G9AssemblyManagement_NUnitTest
             var count1 = 0;
             var count2 = 0;
 
-            object1.G9AssignInstanceListener(
+            G9Assembly.InstanceTools.AssignInstanceListener(object1.GetType(),
                 assignObjectItem => { count1++; },
                 unassignObject => { count1--; }, onErrorException => throw onErrorException);
 
-            object2.G9AssignInstanceListener(
+            G9Assembly.InstanceTools.AssignInstanceListener(object2.GetType(),
                 assignObjectItem => { count2++; },
                 unassignObject => { count2--; }, onErrorException => throw onErrorException);
 
@@ -482,11 +474,17 @@ namespace G9AssemblyManagement_NUnitTest
                 IPAddress.None);
 
             // Get fields
-            var fieldsOfObject1 = object1.G9GetFieldsOfObject(G9EAccessModifier.Public);
-            var fieldsOfObject2 = object2.G9GetFieldsOfObject(G9EAccessModifier.NonPublic);
-            var fieldsOfObject3 = object3.G9GetFieldsOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
-            var fieldsOfObject4 = object4.G9GetFieldsOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
-            var fieldsOfObject5 = object5.G9GetFieldsOfObject();
+            var fieldsOfObject1 =
+                G9Assembly.ObjectTools.GetFieldsOfObject(object1, G9EAccessModifier.Public);
+            var fieldsOfObject2 =
+                G9Assembly.ObjectTools.GetFieldsOfObject(object2, G9EAccessModifier.NonPublic);
+            var fieldsOfObject3 =
+                G9Assembly.ObjectTools.GetFieldsOfObject(object3,
+                    G9EAccessModifier.Static | G9EAccessModifier.Public);
+            var fieldsOfObject4 =
+                G9Assembly.ObjectTools.GetFieldsOfObject(object4,
+                    G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
+            var fieldsOfObject5 = G9Assembly.ObjectTools.GetFieldsOfObject(object5);
 
             // It has one public field
             Assert.True(fieldsOfObject1.Count == 1);
@@ -496,8 +494,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 3);
 
             // Get Public/Private/static fields
-            fieldsOfObject1 = object1.G9GetFieldsOfObject();
-            fieldsOfObject2 = object2.G9GetFieldsOfObject();
+            fieldsOfObject1 = G9Assembly.ObjectTools.GetFieldsOfObject(object1);
+            fieldsOfObject2 = G9Assembly.ObjectTools.GetFieldsOfObject(object2);
 
             // They have two public fields, two private fields and two static field (Two private fields are automated fields(Backing Field) for decimal properties)
             Assert.True(fieldsOfObject1.Count == 6 && fieldsOfObject2.Count == 6);
@@ -568,7 +566,8 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Test with custom filter
             // Three fields have "1" in their name
-            fieldsOfObject5 = object5.G9GetFieldsOfObject(G9EAccessModifier.Everything, s => s.Name.Contains("1"));
+            fieldsOfObject5 = G9Assembly.ObjectTools.GetFieldsOfObject(object5,
+                G9EAccessModifier.Everything, s => s.Name.Contains("1"));
             Assert.True(fieldsOfObject5.Count == 3);
         }
 
@@ -587,12 +586,17 @@ namespace G9AssemblyManagement_NUnitTest
                 IPAddress.None);
 
             // Get properties
-            var fieldsOfObject1 = object1.G9GetPropertiesOfObject(G9EAccessModifier.Public);
-            var fieldsOfObject2 = object2.G9GetPropertiesOfObject(G9EAccessModifier.NonPublic);
-            var fieldsOfObject3 = object3.G9GetPropertiesOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
+            var fieldsOfObject1 =
+                G9Assembly.ObjectTools.GetPropertiesOfObject(object1, G9EAccessModifier.Public);
+            var fieldsOfObject2 =
+                G9Assembly.ObjectTools.GetPropertiesOfObject(object2, G9EAccessModifier.NonPublic);
+            var fieldsOfObject3 =
+                G9Assembly.ObjectTools.GetPropertiesOfObject(object3,
+                    G9EAccessModifier.Static | G9EAccessModifier.Public);
             var fieldsOfObject4 =
-                object4.G9GetPropertiesOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
-            var fieldsOfObject5 = object5.G9GetPropertiesOfObject();
+                G9Assembly.ObjectTools.GetPropertiesOfObject(object4,
+                    G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
+            var fieldsOfObject5 = G9Assembly.ObjectTools.GetPropertiesOfObject(object5);
 
             // It has one public property
             Assert.True(fieldsOfObject1.Count == 1);
@@ -601,8 +605,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 1);
 
             // Get Public/Private/static properties
-            fieldsOfObject1 = object1.G9GetPropertiesOfObject();
-            fieldsOfObject2 = object2.G9GetPropertiesOfObject();
+            fieldsOfObject1 = G9Assembly.ObjectTools.GetPropertiesOfObject(object1);
+            fieldsOfObject2 = G9Assembly.ObjectTools.GetPropertiesOfObject(object2);
 
             // They have one public property + one private property + one private static property
             Assert.True(fieldsOfObject1.Count == 3 && fieldsOfObject2.Count == 3);
@@ -650,7 +654,8 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Test custom filter
             // Just one property has "1" in its name
-            fieldsOfObject5 = object5.G9GetPropertiesOfObject(G9EAccessModifier.Everything, s => s.Name.Contains("1"));
+            fieldsOfObject5 = G9Assembly.ObjectTools.GetPropertiesOfObject(object5,
+                G9EAccessModifier.Everything, s => s.Name.Contains("1"));
             Assert.True(fieldsOfObject5.Count == 1);
         }
 
@@ -667,10 +672,16 @@ namespace G9AssemblyManagement_NUnitTest
             var object4 = new G9CObjectMembersTest();
 
             // Get Methods
-            var fieldsOfObject1 = object1.G9GetMethodsOfObject(G9EAccessModifier.Public);
-            var fieldsOfObject2 = object2.G9GetMethodsOfObject(G9EAccessModifier.NonPublic);
-            var fieldsOfObject3 = object3.G9GetMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
-            var fieldsOfObject4 = object4.G9GetMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
+            var fieldsOfObject1 =
+                G9Assembly.ObjectTools.GetMethodsOfObject(object1, G9EAccessModifier.Public);
+            var fieldsOfObject2 =
+                G9Assembly.ObjectTools.GetMethodsOfObject(object2, G9EAccessModifier.NonPublic);
+            var fieldsOfObject3 =
+                G9Assembly.ObjectTools.GetMethodsOfObject(object3,
+                    G9EAccessModifier.Static | G9EAccessModifier.Public);
+            var fieldsOfObject4 =
+                G9Assembly.ObjectTools.GetMethodsOfObject(object4,
+                    G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
 
             // Notice
             // 1- Each object has some built-in public methods (GetType() - ToString() - Equals() - GetHashCode())
@@ -684,8 +695,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 4);
 
             // Get Public/Private/static methods
-            fieldsOfObject1 = object1.G9GetMethodsOfObject();
-            fieldsOfObject2 = object2.G9GetMethodsOfObject();
+            fieldsOfObject1 = G9Assembly.ObjectTools.GetMethodsOfObject(object1);
+            fieldsOfObject2 = G9Assembly.ObjectTools.GetMethodsOfObject(object2);
 
             // They have 13 methods in total (public method + private methods + (internal/protected) methods + public static methods + built-in methods)
             Assert.True(fieldsOfObject1.Count == 13 && fieldsOfObject2.Count == 13);
@@ -724,7 +735,8 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Test custom filter
             // Three methods have "1" in their names (One normal method + 2 backing method for decimal properties)
-            fieldsOfObject1 = object1.G9GetMethodsOfObject(G9EAccessModifier.Everything, s => s.Name.Contains("1"));
+            fieldsOfObject1 = G9Assembly.ObjectTools.GetMethodsOfObject(object1,
+                G9EAccessModifier.Everything, s => s.Name.Contains("1"));
             Assert.True(fieldsOfObject1.Count == 3);
         }
 
@@ -741,12 +753,17 @@ namespace G9AssemblyManagement_NUnitTest
             var object4 = new G9CObjectMembersTest();
 
             // Get Methods
-            var fieldsOfObject1 = object1.G9GetGenericMethodsOfObject(G9EAccessModifier.Public);
-            var fieldsOfObject2 = object2.G9GetGenericMethodsOfObject(G9EAccessModifier.NonPublic);
+            var fieldsOfObject1 =
+                G9Assembly.ObjectTools.GetGenericMethodsOfObject(object1, G9EAccessModifier.Public);
+            var fieldsOfObject2 =
+                G9Assembly.ObjectTools.GetGenericMethodsOfObject(object2,
+                    G9EAccessModifier.NonPublic);
             var fieldsOfObject3 =
-                object3.G9GetGenericMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.Public);
+                G9Assembly.ObjectTools.GetGenericMethodsOfObject(object3,
+                    G9EAccessModifier.Static | G9EAccessModifier.Public);
             var fieldsOfObject4 =
-                object4.G9GetGenericMethodsOfObject(G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
+                G9Assembly.ObjectTools.GetGenericMethodsOfObject(object4,
+                    G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
 
             // It don't have a public generic method
             Assert.True(fieldsOfObject1.Count == 0);
@@ -755,8 +772,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 1);
 
             // Get Public/Private/static methods
-            fieldsOfObject1 = object1.G9GetGenericMethodsOfObject();
-            fieldsOfObject2 = object2.G9GetGenericMethodsOfObject();
+            fieldsOfObject1 = G9Assembly.ObjectTools.GetGenericMethodsOfObject(object1);
+            fieldsOfObject2 = G9Assembly.ObjectTools.GetGenericMethodsOfObject(object2);
 
             // They have one public static generic method as well as one private generic method
             Assert.True(fieldsOfObject1.Count == 2 && fieldsOfObject2.Count == 2);
@@ -806,7 +823,8 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Test custom filter
             // Just one generic method has three argumments
-            fieldsOfObject2 = object2.G9GetGenericMethodsOfObject(G9EAccessModifier.Everything,
+            fieldsOfObject2 = G9Assembly.ObjectTools.GetGenericMethodsOfObject(object2,
+                G9EAccessModifier.Everything,
                 s => s.GetGenericArguments().Length >= 3);
             Assert.True(fieldsOfObject2.Count == 1);
         }
@@ -821,8 +839,8 @@ namespace G9AssemblyManagement_NUnitTest
                 IPAddress.None);
 
             // Get Methods
-            var fieldsOfObject1 = object1.G9GetAllMembersOfObject();
-            var fieldsOfObject2 = object2.G9GetAllMembersOfObject();
+            var fieldsOfObject1 = G9Assembly.ObjectTools.GetAllMembersOfObject(object1);
+            var fieldsOfObject2 = G9Assembly.ObjectTools.GetAllMembersOfObject(object2);
 
             // Test count of members
             Assert.True(fieldsOfObject1.Fields.Count == 6 && fieldsOfObject1.Properties.Count == 3 &&
@@ -836,38 +854,51 @@ namespace G9AssemblyManagement_NUnitTest
         public void TestCreateInstanceFromType()
         {
             // Create instance from a normal type
-            var testObject1 = G9CAssemblyManagement.InstanceHandlers.CreateInstanceFromType<G9DtNormalType>();
+            var testObject1 = G9Assembly.InstanceTools.CreateInstanceFromType<G9DtNormalType>();
             testObject1.Name = "Okay";
             Assert.True(testObject1.Name == "Okay");
 
             // Create instance from a generic type
             var testObject2 =
-                typeof(G9DtGenericType<string>)
-                    .G9CreateInstanceFromType<G9DtGenericType<string>>();
+                (G9DtGenericType<string>)G9Assembly.InstanceTools.CreateInstanceFromType(
+                    typeof(G9DtGenericType<string>));
             testObject2.ValueOfType = "G9TM";
             Assert.True(testObject2.ValueOfType == "G9TM");
 
             // Create instance from a normal type with constructor
             var testObject3 =
-                typeof(G9DtNormalTypeByConstructor).G9CreateInstanceFromTypeWithParameters<G9DtNormalTypeByConstructor>(
-                    "Hello G9TM");
+                G9Assembly.InstanceTools
+                    .CreateInstanceFromTypeWithParameters<G9DtNormalTypeByConstructor>("Hello G9TM");
+            Assert.True(testObject3.Name == "Hello G9TM");
+            testObject3 =
+                (G9DtNormalTypeByConstructor)
+                G9Assembly.InstanceTools.CreateInstanceFromTypeWithParameters(
+                    typeof(G9DtNormalTypeByConstructor), "Hello G9TM");
             Assert.True(testObject3.Name == "Hello G9TM");
 
             // Create instance from a generic type with constructor
-            var testObject4 = typeof(G9DtGenericTypeByConstructor<string, int, IPAddress>)
-                .G9CreateInstanceFromTypeWithParameters<G9DtGenericTypeByConstructor<string, int, IPAddress>>("G9TM",
+            var testObject4 = G9Assembly.InstanceTools
+                .CreateInstanceFromTypeWithParameters<G9DtGenericTypeByConstructor<string, int, IPAddress>>("G9TM",
                     999, IPAddress.IPv6None);
+            Assert.True(testObject4.ObjectType1 == "G9TM" && testObject4.ObjectType2 == 999 &&
+                        Equals(testObject4.ObjectType3, IPAddress.IPv6None));
+            testObject4 =
+                (G9DtGenericTypeByConstructor<string, int, IPAddress>)G9Assembly.InstanceTools
+                    .CreateInstanceFromTypeWithParameters(typeof(G9DtGenericTypeByConstructor<string, int, IPAddress>),
+                        "G9TM",
+                        999, IPAddress.IPv6None);
             Assert.True(testObject4.ObjectType1 == "G9TM" && testObject4.ObjectType2 == 999 &&
                         Equals(testObject4.ObjectType3, IPAddress.IPv6None));
 
             // Create uninitialized instance from types
-            var testObject5A = typeof(IPAddress).G9CreateUninitializedInstanceFromType<IPAddress>();
-            var testObject5B = G9CAssemblyManagement.InstanceHandlers.CreateUninitializedInstanceFromType<IPAddress>();
+            var testObject5A = G9Assembly.InstanceTools.CreateUninitializedInstanceFromType<IPAddress>();
+            var testObject5B =
+                G9Assembly.InstanceTools.CreateUninitializedInstanceFromType(typeof(IPAddress));
             Assert.AreEqual(testObject5A, testObject5B);
             // Testing initialize "IPAddress" type by the default method
             try
             {
-                G9CAssemblyManagement.InstanceHandlers.CreateInstanceFromType<object>(typeof(IPAddress));
+                G9Assembly.InstanceTools.CreateInstanceFromType(typeof(IPAddress));
                 Assert.Fail();
             }
             catch (Exception e)
@@ -875,6 +906,248 @@ namespace G9AssemblyManagement_NUnitTest
                 // No parameterless constructor defined for type 'System.Net.IPAddress'.
                 Assert.True(e is MissingMethodException);
             }
+        }
+
+        [Test]
+        [Order(10)]
+        public void TestUnifyObjectsValues()
+        {
+            // Defining three different objects.
+            var objectA = new G9CMismatchTypeA();
+            var objectB = new G9CMismatchTypeB();
+            var objectC = new G9CMismatchTypeC();
+            var objectC2 = new G9CMismatchTypeC2();
+
+            // The first test just recognizes the default value.
+            Assert.True(objectA.Name == "G9TM" && objectA.Age == 32 &&
+                        objectA.ExDateTime == DateTime.Parse("1990-09-01") &&
+                        objectA.Name != objectB.Name && objectA.Age != objectB.Age &&
+                        objectA.ExDateTime != objectB.ExDateTime);
+
+            // Unifying object objectA with object objectB
+            G9Assembly.ObjectTools.UnifyObjectsValues(objectA, objectB);
+
+            // Testing the values between objects after unifying.
+            Assert.True(objectA.Name != "G9TM" && objectA.Age != 32 &&
+                        objectA.ExDateTime != DateTime.Parse("1990-09-01") &&
+                        objectA.Name == objectB.Name && objectA.Age == objectB.Age &&
+                        objectA.ExDateTime == objectB.ExDateTime);
+
+            // Defining new value for the object again.
+            objectA = new G9CMismatchTypeA();
+            G9Assembly.ObjectTools.UnifyObjectsValues(objectA, objectB);
+
+            // Testing the values between objects after unifying again.
+            Assert.True(objectA.Name != "G9TM" && objectA.Age != 32 &&
+                        objectA.ExDateTime != DateTime.Parse("1990-09-01") &&
+                        objectA.Name == objectB.Name && objectA.Age == objectB.Age &&
+                        objectA.ExDateTime == objectB.ExDateTime);
+
+
+            // Unifying objectB with objectC
+            try
+            {
+                /*
+                By paying attention to mode "enableTryToChangeType" that is set "false":
+                    In this case, the objectC has the value "nine" for age; it definitely can't be changed to the int type.
+                */
+                G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC,
+                    G9EValueMismatchChecking.PreventMismatchValues);
+                Assert.Fail();
+            }
+            catch (Exception e)
+            {
+                Assert.True(e.Message == @"The members can't unify their values.
+In the first object, the member's name is 'Age' with the type 'System.Int32'.
+In the second object, the member's name is 'Age' with the value '109' and the type 'System.String'." &&
+                            e.InnerException.GetType() == typeof(ArgumentException) && e.InnerException.Message ==
+                            "Object of type 'System.String' cannot be converted to type 'System.Int32'.");
+            }
+
+            // Unifying objectB with objectC by "AllowMismatchValues" mode.
+            G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC);
+
+            // Testing the values between objects after unifying.
+            /*
+             * By paying attention to the "G9EValueMismatchChecking.AllowMismatchValues" mode:
+             *   The unifying process ignores the "Age" member because of mismatching in type.
+             *   The unifying process ignores the "IpAddress" member because of mismatching in type.
+             *   The unifying process ignores the "Percent" member because of mismatching in type.
+            */
+            Assert.True(objectB.Name != "G9TM 2" && objectB.Age == 99 &&
+                        objectB.ExDateTime != DateTime.Parse("1999-03-06") &&
+                        objectB.IpAddress == IPAddress.IPv6Loopback && objectB.Percent == 99.9f &&
+                        objectB.Name == objectC.Name && objectB.Age.ToString() != objectC.Age &&
+                        objectB.ExDateTime == objectC.ExDateTime &&
+                        objectB.IpAddress.ToString() != objectC.IpAddress &&
+                        objectB.Percent.ToString() != objectC.Percent);
+
+            // Defining new value for the object again.
+            objectB = new G9CMismatchTypeB();
+
+            // Unifying objectB with objectC by trying smart change type.
+            G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC,
+                G9EValueMismatchChecking.PreventMismatchValues, true);
+
+            // Testing the values between objects after unifying.
+            /*
+             * By paying attention to the "G9EValueMismatchChecking.PreventMismatchValues" mode as well as "enableTryToChangeType":
+             *   All mismatches are solved with the automatic smart change type process.
+            */
+            // Testing the values between objects after unifying.
+            Assert.True(objectB.Name != "G9TM 2" && objectB.Age != 99 &&
+                        objectB.ExDateTime != DateTime.Parse("1999-03-06") &&
+                        objectB.IpAddress != IPAddress.IPv6Loopback && objectB.Percent != 99.9f &&
+                        objectB.Name == objectC.Name && objectB.Age.ToString() == objectC.Age &&
+                        objectB.ExDateTime == objectC.ExDateTime &&
+                        objectB.IpAddress.ToString() == objectC.IpAddress &&
+                        objectB.Percent.ToString() == objectC.Percent);
+
+            // Defining new value for the object again.
+            objectB = new G9CMismatchTypeB();
+            try
+            {
+                /*
+                 * Unifying objectB with objectC by trying smart change type.
+                 * In this case, the objectC has the value "nine" for age; it definitely can't be changed to the int type.
+                 */
+                G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC2,
+                    G9EValueMismatchChecking.PreventMismatchValues, true);
+                Assert.Fail();
+            }
+            catch (Exception e)
+            {
+                Assert.True(e.Message == @"The members can't unify their values.
+In the first object, the member's name is 'Age' with the type 'System.Int32'.
+In the second object, the member's name is 'Age' with the value 'nine' and the type 'System.String'." &&
+                            e.InnerException.GetType() == typeof(FormatException) && e.InnerException.Message ==
+                            "Input string was not in a correct format.");
+            }
+
+
+            // Unifying objectB with objectC by "AllowMismatchValues" mode.
+            G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC2,
+                G9EValueMismatchChecking.AllowMismatchValues, true);
+
+            // Testing the values between objects after unifying.
+            /*
+             * By paying attention to the "G9EValueMismatchChecking.AllowMismatchValues" mode:
+             *   The unifying process ignores the "Age" member because of mismatching in type.
+            */
+            Assert.True(objectB.Age == 99 && objectB.Age.ToString() != objectC2.Age &&
+                        objectB.Percent != 99.9f && objectB.Percent.ToString() == objectC2.Percent);
+
+            // Defining new value for the object agains.
+            objectA = new G9CMismatchTypeA();
+            objectB = new G9CMismatchTypeB();
+
+            // Unifying objectA with objectB just for all public members.
+            G9Assembly.ObjectTools.UnifyObjectsValues(objectA, objectB,
+                G9EValueMismatchChecking.PreventMismatchValues);
+
+            // The first test just recognizes the default value.
+            Assert.True(objectA.GetTime() == new TimeSpan(9, 9, 9) && objectB.GetTime() == new TimeSpan(3, 6, 9) &&
+                        objectA.GetTime() != objectB.GetTime());
+
+            // Unifying objectA with objectB for all members (private/protect/public/...).
+            G9Assembly.ObjectTools.UnifyObjectsValues(objectA, objectB,
+                G9EValueMismatchChecking.PreventMismatchValues, false, G9EAccessModifier.Everything);
+
+            // Testing private member
+            Assert.True(objectA.GetTime() != new TimeSpan(9, 9, 9) && objectB.GetTime() == new TimeSpan(3, 6, 9) &&
+                        objectA.GetTime() == objectB.GetTime());
+
+            // Defining new value for the object agains.
+            objectA = new G9CMismatchTypeA();
+            objectB = new G9CMismatchTypeB();
+
+            // Ignore a member with custom filter
+            G9Assembly.ObjectTools.UnifyObjectsValues(objectA, objectB,
+                G9EValueMismatchChecking.PreventMismatchValues, false, G9EAccessModifier.Everything,
+                s => s.Name != "Age");
+
+            Assert.True(objectA.Age != objectB.Age && objectA.ExDateTime == objectB.ExDateTime);
+
+            // Defining new value for the object again.
+            objectB = new G9CMismatchTypeB();
+            /*
+                 * Unifying objectB with objectC by trying smart change type.
+                 * In this case, the object has the value of "nine" for the "age" member; it definitely can't be changed to the int type, but with the custom process it can be done!
+                 */
+            Assert.True(objectB.Age == 99 && objectC2.Age == "nine");
+            G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC2,
+                G9EValueMismatchChecking.PreventMismatchValues, true, G9EAccessModifier.Public, null,
+                (m1, m2) =>
+                {
+                    // For the "Age" member
+                    if (m1.Name == "Age")
+                        return m2.GetValue<string>() switch
+                        {
+                            "nine" => 9,
+                            "eight" => 8,
+                            // .....
+                            _ => 0
+                        };
+
+                    // For the other members
+                    return m2.GetValue();
+                });
+
+            Assert.True(objectB.Age == 9);
+
+            // Thread shock test
+            Parallel.For(1, 99_999, i =>
+            {
+                string stringNumber;
+                int intNumber;
+                if (i % 2 == 0)
+                {
+                    stringNumber = "nine";
+                    intNumber = 9;
+                }
+                else
+                {
+                    stringNumber = "eight";
+                    intNumber = 8;
+                }
+
+                var newObjectB = new G9CMismatchTypeB();
+                var newObjectC2 = new G9CMismatchTypeC2
+                {
+                    Age = stringNumber
+                };
+
+                Assert.True(newObjectB.Age == 99 && newObjectC2.Age == stringNumber);
+                G9Assembly.ObjectTools.UnifyObjectsValues(newObjectB, newObjectC2,
+                    G9EValueMismatchChecking.PreventMismatchValues, true, G9EAccessModifier.Public, null,
+                    (m1, m2) =>
+                    {
+                        // For the "Age" member
+                        if (m1.Name == "Age")
+                            return m2.GetValue<string>() switch
+                            {
+                                "nine" => 9,
+                                "eight" => 8,
+                                // .....
+                                _ => 0
+                            };
+
+                        // For the other members
+                        return m2.GetValue();
+                    });
+
+                Assert.True(newObjectB.Age == intNumber);
+            });
+
+        }
+
+        [Test]
+        [Order(10)]
+        public void TestNew()
+        {
+            dynamic x = new G9ObjectData();
+            x.gsdf = "asdasd";
+            //x["asd"] = "321312";
         }
     }
 }

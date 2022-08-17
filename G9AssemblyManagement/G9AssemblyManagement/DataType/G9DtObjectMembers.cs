@@ -3,11 +3,12 @@
 namespace G9AssemblyManagement.DataType
 {
     /// <summary>
-    /// Data type for members of object
+    ///     Data type for members of object
     /// </summary>
     public readonly struct G9DtObjectMembers
     {
         #region ### Fields And Properties ###
+
         /// <summary>
         ///     Access to total fields of object
         /// </summary>
@@ -27,14 +28,15 @@ namespace G9AssemblyManagement.DataType
         ///     Access to total generic methods of object
         /// </summary>
         public readonly IList<G9DtGenericMethods> GenericMethods;
+
         #endregion
 
         #region ### Methods ###
 
         /// <summary>
-        /// 
         /// </summary>
-        public G9DtObjectMembers(IList<G9DtFields> fields, IList<G9DtProperties> properties, IList<G9DtMethods> methods, IList<G9DtGenericMethods> genericMethods)
+        public G9DtObjectMembers(IList<G9DtFields> fields, IList<G9DtProperties> properties, IList<G9DtMethods> methods,
+            IList<G9DtGenericMethods> genericMethods)
         {
             Fields = fields;
             Properties = properties;
@@ -43,6 +45,5 @@ namespace G9AssemblyManagement.DataType
         }
 
         #endregion
-
     }
 }

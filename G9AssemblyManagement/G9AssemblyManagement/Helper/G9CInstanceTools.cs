@@ -9,7 +9,7 @@ namespace G9AssemblyManagement.Helper
     /// <summary>
     ///     Helper class for instances
     /// </summary>
-    public class G9CInstanceHelper
+    public class G9CInstanceTools
     {
         /// <summary>
         ///     Method for assigning an instance of type
@@ -125,9 +125,9 @@ namespace G9AssemblyManagement.Helper
         /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
         /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
         /// <returns>A created object from type</returns>
-        public TType CreateUninitializedInstanceFromType<TType>(Type type)
+        public object CreateUninitializedInstanceFromType(Type type)
         {
-            return (TType)FormatterServices.GetUninitializedObject(type);
+            return FormatterServices.GetUninitializedObject(type);
         }
 
         /// <summary>
@@ -146,9 +146,9 @@ namespace G9AssemblyManagement.Helper
         /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
         /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
         /// <returns>A created object from type</returns>
-        public TType CreateInstanceFromType<TType>(Type type) where TType : new()
+        public object CreateInstanceFromType(Type type)
         {
-            return (TType)Activator.CreateInstance(type);
+            return Activator.CreateInstance(type);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace G9AssemblyManagement.Helper
         /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
         /// <param name="parameters">Specifies constructor parameters</param>
         /// <returns>A created object from type</returns>
-        public TType CreateInstanceFromTypeWithParameters<TType>(params object[] parameters) where TType : new()
+        public TType CreateInstanceFromTypeWithParameters<TType>(params object[] parameters)
         {
             return (TType)Activator.CreateInstance(typeof(TType), parameters);
         }
@@ -169,9 +169,9 @@ namespace G9AssemblyManagement.Helper
         /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
         /// <param name="parameters">Specifies constructor parameters</param>
         /// <returns>A created object from type</returns>
-        public TType CreateInstanceFromTypeWithParameters<TType>(Type type, params object[] parameters)
+        public object CreateInstanceFromTypeWithParameters(Type type, params object[] parameters)
         {
-            return (TType)Activator.CreateInstance(type, parameters);
+            return Activator.CreateInstance(type, parameters);
         }
     }
 }

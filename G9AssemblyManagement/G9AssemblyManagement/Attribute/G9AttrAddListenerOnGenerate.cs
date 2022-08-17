@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 namespace G9AssemblyManagement.Attribute
 {
@@ -17,7 +16,7 @@ namespace G9AssemblyManagement.Attribute
         /// <summary>
         /// </summary>
         /// <param name="customNickname"></param>
-        public G9AttrAddListenerOnGenerateAttribute(/*[CallerMemberName]*/ string customNickname = null)
+        public G9AttrAddListenerOnGenerateAttribute( /*[CallerMemberName]*/ string customNickname = null)
         {
         }
 

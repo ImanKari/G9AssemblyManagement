@@ -28,7 +28,7 @@ namespace G9AssemblyManagement.Core
     ///     since this class
     ///     creates a dictionary of attributes in order to speed up target lookups.
     /// </remarks>
-    public static class G9CAttributeTargetHelper<TAttribute>
+    internal static class G9CAttributeTargetHelper<TAttribute>
         where TAttribute : System.Attribute
     {
         /// <summary>
@@ -105,7 +105,7 @@ namespace G9AssemblyManagement.Core
                             Add(attr, member);
 
                         if (member.MemberType == MemberTypes.Method)
-                            foreach (var parameter in ((MethodInfo) member).GetParameters())
+                            foreach (var parameter in ((MethodInfo)member).GetParameters())
                             foreach (TAttribute attr in parameter.GetCustomAttributes(typeof(TAttribute), false))
                                 Add(attr, parameter);
                     }
