@@ -31,6 +31,9 @@ steps:
 
 - task: VSTest@2
   inputs:
+    testSelector: testAssemblies
+    testAssemblyVer2: 'G9AssemblyManagement_NUnitTest\bin\Release\net5.0\G9AssemblyManagement_NUnitTest.UnitTests.dll' #Full path to test dll
+    testFiltercriteria: FullyQualifiedName~G9AssemblyManagement_NUnitTest.UnitTests # Further namespace filter
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
