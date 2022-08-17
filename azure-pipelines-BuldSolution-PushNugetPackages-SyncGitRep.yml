@@ -24,13 +24,16 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: 'G9AssemblyManagement/G9AssemblyManagement.sln'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:ContinuousIntegrationBuild=true /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     
 
 - task: VSTest@2
   inputs:
+    testSelector: testAssemblies
+    testAssemblyVer2: 'G9AssemblyManagement_NUnitTest\bin\Release\net5.0\G9AssemblyManagement_NUnitTest.UnitTests.dll' #Full path to test dll
+    testFiltercriteria: FullyQualifiedName~G9AssemblyManagement_NUnitTest.UnitTests # Further namespace filter
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
