@@ -909,7 +909,7 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(10)]
+        [Order(11)]
         public void TestUnifyObjectsValues()
         {
             // Defining three different objects.
@@ -1141,13 +1141,13 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
 
         }
 
-        [Test]
-        [Order(10)]
-        public void TestNew()
-        {
-            dynamic x = new G9ObjectData();
-            x.gsdf = "asdasd";
-            //x["asd"] = "321312";
-        }
+        //[Test]
+        //[Order(10)]
+        //public void TestNew()
+        //{
+        //    dynamic x = new G9ObjectData();
+        //    x.gsdf = "asdasd";
+        //    //x["asd"] = "321312";
+        //}
     }
 }
