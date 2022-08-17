@@ -24,19 +24,15 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: 'G9AssemblyManagement/G9AssemblyManagement.sln'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.ArtifactStagingDirectory)"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+    
 
 - task: VSTest@2
   inputs:
-    testSelector: testAssemblies
-    # testAssemblyVer2: 'APPNAME\bin\Release\netcoreapp3.1\APPNAME.UnitTests.dll' #Full path to test dll
-    # testFiltercriteria: FullyQualifiedName~APPNAME.UnitTests # Further namespace filter
-    runInParallel: false
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    diagnosticsEnabled: true
 
 - task: DotNetCoreCLI@2
   displayName: "Publish G9AssemblyManagement Library nuget packages to nuget.org"
