@@ -1,4 +1,4 @@
-﻿#if !NET35 && !NET40 && !NETSTANDARD1_5 && !NETSTANDARD1_6
+﻿#if !NET35 && !NET40
 using System;
 using System.Collections.Generic;
 using System.Dynamic;

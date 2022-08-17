@@ -2,6 +2,9 @@
 
 namespace G9AssemblyManagement.Helper
 {
+    /// <summary>
+    /// Helper class for general tools
+    /// </summary>
     public class G9CGeneralTools
     {
         /// <summary>

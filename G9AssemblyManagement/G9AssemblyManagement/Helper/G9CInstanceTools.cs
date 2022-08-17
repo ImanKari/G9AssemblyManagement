@@ -122,7 +122,6 @@ namespace G9AssemblyManagement.Helper
         /// <summary>
         ///     Method to create an uninitialized instance from a type
         /// </summary>
-        /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
         /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
         /// <returns>A created object from type</returns>
         public object CreateUninitializedInstanceFromType(Type type)
@@ -143,7 +142,6 @@ namespace G9AssemblyManagement.Helper
         /// <summary>
         ///     Method to create an instance from a type
         /// </summary>
-        /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
         /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
         /// <returns>A created object from type</returns>
         public object CreateInstanceFromType(Type type)
@@ -165,7 +163,6 @@ namespace G9AssemblyManagement.Helper
         /// <summary>
         ///     Method to create an instance from a type with the constructor that has parameters
         /// </summary>
-        /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
         /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
         /// <param name="parameters">Specifies constructor parameters</param>
         /// <returns>A created object from type</returns>

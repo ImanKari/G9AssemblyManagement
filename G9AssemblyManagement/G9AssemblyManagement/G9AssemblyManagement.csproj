@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>net35;net40;net45;net46;netstandard2.0;netstandard2.1</TargetFrameworks>
+	  <TargetFrameworks>net35;net40;net45;netstandard2.0;netstandard2.1</TargetFrameworks>
 	  <Version>1.3.3.1</Version>
 	  <Authors>Iman Kari</Authors>
 	  <Company>G9Studio</Company>
 	  <Product>G9 Assembly Management</Product>
-	  <Description>An efficient library for working on the assemblies in .NET</Description>
+	  <Description>An efficient library for working on assembly levels in .NET</Description>
 	  <Copyright>G9Studio - 2021</Copyright>
 	  <PackageProjectUrl>http://www.G9TM.com</PackageProjectUrl>
 	  <RepositoryUrl>https://github.com/ImanKari/G9AssemblyManagement</RepositoryUrl>
