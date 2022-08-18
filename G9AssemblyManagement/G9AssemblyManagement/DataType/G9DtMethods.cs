@@ -7,7 +7,7 @@ namespace G9AssemblyManagement.DataType
     /// <summary>
     ///     Data type for methods
     /// </summary>
-    public readonly struct G9DtMethods : G9IObjectMethodMember
+    public readonly struct G9DtMethods : G9IMethodMember
     {
         #region ### Fields And Properties ###
 

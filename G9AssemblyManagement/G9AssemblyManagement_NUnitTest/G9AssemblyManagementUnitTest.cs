@@ -14,6 +14,7 @@ using G9AssemblyManagement_NUnitTest.InstanceListener;
 using G9AssemblyManagement_NUnitTest.InstanceTest;
 using G9AssemblyManagement_NUnitTest.MismatchTypeTest;
 using G9AssemblyManagement_NUnitTest.ObjectMembers;
+using G9AssemblyManagement_NUnitTest.StaticType;
 using G9AssemblyManagement_NUnitTest.Types;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
@@ -475,16 +476,16 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Get fields
             var fieldsOfObject1 =
-                G9Assembly.ObjectTools.GetFieldsOfObject(object1, G9EAccessModifier.Public);
+                G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(object1, G9EAccessModifier.Public);
             var fieldsOfObject2 =
-                G9Assembly.ObjectTools.GetFieldsOfObject(object2, G9EAccessModifier.NonPublic);
+                G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(object2, G9EAccessModifier.NonPublic);
             var fieldsOfObject3 =
-                G9Assembly.ObjectTools.GetFieldsOfObject(object3,
+                G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(object3,
                     G9EAccessModifier.Static | G9EAccessModifier.Public);
             var fieldsOfObject4 =
-                G9Assembly.ObjectTools.GetFieldsOfObject(object4,
+                G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(object4,
                     G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
-            var fieldsOfObject5 = G9Assembly.ObjectTools.GetFieldsOfObject(object5);
+            var fieldsOfObject5 = G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(object5);
 
             // It has one public field
             Assert.True(fieldsOfObject1.Count == 1);
@@ -494,8 +495,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 3);
 
             // Get Public/Private/static fields
-            fieldsOfObject1 = G9Assembly.ObjectTools.GetFieldsOfObject(object1);
-            fieldsOfObject2 = G9Assembly.ObjectTools.GetFieldsOfObject(object2);
+            fieldsOfObject1 = G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(object1);
+            fieldsOfObject2 = G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(object2);
 
             // They have two public fields, two private fields and two static field (Two private fields are automated fields(Backing Field) for decimal properties)
             Assert.True(fieldsOfObject1.Count == 6 && fieldsOfObject2.Count == 6);
@@ -566,7 +567,7 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Test with custom filter
             // Three fields have "1" in their name
-            fieldsOfObject5 = G9Assembly.ObjectTools.GetFieldsOfObject(object5,
+            fieldsOfObject5 = G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(object5,
                 G9EAccessModifier.Everything, s => s.Name.Contains("1"));
             Assert.True(fieldsOfObject5.Count == 3);
         }
@@ -587,16 +588,16 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Get properties
             var fieldsOfObject1 =
-                G9Assembly.ObjectTools.GetPropertiesOfObject(object1, G9EAccessModifier.Public);
+                G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(object1, G9EAccessModifier.Public);
             var fieldsOfObject2 =
-                G9Assembly.ObjectTools.GetPropertiesOfObject(object2, G9EAccessModifier.NonPublic);
+                G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(object2, G9EAccessModifier.NonPublic);
             var fieldsOfObject3 =
-                G9Assembly.ObjectTools.GetPropertiesOfObject(object3,
+                G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(object3,
                     G9EAccessModifier.Static | G9EAccessModifier.Public);
             var fieldsOfObject4 =
-                G9Assembly.ObjectTools.GetPropertiesOfObject(object4,
+                G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(object4,
                     G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
-            var fieldsOfObject5 = G9Assembly.ObjectTools.GetPropertiesOfObject(object5);
+            var fieldsOfObject5 = G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(object5);
 
             // It has one public property
             Assert.True(fieldsOfObject1.Count == 1);
@@ -605,8 +606,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 1);
 
             // Get Public/Private/static properties
-            fieldsOfObject1 = G9Assembly.ObjectTools.GetPropertiesOfObject(object1);
-            fieldsOfObject2 = G9Assembly.ObjectTools.GetPropertiesOfObject(object2);
+            fieldsOfObject1 = G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(object1);
+            fieldsOfObject2 = G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(object2);
 
             // They have one public property + one private property + one private static property
             Assert.True(fieldsOfObject1.Count == 3 && fieldsOfObject2.Count == 3);
@@ -654,7 +655,7 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Test custom filter
             // Just one property has "1" in its name
-            fieldsOfObject5 = G9Assembly.ObjectTools.GetPropertiesOfObject(object5,
+            fieldsOfObject5 = G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(object5,
                 G9EAccessModifier.Everything, s => s.Name.Contains("1"));
             Assert.True(fieldsOfObject5.Count == 1);
         }
@@ -673,14 +674,14 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Get Methods
             var fieldsOfObject1 =
-                G9Assembly.ObjectTools.GetMethodsOfObject(object1, G9EAccessModifier.Public);
+                G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(object1, G9EAccessModifier.Public);
             var fieldsOfObject2 =
-                G9Assembly.ObjectTools.GetMethodsOfObject(object2, G9EAccessModifier.NonPublic);
+                G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(object2, G9EAccessModifier.NonPublic);
             var fieldsOfObject3 =
-                G9Assembly.ObjectTools.GetMethodsOfObject(object3,
+                G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(object3,
                     G9EAccessModifier.Static | G9EAccessModifier.Public);
             var fieldsOfObject4 =
-                G9Assembly.ObjectTools.GetMethodsOfObject(object4,
+                G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(object4,
                     G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
 
             // Notice
@@ -695,8 +696,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 4);
 
             // Get Public/Private/static methods
-            fieldsOfObject1 = G9Assembly.ObjectTools.GetMethodsOfObject(object1);
-            fieldsOfObject2 = G9Assembly.ObjectTools.GetMethodsOfObject(object2);
+            fieldsOfObject1 = G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(object1);
+            fieldsOfObject2 = G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(object2);
 
             // They have 13 methods in total (public method + private methods + (internal/protected) methods + public static methods + built-in methods)
             Assert.True(fieldsOfObject1.Count == 13 && fieldsOfObject2.Count == 13);
@@ -735,7 +736,7 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Test custom filter
             // Three methods have "1" in their names (One normal method + 2 backing method for decimal properties)
-            fieldsOfObject1 = G9Assembly.ObjectTools.GetMethodsOfObject(object1,
+            fieldsOfObject1 = G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(object1,
                 G9EAccessModifier.Everything, s => s.Name.Contains("1"));
             Assert.True(fieldsOfObject1.Count == 3);
         }
@@ -754,15 +755,15 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Get Methods
             var fieldsOfObject1 =
-                G9Assembly.ObjectTools.GetGenericMethodsOfObject(object1, G9EAccessModifier.Public);
+                G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfObject(object1, G9EAccessModifier.Public);
             var fieldsOfObject2 =
-                G9Assembly.ObjectTools.GetGenericMethodsOfObject(object2,
+                G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfObject(object2,
                     G9EAccessModifier.NonPublic);
             var fieldsOfObject3 =
-                G9Assembly.ObjectTools.GetGenericMethodsOfObject(object3,
+                G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfObject(object3,
                     G9EAccessModifier.Static | G9EAccessModifier.Public);
             var fieldsOfObject4 =
-                G9Assembly.ObjectTools.GetGenericMethodsOfObject(object4,
+                G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfObject(object4,
                     G9EAccessModifier.Static | G9EAccessModifier.NonPublic);
 
             // It don't have a public generic method
@@ -772,8 +773,8 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(fieldsOfObject2.Count == 1);
 
             // Get Public/Private/static methods
-            fieldsOfObject1 = G9Assembly.ObjectTools.GetGenericMethodsOfObject(object1);
-            fieldsOfObject2 = G9Assembly.ObjectTools.GetGenericMethodsOfObject(object2);
+            fieldsOfObject1 = G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfObject(object1);
+            fieldsOfObject2 = G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfObject(object2);
 
             // They have one public static generic method as well as one private generic method
             Assert.True(fieldsOfObject1.Count == 2 && fieldsOfObject2.Count == 2);
@@ -823,7 +824,7 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Test custom filter
             // Just one generic method has three argumments
-            fieldsOfObject2 = G9Assembly.ObjectTools.GetGenericMethodsOfObject(object2,
+            fieldsOfObject2 = G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfObject(object2,
                 G9EAccessModifier.Everything,
                 s => s.GetGenericArguments().Length >= 3);
             Assert.True(fieldsOfObject2.Count == 1);
@@ -839,8 +840,8 @@ namespace G9AssemblyManagement_NUnitTest
                 IPAddress.None);
 
             // Get Methods
-            var fieldsOfObject1 = G9Assembly.ObjectTools.GetAllMembersOfObject(object1);
-            var fieldsOfObject2 = G9Assembly.ObjectTools.GetAllMembersOfObject(object2);
+            var fieldsOfObject1 = G9Assembly.ObjectAndReflectionTools.GetAllMembersOfObject(object1);
+            var fieldsOfObject2 = G9Assembly.ObjectAndReflectionTools.GetAllMembersOfObject(object2);
 
             // Test count of members
             Assert.True(fieldsOfObject1.Fields.Count == 6 && fieldsOfObject1.Properties.Count == 3 &&
@@ -851,6 +852,149 @@ namespace G9AssemblyManagement_NUnitTest
 
         [Test]
         [Order(10)]
+        public void TestGetMembersFromStaticObject()
+        {
+            #region Test static member
+
+            // Get fields of type with initialize for accessing to non static members
+            var fields = G9Assembly.ObjectAndReflectionTools.GetFieldsOfType(typeof(G9DtStaticMemberType),
+                G9EAccessModifier.Everything, null, true);
+            // Total fields
+            Assert.True(fields.Count == 4);
+            // Test static field
+            Assert.True(
+                fields.First(s => s.Name == nameof(G9DtStaticMemberType.Name))
+                    .GetValue<string>() == G9DtStaticMemberType.Name);
+            // Test non static field
+            Assert.True(
+                fields.First(s => s.Name == nameof(G9DtStaticMemberType.Name2))
+                    .GetValue<string>() == "G9TM2");
+
+            // Get properties of type with initialize for accessing to non static members
+            var properties = G9Assembly.ObjectAndReflectionTools.GetPropertiesOfType(typeof(G9DtStaticMemberType),
+                G9EAccessModifier.Everything, null, true);
+            // Total properties
+            Assert.True(properties.Count == 2);
+            // Test static property
+            Assert.True(
+                properties.First(s => s.Name == nameof(G9DtStaticMemberType.Age))
+                    .GetValue<int>() == G9DtStaticMemberType.Age);
+            // Test non static property
+            Assert.True(
+                properties.First(s => s.Name == nameof(G9DtStaticMemberType.Age2))
+                    .GetValue<int>() == 99);
+
+
+            // Get methods of type with initialize for accessing to non static members
+            var methods = G9Assembly.ObjectAndReflectionTools.GetMethodsOfType(typeof(G9DtStaticMemberType),
+                G9EAccessModifier.Everything, null, true);
+            // Total methods
+            Assert.True(methods.Count == 12);
+            // Test static method
+            Assert.True(
+                methods.First(s => s.MethodName == nameof(G9DtStaticMemberType.GetNameAsHashCode))
+                    .CallMethodWithResult<int>() == G9DtStaticMemberType.Name.GetHashCode());
+            // Test non static method
+            Assert.True(
+                methods.First(s => s.MethodName == nameof(G9DtStaticMemberType.GetName))
+                    .CallMethodWithResult<string>() == G9DtStaticMemberType.Name);
+
+            // Get generic methods of type with initialize for accessing to non static members
+            var genericMethods = G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfType(
+                typeof(G9DtStaticMemberType),
+                G9EAccessModifier.Everything, null, true);
+            // Total generic methods
+            Assert.True(genericMethods.Count == 2);
+
+            // Test static generic method
+            Assert.True(
+                genericMethods.First(s => s.MethodName == nameof(G9DtStaticMemberType.TestStaticGeneric))
+                    .CallMethodWithResult<string>(new[] { typeof(string) }, "G9TM") == "G9TM");
+            // Test non static generic method
+            Assert.True(
+                genericMethods.First(s => s.MethodName == nameof(G9DtStaticMemberType.TestStaticGeneric2))
+                    .CallMethodWithResult<string>(new[] { typeof(string) }, "!G9TM!") == "!G9TM!");
+
+            #endregion
+
+            #region Test static class
+
+            // A static class can't have an instance!
+            try
+            {
+                G9Assembly.ObjectAndReflectionTools.GetFieldsOfType(typeof(G9DtStaticType),
+                    G9EAccessModifier.Everything, null, true);
+                Assert.Fail();
+            }
+            catch (Exception ex)
+            {
+                Assert.True(ex is MemberAccessException && ex.Message == "Cannot create an abstract class.");
+            }
+
+            // Get fields of type
+            var staticFields = G9Assembly.ObjectAndReflectionTools.GetFieldsOfType(typeof(G9DtStaticType),
+                G9EAccessModifier.Everything);
+            // Total fields
+            Assert.True(staticFields.Count == 2);
+            // Test static field
+            Assert.True(
+                staticFields.First(s => s.Name == nameof(G9DtStaticType.Name))
+                    .GetValue<string>() == G9DtStaticType.Name);
+
+            // Get properties of type
+            var staticProperties = G9Assembly.ObjectAndReflectionTools.GetPropertiesOfType(typeof(G9DtStaticType),
+                G9EAccessModifier.Everything);
+            // Total properties
+            Assert.True(staticProperties.Count == 1);
+            // Test static property
+            Assert.True(
+                staticProperties.First(s => s.Name == nameof(G9DtStaticType.Age))
+                    .GetValue<int>() == G9DtStaticType.Age);
+
+
+            // Get methods of type
+            var staticMethods = G9Assembly.ObjectAndReflectionTools.GetMethodsOfType(typeof(G9DtStaticType),
+                G9EAccessModifier.Everything);
+            // Total methods
+            Assert.True(staticMethods.Count == 9);
+            // Test static method
+            Assert.True(
+                staticMethods.First(s => s.MethodName == nameof(G9DtStaticType.GetNameAsHashCode))
+                    .CallMethodWithResult<int>() == G9DtStaticType.Name.GetHashCode());
+
+            // Get generic methods of type
+            var staticGenericMethods = G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfType(
+                typeof(G9DtStaticType),
+                G9EAccessModifier.Everything);
+            // Total generic methods
+            Assert.True(staticGenericMethods.Count == 1);
+
+            // Test static generic method
+            Assert.True(
+                staticGenericMethods.First(s => s.MethodName == nameof(G9DtStaticType.TestStaticGeneric))
+                    .CallMethodWithResult<string>(new[] { typeof(string) }, "G9TM") == "G9TM");
+
+            Parallel.For(0, 99_999, i =>
+            {
+                // Get generic methods of type
+                var genericMethodsList = G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfType(
+                    typeof(G9DtStaticType),
+                    G9EAccessModifier.Everything);
+
+                // Total generic methods
+                Assert.True(genericMethodsList.Count == 1);
+
+                // Test static generic method
+                Assert.True(
+                    genericMethodsList.First(s => s.MethodName == nameof(G9DtStaticType.TestStaticGeneric))
+                        .CallMethodWithResult<string>(new[] { typeof(string) }, $"G9TM{i}") == $"G9TM{i}");
+            });
+
+            #endregion
+        }
+
+        [Test]
+        [Order(11)]
         public void TestCreateInstanceFromType()
         {
             // Create instance from a normal type
@@ -909,7 +1053,7 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(11)]
+        [Order(12)]
         public void TestUnifyObjectsValues()
         {
             // Defining three different objects.
@@ -925,7 +1069,7 @@ namespace G9AssemblyManagement_NUnitTest
                         objectA.ExDateTime != objectB.ExDateTime);
 
             // Unifying object objectA with object objectB
-            G9Assembly.ObjectTools.UnifyObjectsValues(objectA, objectB);
+            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectA, objectB);
 
             // Testing the values between objects after unifying.
             Assert.True(objectA.Name != "G9TM" && objectA.Age != 32 &&
@@ -935,7 +1079,7 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Defining new value for the object again.
             objectA = new G9CMismatchTypeA();
-            G9Assembly.ObjectTools.UnifyObjectsValues(objectA, objectB);
+            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectA, objectB);
 
             // Testing the values between objects after unifying again.
             Assert.True(objectA.Name != "G9TM" && objectA.Age != 32 &&
@@ -951,7 +1095,7 @@ namespace G9AssemblyManagement_NUnitTest
                 By paying attention to mode "enableTryToChangeType" that is set "false":
                     In this case, the objectC has the value "nine" for age; it definitely can't be changed to the int type.
                 */
-                G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC,
+                G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC,
                     G9EValueMismatchChecking.PreventMismatchValues);
                 Assert.Fail();
             }
@@ -965,7 +1109,7 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
             }
 
             // Unifying objectB with objectC by "AllowMismatchValues" mode.
-            G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC);
+            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC);
 
             // Testing the values between objects after unifying.
             /*
@@ -986,7 +1130,7 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
             objectB = new G9CMismatchTypeB();
 
             // Unifying objectB with objectC by trying smart change type.
-            G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC,
+            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC,
                 G9EValueMismatchChecking.PreventMismatchValues, true);
 
             // Testing the values between objects after unifying.
@@ -1011,7 +1155,7 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
                  * Unifying objectB with objectC by trying smart change type.
                  * In this case, the objectC has the value "nine" for age; it definitely can't be changed to the int type.
                  */
-                G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC2,
+                G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC2,
                     G9EValueMismatchChecking.PreventMismatchValues, true);
                 Assert.Fail();
             }
@@ -1026,7 +1170,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
 
 
             // Unifying objectB with objectC by "AllowMismatchValues" mode.
-            G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC2,
+            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC2,
                 G9EValueMismatchChecking.AllowMismatchValues, true);
 
             // Testing the values between objects after unifying.
@@ -1042,7 +1186,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             objectB = new G9CMismatchTypeB();
 
             // Unifying objectA with objectB just for all public members.
-            G9Assembly.ObjectTools.UnifyObjectsValues(objectA, objectB,
+            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectA, objectB,
                 G9EValueMismatchChecking.PreventMismatchValues);
 
             // The first test just recognizes the default value.
@@ -1050,7 +1194,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                         objectA.GetTime() != objectB.GetTime());
 
             // Unifying objectA with objectB for all members (private/protect/public/...).
-            G9Assembly.ObjectTools.UnifyObjectsValues(objectA, objectB,
+            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectA, objectB,
                 G9EValueMismatchChecking.PreventMismatchValues, false, G9EAccessModifier.Everything);
 
             // Testing private member
@@ -1062,7 +1206,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             objectB = new G9CMismatchTypeB();
 
             // Ignore a member with custom filter
-            G9Assembly.ObjectTools.UnifyObjectsValues(objectA, objectB,
+            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectA, objectB,
                 G9EValueMismatchChecking.PreventMismatchValues, false, G9EAccessModifier.Everything,
                 s => s.Name != "Age");
 
@@ -1075,7 +1219,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                  * In this case, the object has the value of "nine" for the "age" member; it definitely can't be changed to the int type, but with the custom process it can be done!
                  */
             Assert.True(objectB.Age == 99 && objectC2.Age == "nine");
-            G9Assembly.ObjectTools.UnifyObjectsValues(objectB, objectC2,
+            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC2,
                 G9EValueMismatchChecking.PreventMismatchValues, true, G9EAccessModifier.Public, null,
                 (m1, m2) =>
                 {
@@ -1118,7 +1262,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                 };
 
                 Assert.True(newObjectB.Age == 99 && newObjectC2.Age == stringNumber);
-                G9Assembly.ObjectTools.UnifyObjectsValues(newObjectB, newObjectC2,
+                G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(newObjectB, newObjectC2,
                     G9EValueMismatchChecking.PreventMismatchValues, true, G9EAccessModifier.Public, null,
                     (m1, m2) =>
                     {
@@ -1138,11 +1282,10 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
 
                 Assert.True(newObjectB.Age == intNumber);
             });
-
         }
 
         [Test]
-        [Order(12)]
+        [Order(13)]
         public void TestNew()
         {
             dynamic x = new G9ObjectData();

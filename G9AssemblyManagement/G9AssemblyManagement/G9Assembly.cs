@@ -20,9 +20,9 @@ namespace G9AssemblyManagement
         public static readonly G9CInstanceTools InstanceTools = new G9CInstanceTools();
 
         /// <summary>
-        ///     Access to object tools
+        ///     Access to object tools (and reflections)
         /// </summary>
-        public static readonly G9CObjectTools ObjectTools = new G9CObjectTools();
+        public static readonly G9CObjectAndReflectionTools ObjectAndReflectionTools = new G9CObjectAndReflectionTools();
 
         /// <summary>
         ///     Access to general tools

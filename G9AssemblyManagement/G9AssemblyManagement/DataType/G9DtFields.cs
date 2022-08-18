@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
+using G9AssemblyManagement.Enums;
 using G9AssemblyManagement.Interfaces;
 
 namespace G9AssemblyManagement.DataType
@@ -7,12 +9,18 @@ namespace G9AssemblyManagement.DataType
     /// <summary>
     ///     Data type for fields
     /// </summary>
-    public readonly struct G9DtFields : G9IObjectMember
+    public readonly struct G9DtFields : G9IMember
     {
         #region ### Fields And Properties ###
 
         /// <inheritdoc />
         public string Name { get; }
+
+        /// <inheritdoc />
+        public G9EMemberType MemberType { get; }
+
+        /// <inheritdoc />
+        MemberInfo G9IMemberBase.GetMemberInfo => FieldInfo;
 
         /// <summary>
         ///     Access to field info
@@ -23,6 +31,7 @@ namespace G9AssemblyManagement.DataType
         ///     Access to target object
         /// </summary>
         private readonly object _targetObject;
+
 
         #endregion
 
@@ -39,6 +48,7 @@ namespace G9AssemblyManagement.DataType
             Name = fieldName;
             FieldInfo = fieldInfo;
             _targetObject = targetObject;
+            MemberType = G9EMemberType.Field;
         }
 
         /// <inheritdoc />
@@ -66,15 +76,9 @@ namespace G9AssemblyManagement.DataType
         }
 
         /// <inheritdoc />
-        public IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : System.Attribute
+        public IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : Attribute
         {
             return (IList<TType>)FieldInfo.GetCustomAttributes(typeof(TType), inherit);
-        }
-
-        /// <inheritdoc />
-        public MemberInfo GetMemberInfo()
-        {
-            return FieldInfo;
         }
 
         #endregion

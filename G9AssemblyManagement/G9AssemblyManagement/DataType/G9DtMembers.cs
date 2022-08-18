@@ -5,7 +5,7 @@ namespace G9AssemblyManagement.DataType
     /// <summary>
     ///     Data type for members of object
     /// </summary>
-    public readonly struct G9DtObjectMembers
+    public readonly struct G9DtMembers
     {
         #region ### Fields And Properties ###
 
@@ -35,7 +35,7 @@ namespace G9AssemblyManagement.DataType
 
         /// <summary>
         /// </summary>
-        public G9DtObjectMembers(IList<G9DtFields> fields, IList<G9DtProperties> properties, IList<G9DtMethods> methods,
+        public G9DtMembers(IList<G9DtFields> fields, IList<G9DtProperties> properties, IList<G9DtMethods> methods,
             IList<G9DtGenericMethods> genericMethods)
         {
             Fields = fields;

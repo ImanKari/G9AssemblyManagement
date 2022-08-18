@@ -6,7 +6,9 @@ namespace G9AssemblyManagement_NUnitTest.ObjectMembers
     public class G9CObjectMembersTest
     {
         public string StringTest1 = "A";
+#pragma warning disable CS0414
         private string StringTest2 = "B";
+#pragma warning restore CS0414
 
         public decimal DecimalTest1 { set; get; } = 999.999m;
         private decimal DecimalTest2 { get; } = 369.963m;

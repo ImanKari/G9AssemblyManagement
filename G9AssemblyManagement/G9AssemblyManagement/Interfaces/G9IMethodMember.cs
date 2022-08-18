@@ -6,7 +6,7 @@ namespace G9AssemblyManagement.Interfaces
     /// <summary>
     ///     An interface for total object method members
     /// </summary>
-    public interface G9IObjectMethodMember
+    public interface G9IMethodMember
     {
         /// <summary>
         ///     Specifies method name
