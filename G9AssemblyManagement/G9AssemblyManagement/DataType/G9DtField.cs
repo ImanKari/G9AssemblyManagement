@@ -7,9 +7,9 @@ using G9AssemblyManagement.Interfaces;
 namespace G9AssemblyManagement.DataType
 {
     /// <summary>
-    ///     Data type for properties
+    ///     Data type for fields
     /// </summary>
-    public readonly struct G9DtProperties : G9IMember
+    public readonly struct G9DtField : G9IMember
     {
         #region ### Fields And Properties ###
 
@@ -17,15 +17,18 @@ namespace G9AssemblyManagement.DataType
         public string Name { get; }
 
         /// <inheritdoc />
-        public G9EMemberType MemberType { get; }
+        public G9EMemberType MemberBasisType { get; }
 
         /// <inheritdoc />
-        MemberInfo G9IMemberBase.GetMemberInfo => PropertyInfo;
+        public Type MemberType { get; }
+
+        /// <inheritdoc />
+        MemberInfo G9IMemberBase.MemberInfo => FieldInfo;
 
         /// <summary>
-        ///     Access to property info
+        ///     Access to field info
         /// </summary>
-        public readonly PropertyInfo PropertyInfo;
+        public readonly FieldInfo FieldInfo;
 
         /// <summary>
         ///     Access to target object
@@ -39,25 +42,22 @@ namespace G9AssemblyManagement.DataType
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="propertyName">Specifies property name</param>
-        /// <param name="propertyInfo">Specifies property value</param>
+        /// <param name="fieldName">Specifies field name</param>
+        /// <param name="fieldInfo">Specifies field value</param>
         /// <param name="targetObject">Specifies target object</param>
-        public G9DtProperties(string propertyName, PropertyInfo propertyInfo, object targetObject)
+        public G9DtField(string fieldName, FieldInfo fieldInfo, object targetObject)
         {
-            Name = propertyName;
-            PropertyInfo = propertyInfo;
+            Name = fieldName;
+            FieldInfo = fieldInfo;
             _targetObject = targetObject;
-            MemberType = G9EMemberType.Property;
+            MemberBasisType = G9EMemberType.Field;
+            MemberType = fieldInfo.FieldType;
         }
 
         /// <inheritdoc />
         public void SetValue<TType>(TType value)
         {
-#if (NET35 || NET40)
-            PropertyInfo.SetValue(_targetObject, value, null);
-#else
-            PropertyInfo.SetValue(_targetObject, value);
-#endif
+            FieldInfo.SetValue(_targetObject, value);
         }
 
         /// <inheritdoc />
@@ -75,17 +75,13 @@ namespace G9AssemblyManagement.DataType
         /// <inheritdoc />
         public object GetValue()
         {
-#if (NET35 || NET40)
-            return PropertyInfo.GetValue(_targetObject, null);
-#else
-            return PropertyInfo.GetValue(_targetObject);
-#endif
+            return FieldInfo.GetValue(_targetObject);
         }
 
         /// <inheritdoc />
         public IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : Attribute
         {
-            return (IList<TType>)PropertyInfo.GetCustomAttributes(typeof(TType), inherit);
+            return (IList<TType>)FieldInfo.GetCustomAttributes(typeof(TType), inherit);
         }
 
         #endregion

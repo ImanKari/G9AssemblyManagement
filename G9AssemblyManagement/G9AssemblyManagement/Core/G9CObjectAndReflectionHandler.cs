@@ -24,9 +24,12 @@ namespace G9AssemblyManagement.Core
             if (customModifier == G9EAccessModifier.Everything)
                 return BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
-            var defaultBindingFlags = (customModifier & G9EAccessModifier.Static) == G9EAccessModifier.Static
-                ? BindingFlags.Static
-                : BindingFlags.Instance;
+            var defaultBindingFlags = (customModifier & G9EAccessModifier.StaticAndInstance) ==
+                                      G9EAccessModifier.StaticAndInstance
+                ? BindingFlags.Instance | BindingFlags.Static
+                : (customModifier & G9EAccessModifier.Static) == G9EAccessModifier.Static
+                    ? BindingFlags.Static
+                    : BindingFlags.Instance;
 
             if ((customModifier & G9EAccessModifier.Public) == G9EAccessModifier.Public)
                 defaultBindingFlags |= BindingFlags.Public;
@@ -165,22 +168,22 @@ namespace G9AssemblyManagement.Core
                     try
                     {
                         memberA.SetValue(G9Assembly.TypeTools.SmartChangeType(memberB.GetValue(),
-                            memberA is G9DtFields fields
+                            memberA is G9DtField fields
                                 ? fields.FieldInfo.FieldType
-                                : ((G9DtProperties)memberA).PropertyInfo.PropertyType));
+                                : ((G9DtProperty)memberA).PropertyInfo.PropertyType));
                     }
                     catch (Exception ex2)
                     {
                         if (!ignoreException)
                             throw new Exception($@"The members can't unify their values.
-In the first object, the member's name is '{memberA.Name}' with the type '{(memberA is G9DtFields result ? result.FieldInfo.FieldType : ((G9DtProperties)memberA).PropertyInfo.PropertyType)}'.
-In the second object, the member's name is '{memberB.Name}' with the value '{memberB.GetValue()}' and the type '{(memberB is G9DtFields result2 ? result2.FieldInfo.FieldType : ((G9DtProperties)memberB).PropertyInfo.PropertyType)}'.",
+In the first object, the member's name is '{memberA.Name}' with the type '{(memberA is G9DtField result ? result.FieldInfo.FieldType : ((G9DtProperty)memberA).PropertyInfo.PropertyType)}'.
+In the second object, the member's name is '{memberB.Name}' with the value '{memberB.GetValue()}' and the type '{(memberB is G9DtField result2 ? result2.FieldInfo.FieldType : ((G9DtProperty)memberB).PropertyInfo.PropertyType)}'.",
                                 ex2);
                     }
                 else if (!ignoreException)
                     throw new Exception($@"The members can't unify their values.
-In the first object, the member's name is '{memberA.Name}' with the type '{(memberA is G9DtFields result ? result.FieldInfo.FieldType : ((G9DtProperties)memberA).PropertyInfo.PropertyType)}'.
-In the second object, the member's name is '{memberB.Name}' with the value '{memberB.GetValue()}' and the type '{(memberB is G9DtFields result2 ? result2.FieldInfo.FieldType : ((G9DtProperties)memberB).PropertyInfo.PropertyType)}'.",
+In the first object, the member's name is '{memberA.Name}' with the type '{(memberA is G9DtField result ? result.FieldInfo.FieldType : ((G9DtProperty)memberA).PropertyInfo.PropertyType)}'.
+In the second object, the member's name is '{memberB.Name}' with the value '{memberB.GetValue()}' and the type '{(memberB is G9DtField result2 ? result2.FieldInfo.FieldType : ((G9DtProperty)memberB).PropertyInfo.PropertyType)}'.",
                         ex1);
             }
         }
@@ -198,7 +201,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of fields</returns>
-        public static IList<G9DtFields> GetFieldsOfObject<TObject>(TObject targetObject,
+        public static IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<FieldInfo, bool> customFilter = null)
         {
@@ -213,7 +216,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of fields</returns>
-        public static IList<G9DtFields> GetFieldsOfObject<TObject>(TObject targetObject,
+        public static IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
                                               BindingFlags.Static,
             Func<FieldInfo, bool> customFilter = null)
@@ -235,7 +238,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         ///     thrown.
         /// </param>
         /// <returns>A collection of fields</returns>
-        public static IList<G9DtFields> GetFieldsOfType(Type targetType,
+        public static IList<G9DtField> GetFieldsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<FieldInfo, bool> customFilter = null, bool initializeInstance = false)
         {
@@ -258,7 +261,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         ///     thrown.
         /// </param>
         /// <returns>A collection of fields</returns>
-        public static IList<G9DtFields> GetFieldsOfType(Type targetType,
+        public static IList<G9DtField> GetFieldsOfType(Type targetType,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
                                               BindingFlags.Static,
             Func<FieldInfo, bool> customFilter = null, object targetObject = null, bool initializeInstance = false)
@@ -277,10 +280,10 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
                 ? targetType
                     .GetFields(specifiedModifiers)
                     .Where(customFilter)
-                    .Select(s => new G9DtFields(s.Name, s, targetObject)).ToArray()
+                    .Select(s => new G9DtField(s.Name, s, targetObject)).ToArray()
                 : targetType
                     .GetFields(specifiedModifiers)
-                    .Select(s => new G9DtFields(s.Name, s, targetObject)).ToArray();
+                    .Select(s => new G9DtField(s.Name, s, targetObject)).ToArray();
         }
 
         #endregion
@@ -295,7 +298,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of properties</returns>
-        public static IList<G9DtProperties> GetPropertiesOfObject<TObject>(TObject targetObject,
+        public static IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<PropertyInfo, bool> customFilter = null)
         {
@@ -310,7 +313,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of properties</returns>
-        public static IList<G9DtProperties> GetPropertiesOfObject<TObject>(TObject targetObject,
+        public static IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
                                               BindingFlags.Static,
             Func<PropertyInfo, bool> customFilter = null)
@@ -332,7 +335,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         ///     thrown.
         /// </param>
         /// <returns>A collection of properties</returns>
-        public static IList<G9DtProperties> GetPropertiesOfType(Type targetType,
+        public static IList<G9DtProperty> GetPropertiesOfType(Type targetType,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<PropertyInfo, bool> customFilter = null, bool initializeInstance = false)
         {
@@ -355,7 +358,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         ///     thrown.
         /// </param>
         /// <returns>A collection of properties</returns>
-        public static IList<G9DtProperties> GetPropertiesOfType(Type targetType,
+        public static IList<G9DtProperty> GetPropertiesOfType(Type targetType,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
                                               BindingFlags.Static,
             Func<PropertyInfo, bool> customFilter = null, object targetObject = null, bool initializeInstance = false)
@@ -374,11 +377,11 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
                 ? targetType
                     .GetProperties(specifiedModifiers)
                     .Where(customFilter)
-                    .Select(s => new G9DtProperties(s.Name, s, targetObject))
+                    .Select(s => new G9DtProperty(s.Name, s, targetObject))
                     .ToArray()
                 : targetType
                     .GetProperties(specifiedModifiers)
-                    .Select(s => new G9DtProperties(s.Name, s, targetObject))
+                    .Select(s => new G9DtProperty(s.Name, s, targetObject))
                     .ToArray();
         }
 
@@ -394,7 +397,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of methods</returns>
-        public static IList<G9DtMethods> GetMethodsOfObject<TObject>(TObject targetObject,
+        public static IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null)
         {
@@ -409,7 +412,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of methods</returns>
-        public static IList<G9DtMethods> GetMethodsOfObject<TObject>(TObject targetObject,
+        public static IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
                                               BindingFlags.Static,
             Func<MethodInfo, bool> customFilter = null)
@@ -431,7 +434,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         ///     thrown.
         /// </param>
         /// <returns>A collection of methods</returns>
-        public static IList<G9DtMethods> GetMethodsOfType(Type targetType,
+        public static IList<G9DtMethod> GetMethodsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null, bool initializeInstance = false)
         {
@@ -454,7 +457,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         ///     thrown.
         /// </param>
         /// <returns>A collection of methods</returns>
-        public static IList<G9DtMethods> GetMethodsOfType(Type targetType,
+        public static IList<G9DtMethod> GetMethodsOfType(Type targetType,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
                                               BindingFlags.Static,
             Func<MethodInfo, bool> customFilter = null, object targetObject = null, bool initializeInstance = false)
@@ -473,12 +476,12 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
                 ? targetType
                     .GetMethods(specifiedModifiers)
                     .Where(s => !s.IsGenericMethod && customFilter(s))
-                    .Select(s => new G9DtMethods(s.Name, s, targetObject))
+                    .Select(s => new G9DtMethod(s.Name, s, targetObject))
                     .ToArray()
                 : targetType
                     .GetMethods(specifiedModifiers)
                     .Where(s => !s.IsGenericMethod)
-                    .Select(s => new G9DtMethods(s.Name, s, targetObject))
+                    .Select(s => new G9DtMethod(s.Name, s, targetObject))
                     .ToArray();
         }
 
@@ -494,7 +497,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of generic methods</returns>
-        public static IList<G9DtGenericMethods> GetGenericMethodsOfObject<TObject>(TObject targetObject,
+        public static IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null)
         {
@@ -509,7 +512,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of generic methods</returns>
-        public static IList<G9DtGenericMethods> GetGenericMethodsOfObject<TObject>(TObject targetObject,
+        public static IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
                                               BindingFlags.Static,
             Func<MethodInfo, bool> customFilter = null)
@@ -531,7 +534,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         ///     thrown.
         /// </param>
         /// <returns>A collection of generic methods</returns>
-        public static IList<G9DtGenericMethods> GetGenericMethodsOfType(Type targetType,
+        public static IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null, bool initializeInstance = false)
         {
@@ -554,7 +557,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         ///     thrown.
         /// </param>
         /// <returns>A collection of generic methods</returns>
-        public static IList<G9DtGenericMethods> GetGenericMethodsOfType(Type targetType,
+        public static IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
                                               BindingFlags.Static,
             Func<MethodInfo, bool> customFilter = null, object targetObject = null, bool initializeInstance = false)
@@ -574,12 +577,12 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
                 ? targetType
                     .GetMethods(specifiedModifiers)
                     .Where(s => s.IsGenericMethod && customFilter(s))
-                    .Select(s => new G9DtGenericMethods(s.Name, s, targetObject))
+                    .Select(s => new G9DtGenericMethod(s.Name, s, targetObject))
                     .ToArray()
                 : targetType
                     .GetMethods(specifiedModifiers)
                     .Where(s => s.IsGenericMethod)
-                    .Select(s => new G9DtGenericMethods(s.Name, s, targetObject))
+                    .Select(s => new G9DtGenericMethod(s.Name, s, targetObject))
                     .ToArray();
         }
 
@@ -598,7 +601,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
         /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
         /// <returns>An object with members array</returns>
-        public static G9DtMembers GetAllMembersOfObject<TObject>(TObject targetObject,
+        public static G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<FieldInfo, bool> customFilterForFields = null,
             Func<PropertyInfo, bool> customFilterForProperties = null,
@@ -620,7 +623,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
         /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
         /// <returns>An object with members array</returns>
-        public static G9DtMembers GetAllMembersOfObject<TObject>(TObject targetObject,
+        public static G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
                                               BindingFlags.Static,
             Func<FieldInfo, bool> customFilterForFields = null,
@@ -649,7 +652,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         ///     thrown.
         /// </param>
         /// <returns>An object with members array</returns>
-        public static G9DtMembers GetAllMembersOfType(Type targetType,
+        public static G9DtMember GetAllMembersOfType(Type targetType,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<FieldInfo, bool> customFilterForFields = null,
             Func<PropertyInfo, bool> customFilterForProperties = null,
@@ -679,7 +682,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         ///     thrown.
         /// </param>
         /// <returns>An object with members array</returns>
-        public static G9DtMembers GetAllMembersOfType(Type targetType,
+        public static G9DtMember GetAllMembersOfType(Type targetType,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
                                               BindingFlags.Static,
             Func<FieldInfo, bool> customFilterForFields = null,
@@ -688,7 +691,7 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
             Func<MethodInfo, bool> customFilterForGenericMethods = null, object targetObject = null,
             bool initializeInstance = false)
         {
-            return new G9DtMembers(
+            return new G9DtMember(
                 GetFieldsOfType(targetType, specifiedModifiers, customFilterForFields, targetObject,
                     initializeInstance),
                 GetPropertiesOfType(targetType, specifiedModifiers, customFilterForProperties, targetObject,

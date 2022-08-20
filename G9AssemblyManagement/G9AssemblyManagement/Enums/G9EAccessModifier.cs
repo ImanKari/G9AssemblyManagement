@@ -26,6 +26,11 @@ namespace G9AssemblyManagement.Enums
         /// <summary>
         ///     Specifies that static members are to be included in the search.
         /// </summary>
-        Static = 4
+        Static = 4,
+
+        /// <summary>
+        ///     Specifies that static members plus instance members are to be included in the search.
+        /// </summary>
+        StaticAndInstance = 8
     }
 }

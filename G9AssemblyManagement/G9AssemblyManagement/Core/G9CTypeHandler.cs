@@ -184,15 +184,7 @@ namespace G9AssemblyManagement.Core
                         s =>
                             // Specifies name
                             s.Name == nameof(TimeSpan.Parse) &&
-                            (
-                                // Two parameter with IFormatProvider
-                                (s.GetParameters().Length == 2 &&
-                                 s.GetParameters()[0].ParameterType == valueType &&
-                                 s.GetParameters()[1].ParameterType == typeof(IFormatProvider))
-                                ||
-                                // One math parameter
-                                (s.GetParameters().Length == 1 && s.GetParameters()[0].ParameterType == valueType)
-                            ));
+                            MethodValidation(s, valueType, typeof(IFormatProvider)));
 
                 // If in the first search, the process can't find valuable methods. The second search tries to find the "Parse" method with string parameter type.
                 if (valueTypeCode != TypeCode.String && methods == null)
@@ -202,13 +194,8 @@ namespace G9AssemblyManagement.Core
                         G9EAccessModifier.Everything,
                         s =>
                             // Specifies name
-                            (s.Name == nameof(TimeSpan.Parse) && s.GetParameters().Length == 2 &&
-                             s.GetParameters()[0].ParameterType == typeof(string) &&
-                             s.GetParameters()[1].ParameterType == typeof(IFormatProvider))
-                            ||
-                            // One math parameter
-                            (s.GetParameters().Length == 1 &&
-                             s.GetParameters()[0].ParameterType == typeof(string)));
+                            s.Name == nameof(TimeSpan.Parse) &&
+                            MethodValidation(s, typeof(string), typeof(IFormatProvider)));
                 }
 
                 // If methods existed, in this process, the "Parse" method would be executed one by one.
@@ -234,6 +221,42 @@ namespace G9AssemblyManagement.Core
             {
                 return Convert.ChangeType(value, specificType);
             }
+        }
+
+        /// <summary>
+        ///     Helper method to check validation of parser methods
+        /// </summary>
+        /// <param name="method">Access to method info</param>
+        /// <param name="firstType">Specifies the first type of parameter</param>
+        /// <param name="secondType">Specifies the second type of parameter</param>
+        /// <returns>Return true, if specified validations is valid</returns>
+        private static bool MethodValidation(MethodInfo method, Type firstType, Type secondType)
+        {
+            var parameters = method.GetParameters();
+
+            // For both parser the parameters must be one or two
+            if (parameters.Length != 1 && parameters.Length != 2)
+                return false;
+
+            // The parser method must have a return type expect void
+            if (method.ReturnType == typeof(void))
+                return false;
+
+            if (parameters.Length == 1)
+            {
+                // For the "StringToObject" method, first parameter is string, second one is G9IMemberGetter, and return type is object
+                if (parameters[0].ParameterType == firstType)
+                    return true;
+            }
+            else
+            {
+                // For the "ObjectToString" method, first parameter is object, second one is G9IMemberGetter, and return type is string
+                if (parameters[0].ParameterType == firstType &&
+                    parameters[1].ParameterType == secondType)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

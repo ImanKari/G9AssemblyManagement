@@ -21,7 +21,7 @@ namespace G9AssemblyManagement.Helper
         /// <typeparam name="TObject">Specifies the type of an object</typeparam>
         /// <param name="targetObject">Specifies an object to find properties</param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfObject<TObject>(TObject targetObject)
+        public IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject)
         {
             return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject, G9EAccessModifier.Everything);
         }
@@ -33,7 +33,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetObject">Specifies an object to find properties</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfObject<TObject>(TObject targetObject,
+        public IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject, specifiedModifiers);
@@ -46,7 +46,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetObject">Specifies an object to find properties</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfObject<TObject>(TObject targetObject,
+        public IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject, specifiedModifiers);
@@ -60,7 +60,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfObject<TObject>(TObject targetObject,
+        public IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers,
             Func<PropertyInfo, bool> customFilter)
         {
@@ -75,7 +75,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfObject<TObject>(TObject targetObject,
+        public IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers,
             Func<PropertyInfo, bool> customFilter)
         {
@@ -92,7 +92,7 @@ namespace G9AssemblyManagement.Helper
         /// <typeparam name="TObject">Specifies the type of an object</typeparam>
         /// <param name="targetObject">Specifies an object to find methods</param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfObject<TObject>(TObject targetObject)
+        public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject)
         {
             return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject, G9EAccessModifier.Everything);
         }
@@ -104,7 +104,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetObject">Specifies an object to find methods</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject, specifiedModifiers);
@@ -117,7 +117,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetObject">Specifies an object to find methods</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject, specifiedModifiers);
@@ -131,7 +131,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers,
             Func<MethodInfo, bool> customFilter)
         {
@@ -146,7 +146,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers,
             Func<MethodInfo, bool> customFilter)
         {
@@ -163,7 +163,7 @@ namespace G9AssemblyManagement.Helper
         /// <typeparam name="TObject">Specifies the type of an object</typeparam>
         /// <param name="targetObject">Specifies an object to find generic methods</param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfObject<TObject>(TObject targetObject)
+        public IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject)
         {
             return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject, G9EAccessModifier.Everything);
         }
@@ -175,7 +175,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetObject">Specifies an object to find generic methods</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject, specifiedModifiers);
@@ -188,7 +188,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetObject">Specifies an object to find generic methods</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject, specifiedModifiers);
@@ -202,7 +202,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers,
             Func<MethodInfo, bool> customFilter)
         {
@@ -218,7 +218,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers,
             Func<MethodInfo, bool> customFilter)
         {
@@ -236,7 +236,7 @@ namespace G9AssemblyManagement.Helper
         /// <typeparam name="TObject">Specifies the type of an object</typeparam>
         /// <param name="targetObject">Specifies an object to find generic members</param>
         /// <returns>An object with members array</returns>
-        public G9DtMembers GetAllMembersOfObject<TObject>(TObject targetObject)
+        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject)
         {
             return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject, G9EAccessModifier.Everything);
         }
@@ -248,7 +248,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetObject">Specifies an object to find generic members</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>An object with members array</returns>
-        public G9DtMembers GetAllMembersOfObject<TObject>(TObject targetObject,
+        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject, specifiedModifiers);
@@ -261,7 +261,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetObject">Specifies an object to find generic members</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>An object with members array</returns>
-        public G9DtMembers GetAllMembersOfObject<TObject>(TObject targetObject,
+        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject, specifiedModifiers);
@@ -278,7 +278,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
         /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
         /// <returns>An object with members array</returns>
-        public G9DtMembers GetAllMembersOfObject<TObject>(TObject targetObject,
+        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers,
             Func<FieldInfo, bool> customFilterForFields,
             Func<PropertyInfo, bool> customFilterForProperties,
@@ -301,7 +301,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
         /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
         /// <returns>An object with members array</returns>
-        public G9DtMembers GetAllMembersOfObject<TObject>(TObject targetObject,
+        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers,
             Func<FieldInfo, bool> customFilterForFields,
             Func<PropertyInfo, bool> customFilterForProperties,
@@ -323,7 +323,7 @@ namespace G9AssemblyManagement.Helper
         /// <typeparam name="TObject">Specifies the type of an object</typeparam>
         /// <param name="targetObject">Specifies an object to find fields</param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfObject<TObject>(TObject targetObject)
+        public IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject)
         {
             return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject, G9EAccessModifier.Everything);
         }
@@ -335,7 +335,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetObject">Specifies an object to find fields</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject, specifiedModifiers);
@@ -348,7 +348,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetObject">Specifies an object to find fields</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject, specifiedModifiers);
@@ -362,7 +362,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers,
             Func<FieldInfo, bool> customFilter)
         {
@@ -377,7 +377,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfObject<TObject>(TObject targetObject,
+        public IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers,
             Func<FieldInfo, bool> customFilter)
         {
@@ -393,7 +393,7 @@ namespace G9AssemblyManagement.Helper
         /// </summary>
         /// <param name="targetType">Specifies a type to find properties</param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfType(Type targetType)
+        public IList<G9DtProperty> GetPropertiesOfType(Type targetType)
         {
             return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType, G9EAccessModifier.Everything);
         }
@@ -404,7 +404,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetType">Specifies a type to find properties</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfType(Type targetType,
+        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
             G9EAccessModifier specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType, specifiedModifiers);
@@ -416,7 +416,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetType">Specifies a type to find properties</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfType(Type targetType,
+        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
             BindingFlags specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType, specifiedModifiers);
@@ -429,7 +429,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfType(Type targetType,
+        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
             G9EAccessModifier specifiedModifiers,
             Func<PropertyInfo, bool> customFilter)
         {
@@ -443,7 +443,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfType(Type targetType,
+        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<PropertyInfo, bool> customFilter)
         {
@@ -464,7 +464,7 @@ namespace G9AssemblyManagement.Helper
         ///     thrown.
         /// </param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfType(Type targetType,
+        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<PropertyInfo, bool> customFilter, bool initializeInstance)
         {
@@ -486,7 +486,7 @@ namespace G9AssemblyManagement.Helper
         ///     thrown.
         /// </param>
         /// <returns>A collection of properties</returns>
-        public IList<G9DtProperties> GetPropertiesOfType(Type targetType,
+        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
             G9EAccessModifier specifiedModifiers,
             Func<PropertyInfo, bool> customFilter, bool initializeInstance)
         {
@@ -503,7 +503,7 @@ namespace G9AssemblyManagement.Helper
         /// </summary>
         /// <param name="targetType">Specifies a type to find methods</param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfType(Type targetType)
+        public IList<G9DtMethod> GetMethodsOfType(Type targetType)
         {
             return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType, G9EAccessModifier.Everything);
         }
@@ -514,7 +514,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetType">Specifies a type to find methods</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfType(Type targetType,
+        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType, specifiedModifiers);
@@ -526,7 +526,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetType">Specifies a type to find methods</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfType(Type targetType,
+        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
             BindingFlags specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType, specifiedModifiers);
@@ -539,7 +539,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfType(Type targetType,
+        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers,
             Func<MethodInfo, bool> customFilter)
         {
@@ -553,7 +553,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfType(Type targetType,
+        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<MethodInfo, bool> customFilter)
         {
@@ -574,7 +574,7 @@ namespace G9AssemblyManagement.Helper
         ///     thrown.
         /// </param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfType(Type targetType,
+        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<MethodInfo, bool> customFilter, bool initializeInstance)
         {
@@ -596,7 +596,7 @@ namespace G9AssemblyManagement.Helper
         ///     thrown.
         /// </param>
         /// <returns>A collection of methods</returns>
-        public IList<G9DtMethods> GetMethodsOfType(Type targetType,
+        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers,
             Func<MethodInfo, bool> customFilter, bool initializeInstance)
         {
@@ -613,7 +613,7 @@ namespace G9AssemblyManagement.Helper
         /// </summary>
         /// <param name="targetType">Specifies a type to find generic methods</param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfType(Type targetType)
+        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType)
         {
             return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, G9EAccessModifier.Everything);
         }
@@ -624,7 +624,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetType">Specifies a type to find generic methods</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfType(Type targetType,
+        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, specifiedModifiers);
@@ -636,7 +636,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetType">Specifies a type to find generic methods</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfType(Type targetType,
+        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
             BindingFlags specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, specifiedModifiers);
@@ -649,7 +649,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfType(Type targetType,
+        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers,
             Func<MethodInfo, bool> customFilter)
         {
@@ -663,7 +663,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfType(Type targetType,
+        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<MethodInfo, bool> customFilter)
         {
@@ -684,7 +684,7 @@ namespace G9AssemblyManagement.Helper
         ///     thrown.
         /// </param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfType(Type targetType,
+        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<MethodInfo, bool> customFilter, bool initializeInstance)
         {
@@ -706,7 +706,7 @@ namespace G9AssemblyManagement.Helper
         ///     thrown.
         /// </param>
         /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethods> GetGenericMethodsOfType(Type targetType,
+        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers,
             Func<MethodInfo, bool> customFilter, bool initializeInstance)
         {
@@ -723,7 +723,7 @@ namespace G9AssemblyManagement.Helper
         /// </summary>
         /// <param name="targetType">Specifies a type to find generic members</param>
         /// <returns>a type with members array</returns>
-        public G9DtMembers GetAllMembersOfType(Type targetType)
+        public G9DtMember GetAllMembersOfType(Type targetType)
         {
             return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, G9EAccessModifier.Everything);
         }
@@ -734,7 +734,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetType">Specifies a type to find generic members</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>a type with members array</returns>
-        public G9DtMembers GetAllMembersOfType(Type targetType,
+        public G9DtMember GetAllMembersOfType(Type targetType,
             BindingFlags specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, specifiedModifiers);
@@ -746,7 +746,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetType">Specifies a type to find generic members</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>a type with members array</returns>
-        public G9DtMembers GetAllMembersOfType(Type targetType,
+        public G9DtMember GetAllMembersOfType(Type targetType,
             G9EAccessModifier specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, specifiedModifiers);
@@ -762,7 +762,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
         /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
         /// <returns>a type with members array</returns>
-        public G9DtMembers GetAllMembersOfType(Type targetType,
+        public G9DtMember GetAllMembersOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<FieldInfo, bool> customFilterForFields,
             Func<PropertyInfo, bool> customFilterForProperties,
@@ -784,7 +784,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
         /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
         /// <returns>a type with members array</returns>
-        public G9DtMembers GetAllMembersOfType(Type targetType,
+        public G9DtMember GetAllMembersOfType(Type targetType,
             G9EAccessModifier specifiedModifiers,
             Func<FieldInfo, bool> customFilterForFields,
             Func<PropertyInfo, bool> customFilterForProperties,
@@ -813,7 +813,7 @@ namespace G9AssemblyManagement.Helper
         ///     thrown.
         /// </param>
         /// <returns>a type with members array</returns>
-        public G9DtMembers GetAllMembersOfType(Type targetType,
+        public G9DtMember GetAllMembersOfType(Type targetType,
             G9EAccessModifier specifiedModifiers,
             Func<FieldInfo, bool> customFilterForFields,
             Func<PropertyInfo, bool> customFilterForProperties,
@@ -842,7 +842,7 @@ namespace G9AssemblyManagement.Helper
         ///     thrown.
         /// </param>
         /// <returns>a type with members array</returns>
-        public G9DtMembers GetAllMembersOfType(Type targetType,
+        public G9DtMember GetAllMembersOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<FieldInfo, bool> customFilterForFields,
             Func<PropertyInfo, bool> customFilterForProperties,
@@ -864,7 +864,7 @@ namespace G9AssemblyManagement.Helper
         /// </summary>
         /// <param name="targetType">Specifies a type to find fields</param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfType(Type targetType)
+        public IList<G9DtField> GetFieldsOfType(Type targetType)
         {
             return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType, G9EAccessModifier.Everything);
         }
@@ -875,7 +875,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetType">Specifies a type to find fields</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfType(Type targetType,
+        public IList<G9DtField> GetFieldsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType, specifiedModifiers);
@@ -887,7 +887,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="targetType">Specifies a type to find fields</param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfType(Type targetType,
+        public IList<G9DtField> GetFieldsOfType(Type targetType,
             BindingFlags specifiedModifiers)
         {
             return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType, specifiedModifiers);
@@ -900,7 +900,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfType(Type targetType,
+        public IList<G9DtField> GetFieldsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers,
             Func<FieldInfo, bool> customFilter)
         {
@@ -914,7 +914,7 @@ namespace G9AssemblyManagement.Helper
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfType(Type targetType,
+        public IList<G9DtField> GetFieldsOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<FieldInfo, bool> customFilter)
         {
@@ -935,7 +935,7 @@ namespace G9AssemblyManagement.Helper
         ///     thrown.
         /// </param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfType(Type targetType,
+        public IList<G9DtField> GetFieldsOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<FieldInfo, bool> customFilter, bool initializeInstance)
         {
@@ -957,7 +957,7 @@ namespace G9AssemblyManagement.Helper
         ///     thrown.
         /// </param>
         /// <returns>A collection of fields</returns>
-        public IList<G9DtFields> GetFieldsOfType(Type targetType,
+        public IList<G9DtField> GetFieldsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers,
             Func<FieldInfo, bool> customFilter, bool initializeInstance)
         {

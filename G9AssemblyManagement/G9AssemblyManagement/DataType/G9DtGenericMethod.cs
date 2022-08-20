@@ -8,7 +8,7 @@ namespace G9AssemblyManagement.DataType
     /// <summary>
     ///     Data type for methods
     /// </summary>
-    public readonly struct G9DtGenericMethods : G9IMethodMember
+    public readonly struct G9DtGenericMethod : G9IMethodMember
     {
         #region ### Fields And Properties ###
 
@@ -33,7 +33,7 @@ namespace G9AssemblyManagement.DataType
         /// <param name="methodName">Specifies method name</param>
         /// <param name="methodInfo">Specifies method value</param>
         /// <param name="targetObject">Specifies target object</param>
-        public G9DtGenericMethods(string methodName, MethodInfo methodInfo, object targetObject)
+        public G9DtGenericMethod(string methodName, MethodInfo methodInfo, object targetObject)
         {
             MethodName = methodName;
             MethodInfo = methodInfo;

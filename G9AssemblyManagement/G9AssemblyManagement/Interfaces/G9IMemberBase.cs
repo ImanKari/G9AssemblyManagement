@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using G9AssemblyManagement.Enums;
 
 namespace G9AssemblyManagement.Interfaces
@@ -16,13 +17,18 @@ namespace G9AssemblyManagement.Interfaces
         string Name { get; }
 
         /// <summary>
+        ///     Specifies the basis type of member in terms of being field or property
+        /// </summary>
+        G9EMemberType MemberBasisType { get; }
+
+        /// <summary>
         ///     Specifies the type of member
         /// </summary>
-        G9EMemberType MemberType { get; }
+        Type MemberType { get; }
 
         /// <summary>
         ///     Property to get the MemberInfo of member
         /// </summary>
-        MemberInfo GetMemberInfo { get; }
+        MemberInfo MemberInfo { get; }
     }
 }
