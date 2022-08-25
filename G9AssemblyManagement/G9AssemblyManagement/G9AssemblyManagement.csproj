@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFrameworks>net35;net40;net45;netstandard2.0;netstandard2.1</TargetFrameworks>
-	  <Version>1.4.0.1</Version>
+	  <Version>1.4.2.2</Version>
 	  <Authors>Iman Kari</Authors>
 	  <Company>G9Studio</Company>
 	  <Product>G9 Assembly Management</Product>
@@ -12,14 +12,13 @@
 	  <RepositoryUrl>https://github.com/ImanKari/G9AssemblyManagement</RepositoryUrl>
 	  <RepositoryType>GitHub</RepositoryType>
 	  <PackageTags>Assembly Management dependency injection attribute</PackageTags>
-	  <PackageReleaseNotes>-- Redesigned custom modifier access (StaticAndInstance).
--- Enhanced performance of the SmartChangeType method.
--- Redesigned the basis of data type classes and interfaces.
+	  <PackageReleaseNotes>-- Implemented performance helper.
+-- Implemented cryptography helper.
 -- Redesigned structure.
 -- Completed tests.</PackageReleaseNotes>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <AssemblyVersion>1.4.0.1</AssemblyVersion>
-	  <FileVersion>1.4.0.1</FileVersion>
+	  <AssemblyVersion>1.4.2.2</AssemblyVersion>
+	  <FileVersion>1.4.2.2</FileVersion>
 	  <ApplicationIcon></ApplicationIcon>
 	  <PackageIcon>G9-Icon.png</PackageIcon>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
@@ -70,12 +69,14 @@
 
   <ItemGroup>
     <Folder Include="Abstract\" />
-    <Folder Include="DataType\Parents\" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
     <PackageReference Include="Microsoft.CSharp">
       <Version>4.7.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
     </PackageReference>
   </ItemGroup>
 
@@ -101,11 +102,17 @@
     <PackageReference Include="Microsoft.CSharp">
       <Version>4.7.0</Version>
     </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <PackageReference Include="Microsoft.CSharp">
       <Version>4.7.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
     </PackageReference>
   </ItemGroup>
 

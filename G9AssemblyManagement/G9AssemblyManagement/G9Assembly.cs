@@ -29,6 +29,16 @@ namespace G9AssemblyManagement
         /// </summary>
         public static readonly G9CGeneralTools GeneralTools = new G9CGeneralTools();
 
+        /// <summary>
+        ///     Access to cryptography tools
+        /// </summary>
+        public static readonly G9CCryptography CryptographyTools = new G9CCryptography();
+
+        /// <summary>
+        ///     Access to performance tools
+        /// </summary>
+        public static readonly G9CPerformanceTools PerformanceTools = new G9CPerformanceTools();
+
         #endregion
     }
 }

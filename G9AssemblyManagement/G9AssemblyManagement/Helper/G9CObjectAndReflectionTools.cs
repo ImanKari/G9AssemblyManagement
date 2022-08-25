@@ -967,38 +967,38 @@ namespace G9AssemblyManagement.Helper
 
         #endregion
 
-        #region UnifyObjectsValues Methods
+        #region MergeObjectsValues Methods
 
         /// <summary>
-        ///     Method to unify the values between two objects.
+        ///     Method to merge the values between two objects.
         ///     <para />
         ///     The first object gets its new values from the second object.
         /// </summary>
         /// <param name="mainObject">Specifies the main object for getting new values from the target object.</param>
         /// <param name="targetObject">Specifies the target object for giving its values to the main object.</param>
-        public void UnifyObjectsValues(object mainObject, object targetObject)
+        public void MergeObjectsValues(object mainObject, object targetObject)
         {
-            G9CObjectAndReflectionHandler.UnifyObjectsValues(mainObject, targetObject,
+            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject,
                 specifiedModifiers: G9EAccessModifier.Public);
         }
 
         /// <summary>
-        ///     Method to unify the values between two objects.
+        ///     Method to merge the values between two objects.
         ///     <para />
         ///     The first object gets its new values from the second object.
         /// </summary>
         /// <param name="mainObject">Specifies the main object for getting new values from the target object.</param>
         /// <param name="targetObject">Specifies the target object for giving its values to the main object.</param>
         /// <param name="valueMismatch">Specifies the mismatch checking process for members' values</param>
-        public void UnifyObjectsValues(object mainObject, object targetObject,
+        public void MergeObjectsValues(object mainObject, object targetObject,
             G9EValueMismatchChecking valueMismatch)
         {
-            G9CObjectAndReflectionHandler.UnifyObjectsValues(mainObject, targetObject, valueMismatch,
+            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
                 specifiedModifiers: G9EAccessModifier.Public);
         }
 
         /// <summary>
-        ///     Method to unify the values between two objects.
+        ///     Method to merge the values between two objects.
         ///     <para />
         ///     The first object gets its new values from the second object.
         /// </summary>
@@ -1009,16 +1009,16 @@ namespace G9AssemblyManagement.Helper
         ///     Specifies that if a mismatch occurs between two members' values, an automatic try
         ///     to change type must happen or not.
         /// </param>
-        public void UnifyObjectsValues(object mainObject, object targetObject,
+        public void MergeObjectsValues(object mainObject, object targetObject,
             G9EValueMismatchChecking valueMismatch,
             bool enableTryToChangeType)
         {
-            G9CObjectAndReflectionHandler.UnifyObjectsValues(mainObject, targetObject, valueMismatch,
+            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
                 enableTryToChangeType, G9EAccessModifier.Public);
         }
 
         /// <summary>
-        ///     Method to unify the values between two objects.
+        ///     Method to merge the values between two objects.
         ///     <para />
         ///     The first object gets its new values from the second object.
         /// </summary>
@@ -1030,16 +1030,16 @@ namespace G9AssemblyManagement.Helper
         ///     to change type must happen or not.
         /// </param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        public void UnifyObjectsValues(object mainObject, object targetObject,
+        public void MergeObjectsValues(object mainObject, object targetObject,
             G9EValueMismatchChecking valueMismatch,
             bool enableTryToChangeType, G9EAccessModifier specifiedModifiers)
         {
-            G9CObjectAndReflectionHandler.UnifyObjectsValues(mainObject, targetObject, valueMismatch,
+            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
                 enableTryToChangeType, specifiedModifiers);
         }
 
         /// <summary>
-        ///     Method to unify the values between two objects.
+        ///     Method to merge the values between two objects.
         ///     <para />
         ///     The first object gets its new values from the second object.
         /// </summary>
@@ -1051,16 +1051,16 @@ namespace G9AssemblyManagement.Helper
         ///     to change type must happen or not.
         /// </param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        public void UnifyObjectsValues(object mainObject, object targetObject,
+        public void MergeObjectsValues(object mainObject, object targetObject,
             G9EValueMismatchChecking valueMismatch,
             bool enableTryToChangeType, BindingFlags specifiedModifiers)
         {
-            G9CObjectAndReflectionHandler.UnifyObjectsValues(mainObject, targetObject, valueMismatch,
+            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
                 enableTryToChangeType, specifiedModifiers);
         }
 
         /// <summary>
-        ///     Method to unify the values between two objects.
+        ///     Method to merge the values between two objects.
         ///     <para />
         ///     The first object gets its new values from the second object.
         /// </summary>
@@ -1073,17 +1073,17 @@ namespace G9AssemblyManagement.Helper
         /// </param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        public void UnifyObjectsValues(object mainObject, object targetObject,
+        public void MergeObjectsValues(object mainObject, object targetObject,
             G9EValueMismatchChecking valueMismatch,
             bool enableTryToChangeType, G9EAccessModifier specifiedModifiers,
             Func<G9IMember, bool> customFilter)
         {
-            G9CObjectAndReflectionHandler.UnifyObjectsValues(mainObject, targetObject, valueMismatch,
+            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
                 enableTryToChangeType, specifiedModifiers, customFilter);
         }
 
         /// <summary>
-        ///     Method to unify the values between two objects.
+        ///     Method to merge the values between two objects.
         ///     <para />
         ///     The first object gets its new values from the second object.
         /// </summary>
@@ -1096,17 +1096,17 @@ namespace G9AssemblyManagement.Helper
         /// </param>
         /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
         /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        public void UnifyObjectsValues(object mainObject, object targetObject,
+        public void MergeObjectsValues(object mainObject, object targetObject,
             G9EValueMismatchChecking valueMismatch,
             bool enableTryToChangeType, BindingFlags specifiedModifiers,
             Func<G9IMember, bool> customFilter)
         {
-            G9CObjectAndReflectionHandler.UnifyObjectsValues(mainObject, targetObject, valueMismatch,
+            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
                 enableTryToChangeType, specifiedModifiers, customFilter);
         }
 
         /// <summary>
-        ///     Method to unify the values between two objects.
+        ///     Method to merge the values between two objects.
         ///     <para />
         ///     The first object gets its new values from the second object.
         /// </summary>
@@ -1124,18 +1124,18 @@ namespace G9AssemblyManagement.Helper
         ///     <para />
         ///     Notice: In fact, the function's result specifies the member's value in the main object.
         /// </param>
-        public void UnifyObjectsValues(object mainObject, object targetObject,
+        public void MergeObjectsValues(object mainObject, object targetObject,
             G9EValueMismatchChecking valueMismatch,
             bool enableTryToChangeType, G9EAccessModifier specifiedModifiers,
             Func<G9IMember, bool> customFilter,
             Func<G9IMember, G9IMember, object> customProcess)
         {
-            G9CObjectAndReflectionHandler.UnifyObjectsValues(mainObject, targetObject, valueMismatch,
+            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
                 enableTryToChangeType, specifiedModifiers, customFilter, customProcess);
         }
 
         /// <summary>
-        ///     Method to unify the values between two objects.
+        ///     Method to merge the values between two objects.
         ///     <para />
         ///     The first object gets its new values from the second object.
         /// </summary>
@@ -1153,13 +1153,13 @@ namespace G9AssemblyManagement.Helper
         ///     <para />
         ///     Notice: In fact, the function's result specifies the member's value in the main object.
         /// </param>
-        public void UnifyObjectsValues(object mainObject, object targetObject,
+        public void MergeObjectsValues(object mainObject, object targetObject,
             G9EValueMismatchChecking valueMismatch,
             bool enableTryToChangeType, BindingFlags specifiedModifiers,
             Func<G9IMember, bool> customFilter,
             Func<G9IMember, G9IMember, object> customProcess)
         {
-            G9CObjectAndReflectionHandler.UnifyObjectsValues(mainObject, targetObject, valueMismatch,
+            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
                 enableTryToChangeType, specifiedModifiers, customFilter, customProcess);
         }
 

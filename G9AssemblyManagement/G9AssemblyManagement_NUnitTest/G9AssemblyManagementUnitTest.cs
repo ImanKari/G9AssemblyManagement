@@ -4,7 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.Threading;
 using G9AssemblyManagement;
 using G9AssemblyManagement.DataType;
 using G9AssemblyManagement.Enums;
@@ -414,7 +415,7 @@ namespace G9AssemblyManagement_NUnitTest
                 unassignObject => { count2--; }, onErrorException => throw onErrorException);
 
 
-            _ = Parallel.For(0, 99_999, index =>
+            G9Assembly.PerformanceTools.MultiThreadShockTest(i =>
             {
                 using var newObject1 = new G9CInstanceTest();
                 using var newObject2 = new G9CThirdClass();
@@ -423,11 +424,11 @@ namespace G9AssemblyManagement_NUnitTest
 
                 Assert.True(hash1 == h1);
                 Assert.True(hash2 == h2);
-            });
+            }, 99_999);
 
             Assert.True(count1 == 0 && count2 == 0);
 
-            _ = Parallel.For(0, 99_999, index =>
+            G9Assembly.PerformanceTools.MultiThreadShockTest(i =>
             {
                 var newObject1 = new G9CInstanceTest();
                 var newObject2 = new G9CThirdClass();
@@ -439,11 +440,11 @@ namespace G9AssemblyManagement_NUnitTest
 
                 newObject1.Dispose();
                 newObject2.Dispose();
-            });
+            }, 99_999);
 
             Assert.True(count1 == 0 && count2 == 0);
 
-            _ = Parallel.For(0, 999_999, index =>
+            G9Assembly.PerformanceTools.MultiThreadShockTest(i =>
             {
                 using var newObject1 = new G9CInstanceTest();
                 using var newObject2 = new G9CThirdClass();
@@ -455,7 +456,7 @@ namespace G9AssemblyManagement_NUnitTest
 
                 newObject1.Dispose();
                 newObject2.Dispose();
-            });
+            }, 99_999);
 
             Assert.True(count1 == 0 && count2 == 0);
         }
@@ -974,7 +975,7 @@ namespace G9AssemblyManagement_NUnitTest
                 staticGenericMethods.First(s => s.MethodName == nameof(G9DtStaticType.TestStaticGeneric))
                     .CallMethodWithResult<string>(new[] { typeof(string) }, "G9TM") == "G9TM");
 
-            Parallel.For(0, 99_999, i =>
+            G9Assembly.PerformanceTools.MultiThreadShockTest(i =>
             {
                 // Get generic methods of type
                 var genericMethodsList = G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfType(
@@ -988,7 +989,7 @@ namespace G9AssemblyManagement_NUnitTest
                 Assert.True(
                     genericMethodsList.First(s => s.MethodName == nameof(G9DtStaticType.TestStaticGeneric))
                         .CallMethodWithResult<string>(new[] { typeof(string) }, $"G9TM{i}") == $"G9TM{i}");
-            });
+            }, 99_999);
 
             #endregion
         }
@@ -1054,7 +1055,7 @@ namespace G9AssemblyManagement_NUnitTest
 
         [Test]
         [Order(12)]
-        public void TestUnifyObjectsValues()
+        public void TestMergeObjectsValues()
         {
             // Defining three different objects.
             var objectA = new G9CMismatchTypeA();
@@ -1068,10 +1069,10 @@ namespace G9AssemblyManagement_NUnitTest
                         objectA.Name != objectB.Name && objectA.Age != objectB.Age &&
                         objectA.ExDateTime != objectB.ExDateTime);
 
-            // Unifying object objectA with object objectB
-            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectA, objectB);
+            // Merging object objectA with object objectB
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectA, objectB);
 
-            // Testing the values between objects after unifying.
+            // Testing the values between objects after merging.
             Assert.True(objectA.Name != "G9TM" && objectA.Age != 32 &&
                         objectA.ExDateTime != DateTime.Parse("1990-09-01") &&
                         objectA.Name == objectB.Name && objectA.Age == objectB.Age &&
@@ -1079,44 +1080,44 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Defining new value for the object again.
             objectA = new G9CMismatchTypeA();
-            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectA, objectB);
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectA, objectB);
 
-            // Testing the values between objects after unifying again.
+            // Testing the values between objects after merging again.
             Assert.True(objectA.Name != "G9TM" && objectA.Age != 32 &&
                         objectA.ExDateTime != DateTime.Parse("1990-09-01") &&
                         objectA.Name == objectB.Name && objectA.Age == objectB.Age &&
                         objectA.ExDateTime == objectB.ExDateTime);
 
 
-            // Unifying objectB with objectC
+            // Merging objectB with objectC
             try
             {
                 /*
                 By paying attention to mode "enableTryToChangeType" that is set "false":
                     In this case, the objectC has the value "nine" for age; it definitely can't be changed to the int type.
                 */
-                G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC,
+                G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC,
                     G9EValueMismatchChecking.PreventMismatchValues);
                 Assert.Fail();
             }
             catch (Exception e)
             {
-                Assert.True(e.Message == @"The members can't unify their values.
+                Assert.True(e.Message == @"The members can't merge their values.
 In the first object, the member's name is 'Age' with the type 'System.Int32'.
 In the second object, the member's name is 'Age' with the value '109' and the type 'System.String'." &&
                             e.InnerException.GetType() == typeof(ArgumentException) && e.InnerException.Message ==
                             "Object of type 'System.String' cannot be converted to type 'System.Int32'.");
             }
 
-            // Unifying objectB with objectC by "AllowMismatchValues" mode.
-            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC);
+            // Merging objectB with objectC by "AllowMismatchValues" mode.
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC);
 
-            // Testing the values between objects after unifying.
+            // Testing the values between objects after merging.
             /*
              * By paying attention to the "G9EValueMismatchChecking.AllowMismatchValues" mode:
-             *   The unifying process ignores the "Age" member because of mismatching in type.
-             *   The unifying process ignores the "IpAddress" member because of mismatching in type.
-             *   The unifying process ignores the "Percent" member because of mismatching in type.
+             *   The merging process ignores the "Age" member because of mismatching in type.
+             *   The merging process ignores the "IpAddress" member because of mismatching in type.
+             *   The merging process ignores the "Percent" member because of mismatching in type.
             */
             Assert.True(objectB.Name != "G9TM 2" && objectB.Age == 99 &&
                         objectB.ExDateTime != DateTime.Parse("1999-03-06") &&
@@ -1129,16 +1130,16 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
             // Defining new value for the object again.
             objectB = new G9CMismatchTypeB();
 
-            // Unifying objectB with objectC by trying smart change type.
-            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC,
+            // Merging objectB with objectC by trying smart change type.
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC,
                 G9EValueMismatchChecking.PreventMismatchValues, true);
 
-            // Testing the values between objects after unifying.
+            // Testing the values between objects after merging.
             /*
              * By paying attention to the "G9EValueMismatchChecking.PreventMismatchValues" mode as well as "enableTryToChangeType":
              *   All mismatches are solved with the automatic smart change type process.
             */
-            // Testing the values between objects after unifying.
+            // Testing the values between objects after merging.
             Assert.True(objectB.Name != "G9TM 2" && objectB.Age != 99 &&
                         objectB.ExDateTime != DateTime.Parse("1999-03-06") &&
                         objectB.IpAddress != IPAddress.IPv6Loopback && objectB.Percent != 99.9f &&
@@ -1152,16 +1153,16 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
             try
             {
                 /*
-                 * Unifying objectB with objectC by trying smart change type.
+                 * Merging objectB with objectC by trying smart change type.
                  * In this case, the objectC has the value "nine" for age; it definitely can't be changed to the int type.
                  */
-                G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC2,
+                G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC2,
                     G9EValueMismatchChecking.PreventMismatchValues, true);
                 Assert.Fail();
             }
             catch (Exception e)
             {
-                Assert.True(e.Message == @"The members can't unify their values.
+                Assert.True(e.Message == @"The members can't merge their values.
 In the first object, the member's name is 'Age' with the type 'System.Int32'.
 In the second object, the member's name is 'Age' with the value 'nine' and the type 'System.String'." &&
                             e.InnerException.GetType() == typeof(FormatException) && e.InnerException.Message ==
@@ -1169,14 +1170,14 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             }
 
 
-            // Unifying objectB with objectC by "AllowMismatchValues" mode.
-            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC2,
+            // Merging objectB with objectC by "AllowMismatchValues" mode.
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC2,
                 G9EValueMismatchChecking.AllowMismatchValues, true);
 
-            // Testing the values between objects after unifying.
+            // Testing the values between objects after merging.
             /*
              * By paying attention to the "G9EValueMismatchChecking.AllowMismatchValues" mode:
-             *   The unifying process ignores the "Age" member because of mismatching in type.
+             *   The merging process ignores the "Age" member because of mismatching in type.
             */
             Assert.True(objectB.Age == 99 && objectB.Age.ToString() != objectC2.Age &&
                         objectB.Percent != 99.9f && objectB.Percent.ToString() == objectC2.Percent);
@@ -1185,16 +1186,16 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             objectA = new G9CMismatchTypeA();
             objectB = new G9CMismatchTypeB();
 
-            // Unifying objectA with objectB just for all public members.
-            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectA, objectB,
+            // Merging objectA with objectB just for all public members.
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectA, objectB,
                 G9EValueMismatchChecking.PreventMismatchValues);
 
             // The first test just recognizes the default value.
             Assert.True(objectA.GetTime() == new TimeSpan(9, 9, 9) && objectB.GetTime() == new TimeSpan(3, 6, 9) &&
                         objectA.GetTime() != objectB.GetTime());
 
-            // Unifying objectA with objectB for all members (private/protect/public/...).
-            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectA, objectB,
+            // Merging objectA with objectB for all members (private/protect/public/...).
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectA, objectB,
                 G9EValueMismatchChecking.PreventMismatchValues, false, G9EAccessModifier.Everything);
 
             // Testing private member
@@ -1206,7 +1207,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             objectB = new G9CMismatchTypeB();
 
             // Ignore a member with custom filter
-            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectA, objectB,
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectA, objectB,
                 G9EValueMismatchChecking.PreventMismatchValues, false, G9EAccessModifier.Everything,
                 s => s.Name != "Age");
 
@@ -1215,11 +1216,11 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             // Defining new value for the object again.
             objectB = new G9CMismatchTypeB();
             /*
-                 * Unifying objectB with objectC by trying smart change type.
+                 * Merging objectB with objectC by trying smart change type.
                  * In this case, the object has the value of "nine" for the "age" member; it definitely can't be changed to the int type, but with the custom process it can be done!
                  */
             Assert.True(objectB.Age == 99 && objectC2.Age == "nine");
-            G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(objectB, objectC2,
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC2,
                 G9EValueMismatchChecking.PreventMismatchValues, true, G9EAccessModifier.Public, null,
                 (m1, m2) =>
                 {
@@ -1240,7 +1241,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             Assert.True(objectB.Age == 9);
 
             // Thread shock test
-            Parallel.For(1, 99_999, i =>
+            G9Assembly.PerformanceTools.MultiThreadShockTest(i =>
             {
                 string stringNumber;
                 int intNumber;
@@ -1262,7 +1263,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                 };
 
                 Assert.True(newObjectB.Age == 99 && newObjectC2.Age == stringNumber);
-                G9Assembly.ObjectAndReflectionTools.UnifyObjectsValues(newObjectB, newObjectC2,
+                G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(newObjectB, newObjectC2,
                     G9EValueMismatchChecking.PreventMismatchValues, true, G9EAccessModifier.Public, null,
                     (m1, m2) =>
                     {
@@ -1281,11 +1282,257 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                     });
 
                 Assert.True(newObjectB.Age == intNumber);
-            });
+            }, 99_999);
         }
 
         [Test]
         [Order(13)]
+        public void TestPerformanceMethods()
+        {
+            // Number Of Repetitions
+            const int numberOfRepetitions = 39_999_999;
+
+            // Just Test
+            G9Assembly.PerformanceTools.MultiThreadShockTest(i =>
+            {
+                // Nothing/Just test
+            }, numberOfRepetitions);
+
+            // Two sample function for test
+            // First
+            void StringSum1()
+            {
+                var basisData = string.Empty;
+                basisData += "AaA";
+                basisData += basisData;
+                basisData += basisData;
+                basisData += basisData;
+                _ = string.IsNullOrEmpty(basisData);
+            }
+
+            // Second
+            void StringSum2()
+            {
+                var basisData = string.Empty;
+                basisData = basisData + "AaA";
+                basisData = basisData + "AaA";
+                basisData = basisData + "AaA";
+                basisData = basisData + "AaA";
+                _ = string.IsNullOrEmpty(basisData);
+            }
+
+            // Single-core test
+            var result1 = G9Assembly.PerformanceTools.PerformanceTester(StringSum1,
+                G9EPerformanceTestMode.SingleCore, numberOfRepetitions);
+
+            Assert.True(result1.AverageExecutionTimeOnMultiCore == null &&
+                        result1.AverageExecutionTimeOnSingleCore != null &&
+                        result1.TestMode == G9EPerformanceTestMode.SingleCore &&
+                        result1.NumberOfRepetitions == numberOfRepetitions);
+
+            Thread.Sleep(99);
+
+            // Multi-core test
+            var result2 = G9Assembly.PerformanceTools.PerformanceTester(StringSum1,
+                G9EPerformanceTestMode.MultiCore, numberOfRepetitions);
+            Assert.True(result2.AverageExecutionTimeOnMultiCore != null &&
+                        result2.AverageExecutionTimeOnSingleCore == null &&
+                        result2.TestMode == G9EPerformanceTestMode.MultiCore &&
+                        result2.NumberOfRepetitions == numberOfRepetitions);
+
+            Thread.Sleep(99);
+
+            // Single-core and multi-core test
+            var result3 = G9Assembly.PerformanceTools.PerformanceTester(StringSum1, G9EPerformanceTestMode.Both,
+                numberOfRepetitions);
+
+            Assert.True(result3.AverageExecutionTimeOnMultiCore != null &&
+                        result3.AverageExecutionTimeOnSingleCore != null &&
+                        result3.TestMode == G9EPerformanceTestMode.Both &&
+                        result3.NumberOfRepetitions == numberOfRepetitions &&
+                        result3.AverageExecutionTimeOnMultiCore < result3.AverageExecutionTimeOnSingleCore);
+
+            Thread.Sleep(99);
+
+            // Comparative Performance Test
+            var comparativeResult = G9Assembly.PerformanceTools.ComparativePerformanceTester(
+                G9EPerformanceTestMode.Both,
+                numberOfRepetitions, StringSum1, StringSum2);
+
+            // It can be weird, but in fact, in C#, the operator of string (string A += "...")  is less speed than (string A = A + "..." ).
+            // Note: Specially in multi-thread
+            Assert.True(
+                comparativeResult.SortedPerformanceSpeedPercentageForSingleCore.Count == 1 &&
+                comparativeResult.SortedPerformanceSpeedPercentageForSingleCore[0].ReadableResult
+                    .StartsWith("The performance speed of action") &&
+                comparativeResult.SortedPerformanceSpeedPercentageForMultiCore.Count == 1 &&
+                comparativeResult.SortedPerformanceSpeedPercentageForMultiCore[0].ReadableResult
+                    .StartsWith("The performance speed of action") &&
+                comparativeResult.MultiCoreFastestProcessIndex == 1 &&
+                comparativeResult.PerformanceResults[0].AverageExecutionTimeOnMultiCore >
+                comparativeResult.PerformanceResults[1].AverageExecutionTimeOnMultiCore &&
+                comparativeResult.PerformanceResults[0].AverageExecutionTimeOnSingleCore >
+                comparativeResult.PerformanceResults[1].AverageExecutionTimeOnSingleCore
+            );
+
+            // Comparative Performance Test - More that two actions
+            var comparativeResultB = G9Assembly.PerformanceTools.ComparativePerformanceTester(
+                G9EPerformanceTestMode.Both, 99_999,
+                // Test list speed
+                new G9DtCustomPerformanceAction("List Speed", () =>
+                {
+                    var Test = new List<string>();
+                    for (var i = 0; i < 99; i++) Test.Add($"Test {i}");
+                    Test.IndexOf("Test 69");
+                }),
+                // Test dictionary
+                new G9DtCustomPerformanceAction("Dictionary Speed", () =>
+                {
+                    var Test = new Dictionary<int, string>();
+                    for (var i = 0; i < 99; i++) Test.Add(i, "Test");
+                    Test.First(s => s.Key == 69);
+                }),
+                // Test stack speed
+                new G9DtCustomPerformanceAction("Stack Speed", () =>
+                {
+                    var Test = new Stack<string>();
+                    for (var i = 0; i < 99; i++) Test.Push($"Test {i}");
+                    Test.First(s => s == "Test 69");
+                }));
+
+            Assert.True(comparativeResultB.SortedPerformanceSpeedPercentageForMultiCore.Count == 2 &&
+                        // Dictionary is a winner in single process
+                        comparativeResultB.SingleCoreFastestProcessIndex == 1);
+        }
+
+        [Test]
+        [Order(14)]
+        public void TestCryptographyMethods()
+        {
+            const string testText = "My Name Is GAM3R!";
+
+            const string testTextMd5 = "521aff434ec91a49bd80278750daa177";
+            const string testTextSha1Hash = "e941e49818ce4ece330bbb924c7293588fa572a1";
+            const string testTextSha256Hash = "c549aca4f2ecdcbb06071689701aee11ac0f1d9cfea438fa0f32248c4d0e097f";
+            const string testTextSha384Hash =
+                "088995b6c6eaa3477ffc75e757c694c786260cb511ba49299f385aa33357635b00a588264ebd585b4c972cd8ad1e3c0f";
+            const string testTextSha512Hash =
+                "51022fb7f5528c1b71654721d01eaeabefa765028923ab1d3b444206d809014bf92a022f46e274bf38d6a071d02016de967cf51cbd381a130d75a884e9433b04";
+            const string testTextCrc32Hash = "ee81e4db";
+
+            #region Hashing Test
+
+            // MD5
+            var md5Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.MD5, testText);
+            Assert.True(!string.IsNullOrEmpty(md5Hash) && md5Hash == testTextMd5);
+
+            md5Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.MD5, testText, true);
+            Assert.True(!string.IsNullOrEmpty(md5Hash) && md5Hash == testTextMd5.ToUpper());
+
+            // SHA1
+            var sha1Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.SHA1, testText);
+            Assert.True(!string.IsNullOrEmpty(sha1Hash) && sha1Hash == testTextSha1Hash);
+
+            sha1Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.SHA1, testText, true);
+            Assert.True(!string.IsNullOrEmpty(sha1Hash) && sha1Hash == testTextSha1Hash.ToUpper());
+
+            // SHA256
+            var sha256Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.SHA256, testText);
+            Assert.True(!string.IsNullOrEmpty(sha256Hash) && sha256Hash == testTextSha256Hash);
+
+            sha256Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.SHA256, testText, true);
+            Assert.True(!string.IsNullOrEmpty(sha256Hash) && sha256Hash == testTextSha256Hash.ToUpper());
+
+            // SHA384
+            var sha384Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.SHA384, testText);
+            Assert.True(!string.IsNullOrEmpty(sha384Hash) && sha384Hash == testTextSha384Hash);
+
+            sha384Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.SHA384, testText, true);
+            Assert.True(!string.IsNullOrEmpty(sha384Hash) && sha384Hash == testTextSha384Hash.ToUpper());
+
+            // SHA512
+            var sha512Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.SHA512, testText);
+            Assert.True(!string.IsNullOrEmpty(sha512Hash) && sha512Hash == testTextSha512Hash);
+
+            sha512Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.SHA512, testText, true);
+            Assert.True(!string.IsNullOrEmpty(sha512Hash) && sha512Hash == testTextSha512Hash.ToUpper());
+
+            // CRC32
+            var crc32Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.CRC32, testText);
+            Assert.True(!string.IsNullOrEmpty(crc32Hash) && crc32Hash == testTextCrc32Hash);
+
+            crc32Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.CRC32, testText, true);
+            Assert.True(!string.IsNullOrEmpty(crc32Hash) && crc32Hash == testTextCrc32Hash.ToUpper());
+            // http://www.sha1-online.com/
+
+            #endregion
+
+            const string standardKey = "eShVmYp3s6v9y$B&";
+            const string standardIv = "gUkXp2s5v8x/A?D(";
+
+            #region AES Test
+
+            // AES encrypt, default config
+            var aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(testText, standardKey, standardIv);
+            Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
+
+            // AES decrypt, default config
+            var aesDecryptionText =
+                G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, standardKey, standardIv);
+            Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == testText);
+
+            // AES encrypt/decrypt, custom config (CFB/CBC/ECB) (ANSIX923/ISO10126/None/Zeros)
+            aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(testText, standardKey, standardIv,
+                new G9DtAESConfig(PaddingMode.ANSIX923, CipherMode.CFB));
+            Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
+            aesDecryptionText = G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, standardKey,
+                standardIv, new G9DtAESConfig(PaddingMode.ANSIX923, CipherMode.CFB));
+            Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == testText);
+
+            // AES encrypt/decrypt, custom config
+            aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(testText, standardKey, standardIv,
+                new G9DtAESConfig(PaddingMode.ISO10126));
+            Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
+            aesDecryptionText = G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, standardKey,
+                standardIv, new G9DtAESConfig(PaddingMode.ISO10126));
+            Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == testText);
+
+            // AES encrypt/decrypt, custom config
+            var newText = testText.PadRight(32, '*');
+            aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(newText, standardKey, standardIv,
+                new G9DtAESConfig(PaddingMode.None, CipherMode.ECB));
+            Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
+            aesDecryptionText = G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, standardKey,
+                standardIv, new G9DtAESConfig(PaddingMode.None, CipherMode.ECB));
+            Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == newText);
+
+            // AES encrypt/decrypt, custom config
+            aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(testText, standardKey, standardIv,
+                new G9DtAESConfig(PaddingMode.Zeros, CipherMode.CFB));
+            Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
+            aesDecryptionText = G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, standardKey,
+                standardIv, new G9DtAESConfig(PaddingMode.Zeros, CipherMode.CFB));
+            Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == testText);
+
+
+            // AES encrypt/decrypt, nonstandard keys
+            newText = testText.PadLeft(99);
+            const string nonstandardKey = "G9";
+            const string nonstandardIv = "TM";
+
+            aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(newText, nonstandardKey, nonstandardIv,
+                new G9DtAESConfig(keySize: 256, blockSize: 128, enableAutoFixKeySize: true));
+            Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
+            aesDecryptionText =
+                G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, nonstandardKey, nonstandardIv,
+                    new G9DtAESConfig(keySize: 256, blockSize: 128, enableAutoFixKeySize: true));
+            Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == newText);
+
+            #endregion
+        }
+
+        [Test]
+        [Order(15)]
         public void TestNew()
         {
             dynamic x = new G9ObjectData();

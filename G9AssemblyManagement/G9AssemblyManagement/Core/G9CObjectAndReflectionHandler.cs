@@ -39,10 +39,10 @@ namespace G9AssemblyManagement.Core
             return defaultBindingFlags;
         }
 
-        #region Unifying Methods
+        #region merging Methods
 
         /// <summary>
-        ///     Method to unify the values between two objects.
+        ///     Method to merge the values between two objects.
         ///     <para />
         ///     The first object gets its new values from the second object.
         /// </summary>
@@ -60,18 +60,18 @@ namespace G9AssemblyManagement.Core
         ///     <para />
         ///     Notice: In fact, the function's result specifies the member's value in the main object.
         /// </param>
-        public static void UnifyObjectsValues(object mainObject, object targetObject,
+        public static void MergeObjectsValues(object mainObject, object targetObject,
             G9EValueMismatchChecking valueMismatch = G9EValueMismatchChecking.AllowMismatchValues,
             bool enableTryToChangeType = false, G9EAccessModifier specifiedModifiers = G9EAccessModifier.Public,
             Func<G9IMember, bool> customFilter = null,
             Func<G9IMember, G9IMember, object> customProcess = null)
         {
-            UnifyObjectsValues(mainObject, targetObject, valueMismatch, enableTryToChangeType,
+            MergeObjectsValues(mainObject, targetObject, valueMismatch, enableTryToChangeType,
                 CreateCustomModifier(specifiedModifiers), customFilter, customProcess);
         }
 
         /// <summary>
-        ///     Method to unify the values between two objects.
+        ///     Method to merge the values between two objects.
         ///     <para />
         ///     The first object gets its new values from the second object.
         /// </summary>
@@ -89,7 +89,7 @@ namespace G9AssemblyManagement.Core
         ///     <para />
         ///     Notice: In fact, the function's result specifies the member's value in the main object.
         /// </param>
-        public static void UnifyObjectsValues(object mainObject, object targetObject,
+        public static void MergeObjectsValues(object mainObject, object targetObject,
             G9EValueMismatchChecking valueMismatch = G9EValueMismatchChecking.AllowMismatchValues,
             bool enableTryToChangeType = false,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public,
@@ -127,15 +127,15 @@ namespace G9AssemblyManagement.Core
 
             var ignoreException = valueMismatch == G9EValueMismatchChecking.AllowMismatchValues;
 
-            // Unifying members
+            // Merging members
             foreach (var member in totalMembers)
                 TryToSetValueBetweenTwoMember(member.Item1, member.Item2, enableTryToChangeType, ignoreException,
                     customProcess);
         }
 
         /// <summary>
-        ///     Method to try to unify the value between two members.
-        ///     If an exception is thrown in the unifying process, this method makes a readable exception.
+        ///     Method to try to merge the value between two members.
+        ///     If an exception is thrown in the merging process, this method makes a readable exception.
         /// </summary>
         /// <param name="memberA">Specifies an object's member for setting the new value (Main object).</param>
         /// <param name="memberB">Specifies an object's member for getting the new value (Target object).</param>
@@ -144,8 +144,8 @@ namespace G9AssemblyManagement.Core
         ///     to change type must happen or not.
         /// </param>
         /// <param name="ignoreException">
-        ///     If this parameter is set 'true,' and an exception is thrown in the unifying process, this method ignores the
-        ///     current member unifying process and continues.
+        ///     If this parameter is set 'true,' and an exception is thrown in the merging process, this method ignores the
+        ///     current member merging process and continues.
         /// </param>
         /// <param name="customProcess">
         ///     Specifies a custom process for each member if needed.
@@ -175,13 +175,13 @@ namespace G9AssemblyManagement.Core
                     catch (Exception ex2)
                     {
                         if (!ignoreException)
-                            throw new Exception($@"The members can't unify their values.
+                            throw new Exception($@"The members can't merge their values.
 In the first object, the member's name is '{memberA.Name}' with the type '{(memberA is G9DtField result ? result.FieldInfo.FieldType : ((G9DtProperty)memberA).PropertyInfo.PropertyType)}'.
 In the second object, the member's name is '{memberB.Name}' with the value '{memberB.GetValue()}' and the type '{(memberB is G9DtField result2 ? result2.FieldInfo.FieldType : ((G9DtProperty)memberB).PropertyInfo.PropertyType)}'.",
                                 ex2);
                     }
                 else if (!ignoreException)
-                    throw new Exception($@"The members can't unify their values.
+                    throw new Exception($@"The members can't merge their values.
 In the first object, the member's name is '{memberA.Name}' with the type '{(memberA is G9DtField result ? result.FieldInfo.FieldType : ((G9DtProperty)memberA).PropertyInfo.PropertyType)}'.
 In the second object, the member's name is '{memberB.Name}' with the value '{memberB.GetValue()}' and the type '{(memberB is G9DtField result2 ? result2.FieldInfo.FieldType : ((G9DtProperty)memberB).PropertyInfo.PropertyType)}'.",
                         ex1);
