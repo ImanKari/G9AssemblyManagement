@@ -1013,23 +1013,23 @@ namespace G9AssemblyManagement_NUnitTest
             // Create instance from a normal type with constructor
             var testObject3 =
                 G9Assembly.InstanceTools
-                    .CreateInstanceFromTypeWithParameters<G9DtNormalTypeByConstructor>("Hello G9TM");
+                    .CreateInstanceFromTypeWithConstructorParameters<G9DtNormalTypeByConstructor>("Hello G9TM");
             Assert.True(testObject3.Name == "Hello G9TM");
             testObject3 =
                 (G9DtNormalTypeByConstructor)
-                G9Assembly.InstanceTools.CreateInstanceFromTypeWithParameters(
+                G9Assembly.InstanceTools.CreateInstanceFromTypeWithConstructorParameters(
                     typeof(G9DtNormalTypeByConstructor), "Hello G9TM");
             Assert.True(testObject3.Name == "Hello G9TM");
 
             // Create instance from a generic type with constructor
             var testObject4 = G9Assembly.InstanceTools
-                .CreateInstanceFromTypeWithParameters<G9DtGenericTypeByConstructor<string, int, IPAddress>>("G9TM",
+                .CreateInstanceFromTypeWithConstructorParameters<G9DtGenericTypeByConstructor<string, int, IPAddress>>("G9TM",
                     999, IPAddress.IPv6None);
             Assert.True(testObject4.ObjectType1 == "G9TM" && testObject4.ObjectType2 == 999 &&
                         Equals(testObject4.ObjectType3, IPAddress.IPv6None));
             testObject4 =
                 (G9DtGenericTypeByConstructor<string, int, IPAddress>)G9Assembly.InstanceTools
-                    .CreateInstanceFromTypeWithParameters(typeof(G9DtGenericTypeByConstructor<string, int, IPAddress>),
+                    .CreateInstanceFromTypeWithConstructorParameters(typeof(G9DtGenericTypeByConstructor<string, int, IPAddress>),
                         "G9TM",
                         999, IPAddress.IPv6None);
             Assert.True(testObject4.ObjectType1 == "G9TM" && testObject4.ObjectType2 == 999 &&
@@ -1051,6 +1051,17 @@ namespace G9AssemblyManagement_NUnitTest
                 // No parameterless constructor defined for type 'System.Net.IPAddress'.
                 Assert.True(e is MissingMethodException);
             }
+
+            // Creating generic instance
+            var gTypeA = (G9DtGenericType<IPAddress>)G9Assembly.InstanceTools.CreateInstanceFromGenericType(typeof(G9DtGenericType<>), typeof(IPAddress));
+            Assert.True(Equals(gTypeA.ValueOfType, default(IPAddress)));
+
+            // Creating a generic instance that has a few parameters for itself constructor
+            var gTypeB = (G9DtGenericTypeByConstructor<IPAddress, int, string>)G9Assembly.InstanceTools.CreateInstanceFromGenericTypeWithConstructorParameters(typeof(G9DtGenericTypeByConstructor<,,>), 
+                new []{ typeof(IPAddress) , typeof(int), typeof(string)},
+                IPAddress.IPv6Loopback, int.MaxValue, new string('9', 9)
+                );
+            Assert.True(gTypeB.ObjectType1 == IPAddress.IPv6Loopback && gTypeB.ObjectType2 == int.MaxValue && gTypeB.ObjectType3 == new string('9', 9));
         }
 
         [Test]

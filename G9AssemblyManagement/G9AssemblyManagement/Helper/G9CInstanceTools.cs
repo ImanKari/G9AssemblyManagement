@@ -155,7 +155,7 @@ namespace G9AssemblyManagement.Helper
         /// <typeparam name="TType">Specifies a type for creating an instance; the type must be creatable.</typeparam>
         /// <param name="parameters">Specifies constructor parameters</param>
         /// <returns>A created object from type</returns>
-        public TType CreateInstanceFromTypeWithParameters<TType>(params object[] parameters)
+        public TType CreateInstanceFromTypeWithConstructorParameters<TType>(params object[] parameters)
         {
             return (TType)Activator.CreateInstance(typeof(TType), parameters);
         }
@@ -166,9 +166,34 @@ namespace G9AssemblyManagement.Helper
         /// <param name="type">Specifies a type for creating an instance; the type must be the same or derived by TType.</param>
         /// <param name="parameters">Specifies constructor parameters</param>
         /// <returns>A created object from type</returns>
-        public object CreateInstanceFromTypeWithParameters(Type type, params object[] parameters)
+        public object CreateInstanceFromTypeWithConstructorParameters(Type type, params object[] parameters)
         {
             return Activator.CreateInstance(type, parameters);
+        }
+
+        /// <summary>
+        ///     Method to create an instance from a generic type
+        /// </summary>
+        /// <param name="type">Specifies a generic type for creating an instance.</param>
+        /// <param name="genericTypes">Specifies the type of generic parameters.</param>
+        /// <returns>A created generic object from type.</returns>
+        public object CreateInstanceFromGenericType(Type type, params Type[] genericTypes)
+        {
+            Type constructedType = type.MakeGenericType(genericTypes);
+            return Activator.CreateInstance(constructedType);
+        }
+
+        /// <summary>
+        ///     Method to create an instance from a generic type with the constructor that has parameters
+        /// </summary>
+        /// <param name="type">Specifies a generic type for creating an instance.</param>
+        /// <param name="genericTypes">Specifies the type of generic parameters.</param>
+        /// <param name="parameters">Specifies constructor parameters.</param>
+        /// <returns>A created generic object from type.</returns>
+        public object CreateInstanceFromGenericTypeWithConstructorParameters(Type type, Type[] genericTypes, params object[] parameters)
+        {
+            Type constructedType = type.MakeGenericType(genericTypes);
+            return Activator.CreateInstance(constructedType, parameters);
         }
     }
 }
