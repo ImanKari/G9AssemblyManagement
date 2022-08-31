@@ -28,12 +28,35 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     
-
 - task: VSTest@2
+  displayName: UnitTest net35
   inputs:
     testSelector: testAssemblies
-    testAssemblyVer2: 'G9AssemblyManagement_NUnitTest\bin\Release\net5.0\G9AssemblyManagement_NUnitTest.UnitTests.dll'
-    testFiltercriteria: FullyQualifiedName~G9AssemblyManagement_NUnitTest.UnitTests
+    testAssemblyVer2: 'D:\a\1\s\G9AssemblyManagement_NUnitTest\bin\Release\net35\G9AssemblyManagement_NUnitTest.dll'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: VSTest@2
+  displayName: UnitTest net40
+  inputs:
+    testSelector: testAssemblies
+    testAssemblyVer2: 'D:\a\1\s\G9AssemblyManagement_NUnitTest\bin\Release\net40\G9AssemblyManagement_NUnitTest.dll'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: VSTest@2
+  displayName: UnitTest net45
+  inputs:
+    testSelector: testAssemblies
+    testAssemblyVer2: 'D:\a\1\s\G9AssemblyManagement_NUnitTest\bin\Release\net45\G9AssemblyManagement_NUnitTest.dll'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: VSTest@2
+  displayName: UnitTest net5.0 nsd2.1
+  inputs:
+    testSelector: testAssemblies
+    testAssemblyVer2: 'D:\a\1\s\G9AssemblyManagement_NUnitTest\bin\Release\net5.0\G9AssemblyManagement_NUnitTest.dll'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
