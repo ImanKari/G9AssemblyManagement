@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFrameworks>net35;net40;net45;netstandard2.0;netstandard2.1</TargetFrameworks>
-	  <Version>1.4.2.5</Version>
+	  <Version>1.4.2.6</Version>
 	  <Authors>Iman Kari</Authors>
 	  <Company>G9Studio</Company>
 	  <Product>G9 Assembly Management</Product>
@@ -12,12 +12,13 @@
 	  <RepositoryUrl>https://github.com/ImanKari/G9AssemblyManagement</RepositoryUrl>
 	  <RepositoryType>GitHub</RepositoryType>
 	  <PackageTags>Assembly Management dependency injection attribute</PackageTags>
-	  <PackageReleaseNotes>-- Enhanced the performance of multi-threading execution for .NET Framework 3.5.
+	  <PackageReleaseNotes>-- Removed unnecessary structure
+-- Enhanced the performance of multi-threading execution for .NET Framework 3.5.
 -- Added multi-target framework tests.
 -- Completed tests.</PackageReleaseNotes>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <AssemblyVersion>1.4.2.5</AssemblyVersion>
-	  <FileVersion>1.4.2.5</FileVersion>
+	  <AssemblyVersion>1.4.2.6</AssemblyVersion>
+	  <FileVersion>1.4.2.6</FileVersion>
 	  <ApplicationIcon></ApplicationIcon>
 	  <PackageIcon>G9-Icon.png</PackageIcon>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
@@ -38,9 +39,6 @@
 	  <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
-	<PropertyGroup>
-		<TargetFrameworkMonikerAssemblyAttributesPath>$([System.IO.Path]::Combine('$(IntermediateOutputPath)','$(TargetFrameworkMoniker).AssemblyAttributes$(DefaultLanguageSourceExtension)'))</TargetFrameworkMonikerAssemblyAttributesPath>
-	</PropertyGroup>
 	<ItemGroup>
 		<EmbeddedFiles Include="$(GeneratedAssemblyInfoFile)" />
 	</ItemGroup>
