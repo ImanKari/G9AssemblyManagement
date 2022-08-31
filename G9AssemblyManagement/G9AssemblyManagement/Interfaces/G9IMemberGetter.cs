@@ -5,6 +5,7 @@
     ///     <para />
     ///     Getter part
     /// </summary>
+    // ReSharper disable once InconsistentNaming
     public interface G9IMemberGetter : G9IMemberBase
     {
         /// <summary>

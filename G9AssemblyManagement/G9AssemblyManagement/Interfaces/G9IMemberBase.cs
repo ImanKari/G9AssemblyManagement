@@ -9,6 +9,7 @@ namespace G9AssemblyManagement.Interfaces
     ///     <para />
     ///     Base part
     /// </summary>
+    // ReSharper disable once InconsistentNaming
     public interface G9IMemberBase
     {
         /// <summary>

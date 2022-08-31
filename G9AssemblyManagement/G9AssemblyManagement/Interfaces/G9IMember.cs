@@ -6,6 +6,7 @@ namespace G9AssemblyManagement.Interfaces
     /// <summary>
     ///     An interface for working with usual members of the object.
     /// </summary>
+    // ReSharper disable once InconsistentNaming
     public interface G9IMember : G9IMemberSetter, G9IMemberGetter
     {
         /// <summary>
