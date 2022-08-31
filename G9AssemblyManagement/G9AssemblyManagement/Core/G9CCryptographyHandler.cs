@@ -125,7 +125,7 @@ namespace G9AssemblyManagement.Core
             foreach (var t in hashBytes)
                 sb.Append(t.ToString(convertType));
 
-            return sb.ToString().ToLower();
+            return sb.ToString();
 #endif
         }
 

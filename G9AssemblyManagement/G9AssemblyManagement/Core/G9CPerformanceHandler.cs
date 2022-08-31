@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using G9AssemblyManagement.DataType;
 using G9AssemblyManagement.Enums;
+using ThreadState = System.Threading.ThreadState;
 #if !NET35
 using System.Threading.Tasks;
 #endif
@@ -200,6 +201,7 @@ namespace G9AssemblyManagement.Core
                 return null;
 
             var diff = firstNumber - secondNumber;
+            if (diff == 0 || secondNumber == 0) return 0;
             return diff / secondNumber * 100;
         }
 
@@ -270,18 +272,34 @@ namespace G9AssemblyManagement.Core
             var startUsedMemory = GetCurrentUsedMemory(true);
             var sw = Stopwatch.StartNew();
 #if NET35
-            Thread task = null;
+            Thread lastTask = null;
+            Thread.AllocateDataSlot();
+            ThreadPool.SetMinThreads(Environment.ProcessorCount, Environment.ProcessorCount);
+            ThreadPool.SetMaxThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
+
             for (var i = 0; i < numberOfRepetitions - 1; i++)
             {
-                task = new Thread(() => customActionForTest())
+                var i1 = i;
+                ThreadPool.QueueUserWorkItem(state =>
                 {
-                    IsBackground = true
-                };
-                task.Start();
+                    customActionForTest();
+                });
             }
 
-            customActionForTest();
-            task?.Join(TimeSpan.Zero);
+            ThreadPool.QueueUserWorkItem(state =>
+            {
+                lastTask = new Thread(() =>
+                    customActionForTest());
+                lastTask.Start();
+            });
+
+
+            while (lastTask == null || (lastTask.ThreadState & ThreadState.Unstarted) == ThreadState.Unstarted)
+            {
+                Thread.Sleep(9);
+            }
+
+            lastTask.Join(TimeSpan.Zero);
 #else
             var threads = Environment.ProcessorCount;
             var options = new ParallelOptions
@@ -316,24 +334,39 @@ namespace G9AssemblyManagement.Core
             var threads = Environment.ProcessorCount;
             var options = new ParallelOptions
             {
-                MaxDegreeOfParallelism = threads
+                MaxDegreeOfParallelism = threads * 2
             };
             Parallel.For(0, numberOfRepetitions, options,
                 i => { customActionForTest(Thread.CurrentThread.ManagedThreadId + i); });
 #else
-            Thread task = null;
+            Thread lastTask = null;
+            Thread.AllocateDataSlot();
+            ThreadPool.SetMinThreads(Environment.ProcessorCount, Environment.ProcessorCount);
+            ThreadPool.SetMaxThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
+
             for (var i = 0; i < numberOfRepetitions - 1; i++)
             {
                 var i1 = i;
-                task = new Thread(() => customActionForTest(Thread.CurrentThread.ManagedThreadId + i1))
+                ThreadPool.QueueUserWorkItem(state =>
                 {
-                    IsBackground = true
-                };
-                task.Start();
+                    customActionForTest(Thread.CurrentThread.ManagedThreadId + i1);
+                });
             }
 
-            customActionForTest(Thread.CurrentThread.ManagedThreadId);
-            task?.Join(TimeSpan.Zero);
+            ThreadPool.QueueUserWorkItem(state =>
+            {
+                lastTask = new Thread(() =>
+                    customActionForTest(Thread.CurrentThread.ManagedThreadId + numberOfRepetitions));
+                lastTask.Start();
+            });
+
+
+            while (lastTask == null || (lastTask.ThreadState & ThreadState.Unstarted) == ThreadState.Unstarted)
+            {
+                Thread.Sleep(9);
+            }
+
+            lastTask.Join(TimeSpan.Zero);
 #endif
         }
 

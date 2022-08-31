@@ -190,7 +190,6 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
 
         #endregion
 
-
         #region Get Fields
 
         /// <summary>
@@ -703,5 +702,6 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
         }
 
         #endregion
+
     }
 }

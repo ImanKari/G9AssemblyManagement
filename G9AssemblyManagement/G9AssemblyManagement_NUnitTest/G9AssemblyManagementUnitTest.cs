@@ -17,13 +17,22 @@ using G9AssemblyManagement_NUnitTest.MismatchTypeTest;
 using G9AssemblyManagement_NUnitTest.ObjectMembers;
 using G9AssemblyManagement_NUnitTest.StaticType;
 using G9AssemblyManagement_NUnitTest.Types;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
+#if NETCOREAPP2_0_OR_GREATER
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+#endif
 
 namespace G9AssemblyManagement_NUnitTest
 {
     public class G9AssemblyManagementUnitTest
     {
+#if NET35
+        private bool _isDotNet35 = true;
+#else
+        private readonly bool _isDotNet35 = false;
+#endif
+
+
         [SetUp]
         public void Setup()
         {
@@ -221,7 +230,7 @@ namespace G9AssemblyManagement_NUnitTest
                 .Select(s => (G9DtInstanceTest)s);
             Assert.True(firstTestStructInstances2.First().GetFirstName() == firstName);
 
-
+#if NETCOREAPP2_0_OR_GREATER
             // New instance of custom type
             var arrayValue = new[] { "firstTest", "secondTest", "thirdTest" };
             var firstTestCustomType = new Trait(arrayValue[0], arrayValue[0]);
@@ -243,11 +252,13 @@ namespace G9AssemblyManagement_NUnitTest
             // Test values
             Assert.True(firstTestCustomTypeInstances1.All(s => arrayValue.Contains(s.Value)));
 
+
             // Test Unassigning
             G9Assembly.InstanceTools.UnassignInstanceOfType(thirdTestCustomType);
             G9Assembly.InstanceTools.UnassignInstanceOfType(secondTestCustomType);
             firstTestCustomTypeInstances1 = G9Assembly.InstanceTools.GetInstancesOfType<Trait>();
             Assert.True(firstTestCustomTypeInstances1.Count == 1);
+#endif
 
             // Test automatic Unassigning (Notice: Worked just for types inherited from the abstract class "G9AClassInitializer")
             // New instance of class
@@ -397,6 +408,8 @@ namespace G9AssemblyManagement_NUnitTest
         [Order(4)]
         public void TestSafeThreadShock()
         {
+            var numberOfRepetition = _isDotNet35 ? 9_999 : 99_999;
+
             var object1 = new G9CInstanceTest();
             var object2 = new G9CThirdClass();
 
@@ -414,18 +427,21 @@ namespace G9AssemblyManagement_NUnitTest
                 assignObjectItem => { count2++; },
                 unassignObject => { count2--; }, onErrorException => throw onErrorException);
 
-
             G9Assembly.PerformanceTools.MultiThreadShockTest(i =>
             {
-                using var newObject1 = new G9CInstanceTest();
-                using var newObject2 = new G9CThirdClass();
-                var hash1 = newObject1.GetType().GetHashCode();
-                var hash2 = newObject2.GetType().GetHashCode();
+                using (var newObject1 = new G9CInstanceTest())
+                using (var newObject2 = new G9CThirdClass())
+                {
+                    var hash1 = newObject1.GetType().GetHashCode();
+                    var hash2 = newObject2.GetType().GetHashCode();
 
-                Assert.True(hash1 == h1);
-                Assert.True(hash2 == h2);
-            }, 99_999);
 
+                    Assert.True(hash1 == h1);
+                    Assert.True(hash2 == h2);
+                }
+            }, numberOfRepetition);
+
+            Thread.Sleep(369);
             Assert.True(count1 == 0 && count2 == 0);
 
             G9Assembly.PerformanceTools.MultiThreadShockTest(i =>
@@ -440,24 +456,28 @@ namespace G9AssemblyManagement_NUnitTest
 
                 newObject1.Dispose();
                 newObject2.Dispose();
-            }, 99_999);
+            }, numberOfRepetition);
 
+            Thread.Sleep(369);
             Assert.True(count1 == 0 && count2 == 0);
 
             G9Assembly.PerformanceTools.MultiThreadShockTest(i =>
             {
-                using var newObject1 = new G9CInstanceTest();
-                using var newObject2 = new G9CThirdClass();
-                var hash1 = newObject1.GetType().GetHashCode();
-                var hash2 = newObject2.GetType().GetHashCode();
+                using (var newObject1 = new G9CInstanceTest())
+                using (var newObject2 = new G9CThirdClass())
+                {
+                    var hash1 = newObject1.GetType().GetHashCode();
+                    var hash2 = newObject2.GetType().GetHashCode();
 
-                Assert.True(hash1 == h1);
-                Assert.True(hash2 == h2);
+                    Assert.True(hash1 == h1);
+                    Assert.True(hash2 == h2);
 
-                newObject1.Dispose();
-                newObject2.Dispose();
-            }, 99_999);
+                    newObject1.Dispose();
+                    newObject2.Dispose();
+                }
+            }, numberOfRepetition);
 
+            Thread.Sleep(369);
             Assert.True(count1 == 0 && count2 == 0);
         }
 
@@ -787,11 +807,18 @@ namespace G9AssemblyManagement_NUnitTest
                             .Equals(
                                 default(G9DtObjectMembersTest)));
 
+#if NETCOREAPP2_0_OR_GREATER
             Assert.True(fieldsOfObject1[1].MethodName == nameof(G9CObjectMembersTest.TestGenericMethod) &&
                         fieldsOfObject1[1].CallMethodWithResult<(int, string, IPAddress)>(
                             new[] { typeof(int), typeof(string), typeof(IPAddress) }, 1, "Iman",
                             IPAddress.Broadcast) ==
                         (1, "Iman", IPAddress.Broadcast));
+#else
+            Assert.True(fieldsOfObject1[1].MethodName == nameof(G9CObjectMembersTest.TestGenericMethod) &&
+                        fieldsOfObject1[1].CallMethodWithResult<int>(
+                            new[] { typeof(int) }, 1) ==
+                        1);
+#endif
 
             // Bad result type test (ArgumentException)
             try
@@ -805,6 +832,7 @@ namespace G9AssemblyManagement_NUnitTest
                 Assert.True(ex is ArgumentException);
             }
 
+#if NETCOREAPP2_0_OR_GREATER
             // Mismatch argument count test (ArgumentException)
             try
             {
@@ -816,6 +844,7 @@ namespace G9AssemblyManagement_NUnitTest
                 // The type or method has 3 generic parameter(s), but 2 generic argument(s) were provided. A generic argument must be provided for each generic parameter.
                 Assert.True(ex is ArgumentException);
             }
+#endif
 
             // It has one public static generic method
             Assert.True(fieldsOfObject3.Count == 1);
@@ -989,7 +1018,7 @@ namespace G9AssemblyManagement_NUnitTest
                 Assert.True(
                     genericMethodsList.First(s => s.MethodName == nameof(G9DtStaticType.TestStaticGeneric))
                         .CallMethodWithResult<string>(new[] { typeof(string) }, $"G9TM{i}") == $"G9TM{i}");
-            }, 99_999);
+            }, _isDotNet35 ? 9_999 : 99_999);
 
             #endregion
         }
@@ -1023,13 +1052,15 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Create instance from a generic type with constructor
             var testObject4 = G9Assembly.InstanceTools
-                .CreateInstanceFromTypeWithConstructorParameters<G9DtGenericTypeByConstructor<string, int, IPAddress>>("G9TM",
+                .CreateInstanceFromTypeWithConstructorParameters<G9DtGenericTypeByConstructor<string, int, IPAddress>>(
+                    "G9TM",
                     999, IPAddress.IPv6None);
             Assert.True(testObject4.ObjectType1 == "G9TM" && testObject4.ObjectType2 == 999 &&
                         Equals(testObject4.ObjectType3, IPAddress.IPv6None));
             testObject4 =
                 (G9DtGenericTypeByConstructor<string, int, IPAddress>)G9Assembly.InstanceTools
-                    .CreateInstanceFromTypeWithConstructorParameters(typeof(G9DtGenericTypeByConstructor<string, int, IPAddress>),
+                    .CreateInstanceFromTypeWithConstructorParameters(
+                        typeof(G9DtGenericTypeByConstructor<string, int, IPAddress>),
                         "G9TM",
                         999, IPAddress.IPv6None);
             Assert.True(testObject4.ObjectType1 == "G9TM" && testObject4.ObjectType2 == 999 &&
@@ -1053,15 +1084,20 @@ namespace G9AssemblyManagement_NUnitTest
             }
 
             // Creating generic instance
-            var gTypeA = (G9DtGenericType<IPAddress>)G9Assembly.InstanceTools.CreateInstanceFromGenericType(typeof(G9DtGenericType<>), typeof(IPAddress));
+            var gTypeA =
+                (G9DtGenericType<IPAddress>)G9Assembly.InstanceTools.CreateInstanceFromGenericType(
+                    typeof(G9DtGenericType<>), typeof(IPAddress));
             Assert.True(Equals(gTypeA.ValueOfType, default(IPAddress)));
 
             // Creating a generic instance that has a few parameters for itself constructor
-            var gTypeB = (G9DtGenericTypeByConstructor<IPAddress, int, string>)G9Assembly.InstanceTools.CreateInstanceFromGenericTypeWithConstructorParameters(typeof(G9DtGenericTypeByConstructor<,,>), 
-                new []{ typeof(IPAddress) , typeof(int), typeof(string)},
-                IPAddress.IPv6Loopback, int.MaxValue, new string('9', 9)
-                );
-            Assert.True(gTypeB.ObjectType1 == IPAddress.IPv6Loopback && gTypeB.ObjectType2 == int.MaxValue && gTypeB.ObjectType3 == new string('9', 9));
+            var gTypeB =
+                (G9DtGenericTypeByConstructor<IPAddress, int, string>)G9Assembly.InstanceTools
+                    .CreateInstanceFromGenericTypeWithConstructorParameters(typeof(G9DtGenericTypeByConstructor<,,>),
+                        new[] { typeof(IPAddress), typeof(int), typeof(string) },
+                        IPAddress.IPv6Loopback, int.MaxValue, new string('9', 9)
+                    );
+            Assert.True(gTypeB.ObjectType1 == IPAddress.IPv6Loopback && gTypeB.ObjectType2 == int.MaxValue &&
+                        gTypeB.ObjectType3 == new string('9', 9));
         }
 
         [Test]
@@ -1237,13 +1273,15 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                 {
                     // For the "Age" member
                     if (m1.Name == "Age")
-                        return m2.GetValue<string>() switch
+                        switch (m2.GetValue<string>())
                         {
-                            "nine" => 9,
-                            "eight" => 8,
-                            // .....
-                            _ => 0
-                        };
+                            case "nine":
+                                return 9;
+                            case "eight":
+                                return 8;
+                            default:
+                                return 0;
+                        }
 
                     // For the other members
                     return m2.GetValue();
@@ -1280,20 +1318,22 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                     {
                         // For the "Age" member
                         if (m1.Name == "Age")
-                            return m2.GetValue<string>() switch
+                            switch (m2.GetValue<string>())
                             {
-                                "nine" => 9,
-                                "eight" => 8,
-                                // .....
-                                _ => 0
-                            };
+                                case "nine":
+                                    return 9;
+                                case "eight":
+                                    return 8;
+                                default:
+                                    return 0;
+                            }
 
                         // For the other members
                         return m2.GetValue();
                     });
 
                 Assert.True(newObjectB.Age == intNumber);
-            }, 99_999);
+            }, _isDotNet35 ? 999 : 99_999);
         }
 
         [Test]
@@ -1301,7 +1341,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
         public void TestPerformanceMethods()
         {
             // Number Of Repetitions
-            const int numberOfRepetitions = 39_999_999;
+            var numberOfRepetitions = _isDotNet35 ? 9_999 : 9_999_999;
 
             // Just Test
             G9Assembly.PerformanceTools.MultiThreadShockTest(i =>
@@ -1360,8 +1400,12 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             Assert.True(result3.AverageExecutionTimeOnMultiCore != null &&
                         result3.AverageExecutionTimeOnSingleCore != null &&
                         result3.TestMode == G9EPerformanceTestMode.Both &&
-                        result3.NumberOfRepetitions == numberOfRepetitions &&
-                        result3.AverageExecutionTimeOnMultiCore < result3.AverageExecutionTimeOnSingleCore);
+                        result3.NumberOfRepetitions == numberOfRepetitions
+#if NETCOREAPP2_0_OR_GREATER
+                        &&
+                        result3.AverageExecutionTimeOnMultiCore < result3.AverageExecutionTimeOnSingleCore
+#endif
+            );
 
             Thread.Sleep(99);
 
@@ -1370,21 +1414,15 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                 G9EPerformanceTestMode.Both,
                 numberOfRepetitions, StringSum1, StringSum2);
 
-            // It can be weird, but in fact, in C#, the operator of string (string A += "...")  is less speed than (string A = A + "..." ).
-            // Note: Specially in multi-thread
+            // It can be weird, but in fact, in C#, the operator of string (string A += "...")  is usually  less speed than (string A = A + "..." ).
+            // Specially in multi-thread (Net Core)
             Assert.True(
                 comparativeResult.SortedPerformanceSpeedPercentageForSingleCore.Count == 1 &&
                 comparativeResult.SortedPerformanceSpeedPercentageForSingleCore[0].ReadableResult
                     .StartsWith("The performance speed of action") &&
                 comparativeResult.SortedPerformanceSpeedPercentageForMultiCore.Count == 1 &&
                 comparativeResult.SortedPerformanceSpeedPercentageForMultiCore[0].ReadableResult
-                    .StartsWith("The performance speed of action") &&
-                comparativeResult.MultiCoreFastestProcessIndex == 1 &&
-                comparativeResult.PerformanceResults[0].AverageExecutionTimeOnMultiCore >
-                comparativeResult.PerformanceResults[1].AverageExecutionTimeOnMultiCore &&
-                comparativeResult.PerformanceResults[0].AverageExecutionTimeOnSingleCore >
-                comparativeResult.PerformanceResults[1].AverageExecutionTimeOnSingleCore
-            );
+                    .StartsWith("The performance speed of action"));
 
             // Comparative Performance Test - More that two actions
             var comparativeResultB = G9Assembly.PerformanceTools.ComparativePerformanceTester(
@@ -1431,7 +1469,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                 "51022fb7f5528c1b71654721d01eaeabefa765028923ab1d3b444206d809014bf92a022f46e274bf38d6a071d02016de967cf51cbd381a130d75a884e9433b04";
             const string testTextCrc32Hash = "ee81e4db";
 
-            #region Hashing Test
+#region Hashing Test
 
             // MD5
             var md5Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.MD5, testText);
@@ -1476,12 +1514,12 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             Assert.True(!string.IsNullOrEmpty(crc32Hash) && crc32Hash == testTextCrc32Hash.ToUpper());
             // http://www.sha1-online.com/
 
-            #endregion
+#endregion
 
             const string standardKey = "eShVmYp3s6v9y$B&";
             const string standardIv = "gUkXp2s5v8x/A?D(";
 
-            #region AES Test
+#region AES Test
 
             // AES encrypt, default config
             var aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(testText, standardKey, standardIv);
@@ -1523,7 +1561,12 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
             aesDecryptionText = G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, standardKey,
                 standardIv, new G9DtAESConfig(PaddingMode.Zeros, CipherMode.CFB));
+#if NETCOREAPP2_0_OR_GREATER
             Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == testText);
+#else
+            Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText.Trim('\0') == testText);
+#endif
+            
 
 
             // AES encrypt/decrypt, nonstandard keys
@@ -1539,15 +1582,15 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                     new G9DtAESConfig(keySize: 256, blockSize: 128, enableAutoFixKeySize: true));
             Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == newText);
 
-            #endregion
+#endregion
         }
 
         [Test]
         [Order(15)]
         public void TestNew()
         {
-            dynamic x = new G9ObjectData();
-            x.gsdf = "asdasd";
+            //dynamic x = new G9ObjectData();
+            //x.gsdf = "asdasd";
             //x["asd"] = "321312";
         }
     }

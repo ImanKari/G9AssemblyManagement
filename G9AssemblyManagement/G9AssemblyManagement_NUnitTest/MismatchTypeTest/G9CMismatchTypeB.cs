@@ -12,7 +12,7 @@ namespace G9AssemblyManagement_NUnitTest.MismatchTypeTest
 
         public float Percent = 99.9f;
 
-        private readonly TimeSpan _time = new(3, 6, 9);
+        private readonly TimeSpan _time = new TimeSpan(3, 6, 9);
 
         public DateTime ExDateTime { set; get; } = DateTime.Parse("1999-03-06");
 

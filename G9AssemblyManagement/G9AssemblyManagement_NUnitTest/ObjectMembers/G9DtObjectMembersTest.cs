@@ -41,9 +41,17 @@ namespace G9AssemblyManagement_NUnitTest.ObjectMembers
             return default;
         }
 
+#if NETCOREAPP2_0_OR_GREATER
         private (TType1, TType2, TType3) TestGenericMethod<TType1, TType2, TType3>(TType1 a, TType2 b, TType3 c)
         {
             return (a, b, c);
         }
+#else
+        private TType1 TestGenericMethod<TType1, TType2, TType3>(TType1 a, TType2 b, TType3 c)
+        {
+            return a;
+        }
+#endif
+
     }
 }
