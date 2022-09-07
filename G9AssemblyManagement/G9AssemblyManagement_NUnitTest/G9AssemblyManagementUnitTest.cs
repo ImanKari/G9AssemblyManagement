@@ -1587,6 +1587,75 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
 
         [Test]
         [Order(15)]
+        public void TestGeneralTools()
+        {
+
+            // ConvertByteSizeToAnotherSize
+
+            const long byteSize = 1000000000;
+            const decimal kb = 976562.5M;
+            const decimal mb = 953.67431640625M;
+            const decimal gb = 0.931322574615478515625M;
+            const decimal tb = 0.0009094947017729282379150391M;
+            const decimal pb = 0.0000008881784197001283877825M;
+            const decimal eb = 0.0000000008673617379884012722M;
+            const decimal zb = 0.0000000000008470329472543013M;
+            const decimal yb = 0.000000000000000827180612553M;
+
+
+            Assert.True(byteSize == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.Byte));
+            Assert.True(kb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.KiloByte));
+            Assert.True(mb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.MegaByte));
+            Assert.True(gb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.GigaByte));
+            Assert.True(tb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.TeraByte));
+            Assert.True(pb ==  G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.PetaByte));
+            Assert.True(eb ==  G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.ExaByte));
+            Assert.True(zb ==  G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.ZettaByte));
+            Assert.True(yb ==  G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.YottaByte));
+
+            // Check directory path
+            const string directory1 = @"I:\Project\!G9TM!\Page";
+            const string directory2 = @"\Project\!G9TM!\Page";
+            const string directory3 = @"I:\Project\!!!!!!!";
+            const string directory4 = @"X:\Project\!G9TM!\Page";
+            const string directory5 = @"\asd|asd|asd";
+
+#if DEBUG
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory1, true, true) == G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory2, true, true) == G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory3, true, true) == G9EPatchCheckResult.PathExistenceIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory4, true, true) == G9EPatchCheckResult.PathDriveIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory5, true, true) == G9EPatchCheckResult.PathNameIsIncorrect);
+#else
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory1, false, false) == G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory2, false, false) == G9EPatchCheckResult.Correct);
+#endif
+
+            // Check file path
+            const string file1 = @"I:\Project\!G9TM!\Page\First.png";
+            const string file2 = @"\Project\!G9TM!\Page\First.png";
+            const string file3 = @"I:\Project\!!!!!!!\First.png";
+            const string file4 = @"X:\Project\!G9TM!\Page\First.png";
+            const string file5 = @"\Fi|r|st.png";
+            const string file6 = @"okay.png";
+            const string file7 = @"okay.p-n|g";
+
+#if DEBUG
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file1, true, true) == G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file2, true, true) == G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file3, true, true) == G9EPatchCheckResult.PathExistenceIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file4, true, true) == G9EPatchCheckResult.PathDriveIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file5, true, true) == G9EPatchCheckResult.PathNameIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file6, true, false) == G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file7, true, true) == G9EPatchCheckResult.PathNameIsIncorrect);
+#else
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file1, false, false) == G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file2, false, false) == G9EPatchCheckResult.Correct);
+#endif
+        }
+
+        [Test]
+        [Order(16)]
         public void TestNew()
         {
             //dynamic x = new G9ObjectData();

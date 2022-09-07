@@ -304,7 +304,7 @@ namespace G9AssemblyManagement.Core
             var threads = Environment.ProcessorCount;
             var options = new ParallelOptions
             {
-                MaxDegreeOfParallelism = threads
+                MaxDegreeOfParallelism = threads * 2
             };
             Parallel.For(0, numberOfRepetitions, options, i => { customActionForTest(); });
 #endif
