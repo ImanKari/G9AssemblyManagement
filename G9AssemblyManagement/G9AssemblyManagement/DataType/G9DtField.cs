@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using G9AssemblyManagement.Enums;
 using G9AssemblyManagement.Interfaces;
@@ -93,7 +94,19 @@ namespace G9AssemblyManagement.DataType
         /// <inheritdoc />
         public IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : Attribute
         {
-            return (IList<TType>)FieldInfo.GetCustomAttributes(typeof(TType), inherit);
+            var result = MemberType.GetCustomAttributes(typeof(TType), inherit);
+            return result.Length == 0
+                ? null
+                : (IList<TType>)result;
+        }
+
+        /// <inheritdoc />
+        public TType GetCustomAttribute<TType>(bool inherit) where TType : Attribute
+        {
+            var result = MemberType.GetCustomAttributes(typeof(TType), inherit);
+            return result.Length == 0
+                ? null
+                : (TType)result.First();
         }
 
         #endregion
