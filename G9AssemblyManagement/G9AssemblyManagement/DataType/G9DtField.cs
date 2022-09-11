@@ -94,7 +94,7 @@ namespace G9AssemblyManagement.DataType
         /// <inheritdoc />
         public IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : Attribute
         {
-            var result = MemberType.GetCustomAttributes(typeof(TType), inherit);
+            var result = FieldInfo.GetCustomAttributes(typeof(TType), inherit);
             return result.Length == 0
                 ? null
                 : (IList<TType>)result;
@@ -103,7 +103,7 @@ namespace G9AssemblyManagement.DataType
         /// <inheritdoc />
         public TType GetCustomAttribute<TType>(bool inherit) where TType : Attribute
         {
-            var result = MemberType.GetCustomAttributes(typeof(TType), inherit);
+            var result = FieldInfo.GetCustomAttributes(typeof(TType), inherit);
             return result.Length == 0
                 ? null
                 : (TType)result.First();

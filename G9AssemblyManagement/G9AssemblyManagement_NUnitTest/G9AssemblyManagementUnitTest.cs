@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Threading;
 using G9AssemblyManagement;
@@ -623,6 +625,12 @@ namespace G9AssemblyManagement_NUnitTest
             ageFields = fields.Where(s => s.Name == "_age").ToArray();
             Assert.True(ageFields[0].GetValueOnAnotherObject<int>(objectChildWithParent) == 39 &&
                         ageFields[1].GetValueOnAnotherObject<int>(objectChildWithParent) == 99);
+
+            // Test attributes
+            Assert.True(ageFields[0].GetCustomAttribute<IgnoreDataMemberAttribute>(true) != null &&
+                        ageFields[1].GetCustomAttributes<IgnoreDataMemberAttribute>(true) != null &&
+                        ageFields[1].GetCustomAttributes<IgnoreDataMemberAttribute>(true).Count == 1);
+
         }
 
         [Test]
@@ -734,6 +742,11 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(properties.Count == 2 &&
                         properties[0].GetValueOnAnotherObject<string>(objectChildWithParent) == "G9TM" &&
                         properties[1].GetValueOnAnotherObject<string>(objectChildWithParent) == "G9TM-Parent");
+
+            // Test attributes
+            Assert.True(properties[0].GetCustomAttribute<IgnoreDataMemberAttribute>(true) != null &&
+                        properties[1].GetCustomAttributes<IgnoreDataMemberAttribute>(true) != null &&
+                        properties[1].GetCustomAttributes<IgnoreDataMemberAttribute>(true).Count == 1);
         }
 
         [Test]
@@ -838,6 +851,11 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(getAgeMethods.Length == 2 &&
                         getAgeMethods[0].CallMethodWithResultOnAnotherObject<int>(objectChildWithParent) == 39 &&
                         getAgeMethods[1].CallMethodWithResultOnAnotherObject<int>(objectChildWithParent) == 99);
+
+            // Test attributes
+            Assert.True(getAgeMethods[0].GetCustomAttribute<OnSerializedAttribute>(true) != null &&
+                        getAgeMethods[1].GetCustomAttributes<OnSerializedAttribute>(true) != null &&
+                        getAgeMethods[1].GetCustomAttributes<OnSerializedAttribute>(true).Count == 1);
         }
 
         [Test]
@@ -964,6 +982,11 @@ namespace G9AssemblyManagement_NUnitTest
                             new[] { typeof(int) }, 39) == 39 &&
                         genericMethods[1].CallMethodWithResultOnAnotherObject<int>(objectChildWithParent,
                             new[] { typeof(int) }, 99) == 99);
+
+            // Test attributes
+            Assert.True(genericMethods[0].GetCustomAttribute<OnSerializedAttribute>(true) != null &&
+                        genericMethods[1].GetCustomAttributes<OnSerializedAttribute>(true) != null &&
+                        genericMethods[1].GetCustomAttributes<OnSerializedAttribute>(true).Count == 1);
         }
 
         [Test]
