@@ -13,1154 +13,307 @@ namespace G9AssemblyManagement.Helper
     /// </summary>
     public class G9CObjectAndReflectionTools
     {
-        #region GetProperties Methods For Object
+        #region GetFields Methods
 
-        /// <summary>
-        ///     Method to get properties of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find properties</param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject)
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetFieldsOfObject" />
+        public IList<G9DtField> GetFieldsOfObject(object targetObject,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
+            Func<FieldInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject, G9EAccessModifier.Everything);
+            return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject,
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), customFilter,
+                considerInheritedParent);
         }
 
-        /// <summary>
-        ///     Method to get properties of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find properties</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject,
-            G9EAccessModifier specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get properties of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find properties</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject,
-            BindingFlags specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get properties of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find properties</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject,
-            G9EAccessModifier specifiedModifiers,
-            Func<PropertyInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get properties of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find properties</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfObject<TObject>(TObject targetObject,
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetFieldsOfObject" />
+        public IList<G9DtField> GetFieldsOfObject(object targetObject,
             BindingFlags specifiedModifiers,
-            Func<PropertyInfo, bool> customFilter)
+            Func<FieldInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject, specifiedModifiers, customFilter);
+            return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject, specifiedModifiers, customFilter,
+                considerInheritedParent);
         }
 
-        #endregion
-
-        #region GetMethods Methods For Object
-
-        /// <summary>
-        ///     Method to get Methods of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find methods</param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject, G9EAccessModifier.Everything);
-        }
-
-        /// <summary>
-        ///     Method to get Methods of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
-            G9EAccessModifier specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get Methods of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
-            BindingFlags specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get Methods of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
-            G9EAccessModifier specifiedModifiers,
-            Func<MethodInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get Methods of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
-            BindingFlags specifiedModifiers,
-            Func<MethodInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject, specifiedModifiers, customFilter);
-        }
-
-        #endregion
-
-        #region GetGenericMethodsOfObject Methods For Object
-
-        /// <summary>
-        ///     Method to get generic methods of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find generic methods</param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject, G9EAccessModifier.Everything);
-        }
-
-        /// <summary>
-        ///     Method to get generic methods of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find generic methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject,
-            G9EAccessModifier specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get generic methods of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find generic methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject,
-            BindingFlags specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get generic methods of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find generic methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject,
-            G9EAccessModifier specifiedModifiers,
-            Func<MethodInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject, specifiedModifiers,
-                customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get generic methods of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find generic methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfObject<TObject>(TObject targetObject,
-            BindingFlags specifiedModifiers,
-            Func<MethodInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject, specifiedModifiers,
-                customFilter);
-        }
-
-        #endregion
-
-        #region GetAllMembersOfObject Methods For Object
-
-        /// <summary>
-        ///     Method to get all members of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find generic members</param>
-        /// <returns>An object with members array</returns>
-        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject, G9EAccessModifier.Everything);
-        }
-
-        /// <summary>
-        ///     Method to get all members of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find generic members</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>An object with members array</returns>
-        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
-            BindingFlags specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get all members of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find generic members</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>An object with members array</returns>
-        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
-            G9EAccessModifier specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get all members of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find generic members</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilterForFields">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForProperties">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
-        /// <returns>An object with members array</returns>
-        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
-            BindingFlags specifiedModifiers,
-            Func<FieldInfo, bool> customFilterForFields,
-            Func<PropertyInfo, bool> customFilterForProperties,
-            Func<MethodInfo, bool> customFilterMethods,
-            Func<MethodInfo, bool> customFilterForGenericMethods)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject, specifiedModifiers,
-                customFilterForFields,
-                customFilterForProperties, customFilterMethods, customFilterForGenericMethods);
-        }
-
-        /// <summary>
-        ///     Method to get all members of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find generic members</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilterForFields">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForProperties">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
-        /// <returns>An object with members array</returns>
-        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
-            G9EAccessModifier specifiedModifiers,
-            Func<FieldInfo, bool> customFilterForFields,
-            Func<PropertyInfo, bool> customFilterForProperties,
-            Func<MethodInfo, bool> customFilterMethods,
-            Func<MethodInfo, bool> customFilterForGenericMethods)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject, specifiedModifiers,
-                customFilterForFields,
-                customFilterForProperties, customFilterMethods, customFilterForGenericMethods);
-        }
-
-        #endregion
-
-        #region GetFields Methods For Object
-
-        /// <summary>
-        ///     Method to get fields of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find fields</param>
-        /// <returns>A collection of fields</returns>
-        public IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject)
-        {
-            return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject, G9EAccessModifier.Everything);
-        }
-
-        /// <summary>
-        ///     Method to get fields of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find fields</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of fields</returns>
-        public IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject,
-            G9EAccessModifier specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get fields of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find fields</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of fields</returns>
-        public IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject,
-            BindingFlags specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get fields of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find fields</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <returns>A collection of fields</returns>
-        public IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject,
-            G9EAccessModifier specifiedModifiers,
-            Func<FieldInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get fields of an object
-        /// </summary>
-        /// <typeparam name="TObject">Specifies the type of an object</typeparam>
-        /// <param name="targetObject">Specifies an object to find fields</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <returns>A collection of fields</returns>
-        public IList<G9DtField> GetFieldsOfObject<TObject>(TObject targetObject,
-            BindingFlags specifiedModifiers,
-            Func<FieldInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject, specifiedModifiers, customFilter);
-        }
-
-        #endregion
-
-        #region GetProperties Methods For Type
-
-        /// <summary>
-        ///     Method to get properties of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find properties</param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfType(Type targetType)
-        {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType, G9EAccessModifier.Everything);
-        }
-
-        /// <summary>
-        ///     Method to get properties of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find properties</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get properties of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find properties</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
-            BindingFlags specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get properties of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find properties</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers,
-            Func<PropertyInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get properties of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find properties</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
-            BindingFlags specifiedModifiers,
-            Func<PropertyInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get properties of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find properties</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <param name="initializeInstance">
-        ///     If it's set 'true,' the method initializes an instance from the type that leads to access to some members who need
-        ///     an instance to use (like non-abstract and non-sealed members).
-        ///     <para />
-        ///     If the specified type is kind of some type that can't be initialized (like abstract and sealed), an exception is
-        ///     thrown.
-        /// </param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
-            BindingFlags specifiedModifiers,
-            Func<PropertyInfo, bool> customFilter, bool initializeInstance)
-        {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType, specifiedModifiers, customFilter, null,
-                initializeInstance);
-        }
-
-        /// <summary>
-        ///     Method to get properties of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find properties</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <param name="initializeInstance">
-        ///     If it's set 'true,' the method initializes an instance from the type that leads to access to some members who need
-        ///     an instance to use (like non-abstract and non-sealed members).
-        ///     <para />
-        ///     If the specified type is kind of some type that can't be initialized (like abstract and sealed), an exception is
-        ///     thrown.
-        /// </param>
-        /// <returns>A collection of properties</returns>
-        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers,
-            Func<PropertyInfo, bool> customFilter, bool initializeInstance)
-        {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType, specifiedModifiers, customFilter,
-                initializeInstance);
-        }
-
-        #endregion
-
-        #region GetMethods Methods For Type
-
-        /// <summary>
-        ///     Method to get Methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find methods</param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfType(Type targetType)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType, G9EAccessModifier.Everything);
-        }
-
-        /// <summary>
-        ///     Method to get Methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get Methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
-            BindingFlags specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get Methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers,
-            Func<MethodInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get Methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
-            BindingFlags specifiedModifiers,
-            Func<MethodInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get Methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <param name="initializeInstance">
-        ///     If it's set 'true,' the method initializes an instance from the type that leads to access to some members who need
-        ///     an instance to use (like non-abstract and non-sealed members).
-        ///     <para />
-        ///     If the specified type is kind of some type that can't be initialized (like abstract and sealed), an exception is
-        ///     thrown.
-        /// </param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
-            BindingFlags specifiedModifiers,
-            Func<MethodInfo, bool> customFilter, bool initializeInstance)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType, specifiedModifiers, customFilter, null,
-                initializeInstance);
-        }
-
-        /// <summary>
-        ///     Method to get Methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <param name="initializeInstance">
-        ///     If it's set 'true,' the method initializes an instance from the type that leads to access to some members who need
-        ///     an instance to use (like non-abstract and non-sealed members).
-        ///     <para />
-        ///     If the specified type is kind of some type that can't be initialized (like abstract and sealed), an exception is
-        ///     thrown.
-        /// </param>
-        /// <returns>A collection of methods</returns>
-        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers,
-            Func<MethodInfo, bool> customFilter, bool initializeInstance)
-        {
-            return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType, specifiedModifiers, customFilter,
-                initializeInstance);
-        }
-
-        #endregion
-
-        #region GetGenericMethodsOfType Methods For Type
-
-        /// <summary>
-        ///     Method to get generic methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic methods</param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, G9EAccessModifier.Everything);
-        }
-
-        /// <summary>
-        ///     Method to get generic methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get generic methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
-            BindingFlags specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get generic methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers,
-            Func<MethodInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get generic methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
-            BindingFlags specifiedModifiers,
-            Func<MethodInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get generic methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <param name="initializeInstance">
-        ///     If it's set 'true,' the method initializes an instance from the type that leads to access to some members who need
-        ///     an instance to use (like non-abstract and non-sealed members).
-        ///     <para />
-        ///     If the specified type is kind of some type that can't be initialized (like abstract and sealed), an exception is
-        ///     thrown.
-        /// </param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
-            BindingFlags specifiedModifiers,
-            Func<MethodInfo, bool> customFilter, bool initializeInstance)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, specifiedModifiers, customFilter,
-                null, initializeInstance);
-        }
-
-        /// <summary>
-        ///     Method to get generic methods of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic methods</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching type's members if needed.</param>
-        /// <param name="initializeInstance">
-        ///     If it's set 'true,' the method initializes an instance from the type that leads to access to some members who need
-        ///     an instance to use (like non-abstract and non-sealed members).
-        ///     <para />
-        ///     If the specified type is kind of some type that can't be initialized (like abstract and sealed), an exception is
-        ///     thrown.
-        /// </param>
-        /// <returns>A collection of generic methods</returns>
-        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers,
-            Func<MethodInfo, bool> customFilter, bool initializeInstance)
-        {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, specifiedModifiers, customFilter,
-                initializeInstance);
-        }
-
-        #endregion
-
-        #region GetAllMembersOfType Methods For Type
-
-        /// <summary>
-        ///     Method to get all members of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic members</param>
-        /// <returns>a type with members array</returns>
-        public G9DtMember GetAllMembersOfType(Type targetType)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, G9EAccessModifier.Everything);
-        }
-
-        /// <summary>
-        ///     Method to get all members of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic members</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>a type with members array</returns>
-        public G9DtMember GetAllMembersOfType(Type targetType,
-            BindingFlags specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get all members of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic members</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>a type with members array</returns>
-        public G9DtMember GetAllMembersOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get all members of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic members</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilterForFields">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForProperties">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
-        /// <returns>a type with members array</returns>
-        public G9DtMember GetAllMembersOfType(Type targetType,
-            BindingFlags specifiedModifiers,
-            Func<FieldInfo, bool> customFilterForFields,
-            Func<PropertyInfo, bool> customFilterForProperties,
-            Func<MethodInfo, bool> customFilterMethods,
-            Func<MethodInfo, bool> customFilterForGenericMethods)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, specifiedModifiers,
-                customFilterForFields,
-                customFilterForProperties, customFilterMethods, customFilterForGenericMethods);
-        }
-
-        /// <summary>
-        ///     Method to get all members of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic members</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilterForFields">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForProperties">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
-        /// <returns>a type with members array</returns>
-        public G9DtMember GetAllMembersOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers,
-            Func<FieldInfo, bool> customFilterForFields,
-            Func<PropertyInfo, bool> customFilterForProperties,
-            Func<MethodInfo, bool> customFilterMethods,
-            Func<MethodInfo, bool> customFilterForGenericMethods)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, specifiedModifiers,
-                customFilterForFields,
-                customFilterForProperties, customFilterMethods, customFilterForGenericMethods);
-        }
-
-        /// <summary>
-        ///     Method to get all members of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic members</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilterForFields">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForProperties">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
-        /// <param name="initializeInstance">
-        ///     If it's set 'true,' the method initializes an instance from the type that leads to access to some members who need
-        ///     an instance to use (like non-abstract and non-sealed members).
-        ///     <para />
-        ///     If the specified type is kind of some type that can't be initialized (like abstract and sealed), an exception is
-        ///     thrown.
-        /// </param>
-        /// <returns>a type with members array</returns>
-        public G9DtMember GetAllMembersOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers,
-            Func<FieldInfo, bool> customFilterForFields,
-            Func<PropertyInfo, bool> customFilterForProperties,
-            Func<MethodInfo, bool> customFilterMethods,
-            Func<MethodInfo, bool> customFilterForGenericMethods, bool initializeInstance)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, specifiedModifiers,
-                customFilterForFields,
-                customFilterForProperties, customFilterMethods, customFilterForGenericMethods, initializeInstance);
-        }
-
-        /// <summary>
-        ///     Method to get all members of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find generic members</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilterForFields">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForProperties">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterMethods">Specifies a custom filter parameter if needed</param>
-        /// <param name="customFilterForGenericMethods">Specifies a custom filter parameter if needed</param>
-        /// <param name="initializeInstance">
-        ///     If it's set 'true,' the method initializes an instance from the type that leads to access to some members who need
-        ///     an instance to use (like non-abstract and non-sealed members).
-        ///     <para />
-        ///     If the specified type is kind of some type that can't be initialized (like abstract and sealed), an exception is
-        ///     thrown.
-        /// </param>
-        /// <returns>a type with members array</returns>
-        public G9DtMember GetAllMembersOfType(Type targetType,
-            BindingFlags specifiedModifiers,
-            Func<FieldInfo, bool> customFilterForFields,
-            Func<PropertyInfo, bool> customFilterForProperties,
-            Func<MethodInfo, bool> customFilterMethods,
-            Func<MethodInfo, bool> customFilterForGenericMethods, bool initializeInstance)
-        {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, specifiedModifiers,
-                customFilterForFields,
-                customFilterForProperties, customFilterMethods, customFilterForGenericMethods, null,
-                initializeInstance);
-        }
-
-        #endregion
-
-        #region GetFields Methods For Object
-
-        /// <summary>
-        ///     Method to get fields of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find fields</param>
-        /// <returns>A collection of fields</returns>
-        public IList<G9DtField> GetFieldsOfType(Type targetType)
-        {
-            return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType, G9EAccessModifier.Everything);
-        }
-
-        /// <summary>
-        ///     Method to get fields of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find fields</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of fields</returns>
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetFieldsOfType" />
         public IList<G9DtField> GetFieldsOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers)
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
+            Func<FieldInfo, bool> customFilter = null, bool initializeInstance = false,
+            bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType, specifiedModifiers);
+            return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType,
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), customFilter,
+                null, initializeInstance, considerInheritedParent);
         }
 
-        /// <summary>
-        ///     Method to get fields of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find fields</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <returns>A collection of fields</returns>
-        public IList<G9DtField> GetFieldsOfType(Type targetType,
-            BindingFlags specifiedModifiers)
-        {
-            return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to get fields of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find fields</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <returns>A collection of fields</returns>
-        public IList<G9DtField> GetFieldsOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers,
-            Func<FieldInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get fields of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find fields</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <returns>A collection of fields</returns>
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetFieldsOfType" />
         public IList<G9DtField> GetFieldsOfType(Type targetType,
             BindingFlags specifiedModifiers,
-            Func<FieldInfo, bool> customFilter)
-        {
-            return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to get fields of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find fields</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <param name="initializeInstance">
-        ///     If it's set 'true,' the method initializes an instance from the type that leads to access to some members who need
-        ///     an instance to use (like non-abstract and non-sealed members).
-        ///     <para />
-        ///     If the specified type is kind of some type that can't be initialized (like abstract and sealed), an exception is
-        ///     thrown.
-        /// </param>
-        /// <returns>A collection of fields</returns>
-        public IList<G9DtField> GetFieldsOfType(Type targetType,
-            BindingFlags specifiedModifiers,
-            Func<FieldInfo, bool> customFilter, bool initializeInstance)
+            Func<FieldInfo, bool> customFilter = null, bool initializeInstance = false,
+            bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType, specifiedModifiers, customFilter, null,
-                initializeInstance);
+                initializeInstance, considerInheritedParent);
         }
 
-        /// <summary>
-        ///     Method to get fields of a type
-        /// </summary>
-        /// <param name="targetType">Specifies a type to find fields</param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <param name="initializeInstance">
-        ///     If it's set 'true,' the method initializes an instance from the type that leads to access to some members who need
-        ///     an instance to use (like non-abstract and non-sealed members).
-        ///     <para />
-        ///     If the specified type is kind of some type that can't be initialized (like abstract and sealed), an exception is
-        ///     thrown.
-        /// </param>
-        /// <returns>A collection of fields</returns>
-        public IList<G9DtField> GetFieldsOfType(Type targetType,
-            G9EAccessModifier specifiedModifiers,
-            Func<FieldInfo, bool> customFilter, bool initializeInstance)
+        #endregion
+
+        #region GetProperties Methods
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetPropertiesOfObject" />
+        public IList<G9DtProperty> GetPropertiesOfObject(object targetObject,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
+            Func<PropertyInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType, specifiedModifiers, customFilter,
-                initializeInstance);
+            return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject,
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), customFilter,
+                considerInheritedParent);
+        }
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetPropertiesOfObject" />
+        public IList<G9DtProperty> GetPropertiesOfObject(object targetObject,
+            BindingFlags specifiedModifiers,
+            Func<PropertyInfo, bool> customFilter = null, bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject, specifiedModifiers, customFilter,
+                considerInheritedParent);
+        }
+
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetPropertiesOfType" />
+        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
+            Func<PropertyInfo, bool> customFilter = null, bool initializeInstance = false,
+            bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType,
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), customFilter,
+                null, initializeInstance, considerInheritedParent);
+        }
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetPropertiesOfType" />
+        public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
+            BindingFlags specifiedModifiers,
+            Func<PropertyInfo, bool> customFilter = null, bool initializeInstance = false,
+            bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType,
+                specifiedModifiers, customFilter,
+                null, initializeInstance, considerInheritedParent);
+        }
+
+        #endregion
+
+        #region GetMethods Methods
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetMethodsOfObject" />
+        public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
+            Func<MethodInfo, bool> customFilter = null, bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject,
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers),
+                customFilter, considerInheritedParent
+            );
+        }
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetMethodsOfObject" />
+        public IList<G9DtMethod> GetMethodsOfObject(object targetObject,
+            BindingFlags specifiedModifiers,
+            Func<MethodInfo, bool> customFilter = null, bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject, specifiedModifiers,
+                customFilter, considerInheritedParent
+            );
+        }
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetMethodsOfType" />
+        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
+            Func<MethodInfo, bool> customFilter = null, bool initializeInstance = false,
+            bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType,
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), customFilter, null,
+                initializeInstance, considerInheritedParent
+            );
+        }
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetMethodsOfType" />
+        public IList<G9DtMethod> GetMethodsOfType(Type targetType,
+            BindingFlags specifiedModifiers,
+            Func<MethodInfo, bool> customFilter = null, bool initializeInstance = false,
+            bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType,
+                specifiedModifiers, customFilter, null,
+                initializeInstance, considerInheritedParent
+            );
+        }
+
+        #endregion
+
+        #region GetGenericMethodsOfObject Methods
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetGenericMethodsOfObject" />
+        public IList<G9DtGenericMethod> GetGenericMethodsOfObject(object targetObject,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
+            Func<MethodInfo, bool> customFilter = null, bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject,
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers)
+                ,
+                customFilter, considerInheritedParent);
+        }
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetGenericMethodsOfObject" />
+        public IList<G9DtGenericMethod> GetGenericMethodsOfObject(object targetObject,
+            BindingFlags specifiedModifiers,
+            Func<MethodInfo, bool> customFilter = null, bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject, specifiedModifiers,
+                customFilter, considerInheritedParent);
+        }
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetGenericMethodsOfType" />
+        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
+            Func<MethodInfo, bool> customFilter = null, bool initializeInstance = false,
+            bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType,
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers)
+                , customFilter,
+                null, initializeInstance, considerInheritedParent);
+        }
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetGenericMethodsOfType" />
+        public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
+            BindingFlags specifiedModifiers,
+            Func<MethodInfo, bool> customFilter = null, bool initializeInstance = false,
+            bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, specifiedModifiers, customFilter,
+                null, initializeInstance, considerInheritedParent);
+        }
+
+        #endregion
+
+        #region GetAllMembersOfObject Methods
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetAllMembersOfObject" />
+        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
+            Func<FieldInfo, bool> customFilterForFields = null,
+            Func<PropertyInfo, bool> customFilterForProperties = null,
+            Func<MethodInfo, bool> customFilterMethods = null,
+            Func<MethodInfo, bool> customFilterForGenericMethods = null, bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject,
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers),
+                customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods,
+                considerInheritedParent);
+        }
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetAllMembersOfObject" />
+        public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
+            BindingFlags specifiedModifiers,
+            Func<FieldInfo, bool> customFilterForFields = null,
+            Func<PropertyInfo, bool> customFilterForProperties = null,
+            Func<MethodInfo, bool> customFilterMethods = null,
+            Func<MethodInfo, bool> customFilterForGenericMethods = null, bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject, specifiedModifiers,
+                customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods,
+                considerInheritedParent);
+        }
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetAllMembersOfType" />
+        public G9DtMember GetAllMembersOfType(Type targetType,
+            G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
+            Func<FieldInfo, bool> customFilterForFields = null,
+            Func<PropertyInfo, bool> customFilterForProperties = null,
+            Func<MethodInfo, bool> customFilterMethods = null,
+            Func<MethodInfo, bool> customFilterForGenericMethods = null, bool initializeInstance = false,
+            bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType,
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers),
+                customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods,
+                null, initializeInstance, considerInheritedParent);
+        }
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetAllMembersOfType" />
+        public G9DtMember GetAllMembersOfType(Type targetType,
+            BindingFlags specifiedModifiers,
+            Func<FieldInfo, bool> customFilterForFields = null,
+            Func<PropertyInfo, bool> customFilterForProperties = null,
+            Func<MethodInfo, bool> customFilterMethods = null,
+            Func<MethodInfo, bool> customFilterForGenericMethods = null,
+            bool initializeInstance = false, bool considerInheritedParent = false)
+        {
+            return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, specifiedModifiers,
+                customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods,
+                null, initializeInstance, considerInheritedParent);
         }
 
         #endregion
 
         #region MergeObjectsValues Methods
 
-        /// <summary>
-        ///     Method to merge the values between two objects.
-        ///     <para />
-        ///     The first object gets its new values from the second object.
-        /// </summary>
-        /// <param name="mainObject">Specifies the main object for getting new values from the target object.</param>
-        /// <param name="targetObject">Specifies the target object for giving its values to the main object.</param>
-        public void MergeObjectsValues(object mainObject, object targetObject)
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.MergeObjectsValues" />
+        public void MergeObjectsValues(object mainObject, object targetObject,
+            G9EAccessModifier specifiedModifiers,
+            G9EValueMismatchChecking valueMismatch = G9EValueMismatchChecking.AllowMismatchValues,
+            bool enableTryToChangeType = false,
+            Func<G9IMember, bool> customFilter = null,
+            Func<G9IMember, G9IMember, bool> customProcess = null, bool considerInheritedParent = false)
         {
             G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject,
-                specifiedModifiers: G9EAccessModifier.Public);
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), valueMismatch,
+                enableTryToChangeType,
+                customFilter, customProcess, considerInheritedParent);
         }
 
-        /// <summary>
-        ///     Method to merge the values between two objects.
-        ///     <para />
-        ///     The first object gets its new values from the second object.
-        /// </summary>
-        /// <param name="mainObject">Specifies the main object for getting new values from the target object.</param>
-        /// <param name="targetObject">Specifies the target object for giving its values to the main object.</param>
-        /// <param name="valueMismatch">Specifies the mismatch checking process for members' values</param>
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.MergeObjectsValues" />
         public void MergeObjectsValues(object mainObject, object targetObject,
-            G9EValueMismatchChecking valueMismatch)
+            BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public,
+            G9EValueMismatchChecking valueMismatch = G9EValueMismatchChecking.AllowMismatchValues,
+            bool enableTryToChangeType = false,
+            Func<G9IMember, bool> customFilter = null,
+            Func<G9IMember, G9IMember, bool> customProcess = null, bool considerInheritedParent = false)
         {
-            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
-                specifiedModifiers: G9EAccessModifier.Public);
+            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, specifiedModifiers,
+                valueMismatch,
+                enableTryToChangeType, customFilter, customProcess, considerInheritedParent);
         }
 
-        /// <summary>
-        ///     Method to merge the values between two objects.
-        ///     <para />
-        ///     The first object gets its new values from the second object.
-        /// </summary>
-        /// <param name="mainObject">Specifies the main object for getting new values from the target object.</param>
-        /// <param name="targetObject">Specifies the target object for giving its values to the main object.</param>
-        /// <param name="valueMismatch">Specifies the mismatch checking process for members' values</param>
-        /// <param name="enableTryToChangeType">
-        ///     Specifies that if a mismatch occurs between two members' values, an automatic try
-        ///     to change type must happen or not.
-        /// </param>
-        public void MergeObjectsValues(object mainObject, object targetObject,
-            G9EValueMismatchChecking valueMismatch,
-            bool enableTryToChangeType)
+        #endregion
+
+        #region CompareObjectsValues Methods
+
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.CompareObjectsValues" />
+        public bool CompareObjectsValues(object firstObject, object secondObject,
+            out IList<G9DtTuple<G9IMember>> unequalMembers,
+            G9EAccessModifier specifiedModifiers,
+            bool enableTryToChangeType = false,
+            Func<G9IMember, bool> customFilter = null,
+            Func<G9IMember, G9IMember, G9EComparisonResult> customProcess = null, bool considerInheritedParent = false)
         {
-            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
-                enableTryToChangeType, G9EAccessModifier.Public);
+            return G9CObjectAndReflectionHandler.CompareObjectsValues(firstObject, secondObject, out unequalMembers,
+                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), enableTryToChangeType,
+                customFilter, customProcess, considerInheritedParent);
         }
 
-        /// <summary>
-        ///     Method to merge the values between two objects.
-        ///     <para />
-        ///     The first object gets its new values from the second object.
-        /// </summary>
-        /// <param name="mainObject">Specifies the main object for getting new values from the target object.</param>
-        /// <param name="targetObject">Specifies the target object for giving its values to the main object.</param>
-        /// <param name="valueMismatch">Specifies the mismatch checking process for members' values</param>
-        /// <param name="enableTryToChangeType">
-        ///     Specifies that if a mismatch occurs between two members' values, an automatic try
-        ///     to change type must happen or not.
-        /// </param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        public void MergeObjectsValues(object mainObject, object targetObject,
-            G9EValueMismatchChecking valueMismatch,
-            bool enableTryToChangeType, G9EAccessModifier specifiedModifiers)
+        /// <inheritdoc cref="G9CObjectAndReflectionHandler.CompareObjectsValues" />
+        public bool CompareObjectsValues(object firstObject, object secondObject,
+            out IList<G9DtTuple<G9IMember>> unequalMembers,
+            BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public,
+            bool enableTryToChangeType = false,
+            Func<G9IMember, bool> customFilter = null,
+            Func<G9IMember, G9IMember, G9EComparisonResult> customProcess = null, bool considerInheritedParent = false)
         {
-            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
-                enableTryToChangeType, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to merge the values between two objects.
-        ///     <para />
-        ///     The first object gets its new values from the second object.
-        /// </summary>
-        /// <param name="mainObject">Specifies the main object for getting new values from the target object.</param>
-        /// <param name="targetObject">Specifies the target object for giving its values to the main object.</param>
-        /// <param name="valueMismatch">Specifies the mismatch checking process for members' values</param>
-        /// <param name="enableTryToChangeType">
-        ///     Specifies that if a mismatch occurs between two members' values, an automatic try
-        ///     to change type must happen or not.
-        /// </param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        public void MergeObjectsValues(object mainObject, object targetObject,
-            G9EValueMismatchChecking valueMismatch,
-            bool enableTryToChangeType, BindingFlags specifiedModifiers)
-        {
-            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
-                enableTryToChangeType, specifiedModifiers);
-        }
-
-        /// <summary>
-        ///     Method to merge the values between two objects.
-        ///     <para />
-        ///     The first object gets its new values from the second object.
-        /// </summary>
-        /// <param name="mainObject">Specifies the main object for getting new values from the target object.</param>
-        /// <param name="targetObject">Specifies the target object for giving its values to the main object.</param>
-        /// <param name="valueMismatch">Specifies the mismatch checking process for members' values</param>
-        /// <param name="enableTryToChangeType">
-        ///     Specifies that if a mismatch occurs between two members' values, an automatic try
-        ///     to change type must happen or not.
-        /// </param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        public void MergeObjectsValues(object mainObject, object targetObject,
-            G9EValueMismatchChecking valueMismatch,
-            bool enableTryToChangeType, G9EAccessModifier specifiedModifiers,
-            Func<G9IMember, bool> customFilter)
-        {
-            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
-                enableTryToChangeType, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to merge the values between two objects.
-        ///     <para />
-        ///     The first object gets its new values from the second object.
-        /// </summary>
-        /// <param name="mainObject">Specifies the main object for getting new values from the target object.</param>
-        /// <param name="targetObject">Specifies the target object for giving its values to the main object.</param>
-        /// <param name="valueMismatch">Specifies the mismatch checking process for members' values</param>
-        /// <param name="enableTryToChangeType">
-        ///     Specifies that if a mismatch occurs between two members' values, an automatic try
-        ///     to change type must happen or not.
-        /// </param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        public void MergeObjectsValues(object mainObject, object targetObject,
-            G9EValueMismatchChecking valueMismatch,
-            bool enableTryToChangeType, BindingFlags specifiedModifiers,
-            Func<G9IMember, bool> customFilter)
-        {
-            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
-                enableTryToChangeType, specifiedModifiers, customFilter);
-        }
-
-        /// <summary>
-        ///     Method to merge the values between two objects.
-        ///     <para />
-        ///     The first object gets its new values from the second object.
-        /// </summary>
-        /// <param name="mainObject">Specifies the main object for getting new values from the target object.</param>
-        /// <param name="targetObject">Specifies the target object for giving its values to the main object.</param>
-        /// <param name="valueMismatch">Specifies the mismatch checking process for members' values</param>
-        /// <param name="enableTryToChangeType">
-        ///     Specifies that if a mismatch occurs between two members' values, an automatic try
-        ///     to change type must happen or not.
-        /// </param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <param name="customProcess">
-        ///     Specifies a custom process for each member if needed.
-        ///     <para />
-        ///     Notice: In fact, the function's result specifies the member's value in the main object.
-        /// </param>
-        public void MergeObjectsValues(object mainObject, object targetObject,
-            G9EValueMismatchChecking valueMismatch,
-            bool enableTryToChangeType, G9EAccessModifier specifiedModifiers,
-            Func<G9IMember, bool> customFilter,
-            Func<G9IMember, G9IMember, object> customProcess)
-        {
-            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
-                enableTryToChangeType, specifiedModifiers, customFilter, customProcess);
-        }
-
-        /// <summary>
-        ///     Method to merge the values between two objects.
-        ///     <para />
-        ///     The first object gets its new values from the second object.
-        /// </summary>
-        /// <param name="mainObject">Specifies the main object for getting new values from the target object.</param>
-        /// <param name="targetObject">Specifies the target object for giving its values to the main object.</param>
-        /// <param name="valueMismatch">Specifies the mismatch checking process for members' values</param>
-        /// <param name="enableTryToChangeType">
-        ///     Specifies that if a mismatch occurs between two members' values, an automatic try
-        ///     to change type must happen or not.
-        /// </param>
-        /// <param name="specifiedModifiers">Specifies which modifiers will include in the searching process</param>
-        /// <param name="customFilter">Specifies a custom filter for searching object's members if needed.</param>
-        /// <param name="customProcess">
-        ///     Specifies a custom process for each member if needed.
-        ///     <para />
-        ///     Notice: In fact, the function's result specifies the member's value in the main object.
-        /// </param>
-        public void MergeObjectsValues(object mainObject, object targetObject,
-            G9EValueMismatchChecking valueMismatch,
-            bool enableTryToChangeType, BindingFlags specifiedModifiers,
-            Func<G9IMember, bool> customFilter,
-            Func<G9IMember, G9IMember, object> customProcess)
-        {
-            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, valueMismatch,
-                enableTryToChangeType, specifiedModifiers, customFilter, customProcess);
+            return G9CObjectAndReflectionHandler.CompareObjectsValues(firstObject, secondObject, out unequalMembers,
+                specifiedModifiers, enableTryToChangeType, customFilter, customProcess, considerInheritedParent);
         }
 
         #endregion

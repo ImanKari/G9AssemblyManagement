@@ -28,5 +28,16 @@ namespace G9AssemblyManagement.Interfaces
         /// </param>
         /// <returns>A collection of attributes if that existed</returns>
         IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : System.Attribute;
+
+        /// <summary>
+        ///     Method to get specified attribute on a member
+        /// </summary>
+        /// <typeparam name="TType">Specifies the type of an attribute</typeparam>
+        /// <param name="inherit">
+        ///     true to search this member's inheritance chain to find the attributes; otherwise, false. This
+        ///     parameter is ignored for properties and events; see Remarks.
+        /// </param>
+        /// <returns>An attribute object if that existed</returns>
+        TType GetCustomAttribute<TType>(bool inherit) where TType : System.Attribute;
     }
 }

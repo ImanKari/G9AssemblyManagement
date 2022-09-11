@@ -5,19 +5,24 @@
     ///     <para />
     ///     Setter part
     /// </summary>
+    // ReSharper disable once InconsistentNaming
     public interface G9IMemberSetter : G9IMemberBase
     {
         /// <summary>
         ///     Method to set member value
         /// </summary>
-        /// <typeparam name="TType">Type of value</typeparam>
-        /// <param name="value">Specifies value</param>
-        void SetValue<TType>(TType value);
-
-        /// <summary>
-        ///     Method to set member value
-        /// </summary>
         /// <param name="value">Specifies value</param>
         void SetValue(object value);
+
+        /// <summary>
+        ///     Method to set member value on another object with the same structure.
+        ///     <para />
+        ///     The member value can be set on another object with the same structure if needed.
+        /// </summary>
+        /// <param name="anotherSameObject">
+        ///     Specifies another object for setting the value that must have the same structure as the primary object.
+        /// </param>
+        /// <param name="value">Specifies value</param>
+        void SetValueOnAnotherObject(object anotherSameObject, object value);
     }
 }

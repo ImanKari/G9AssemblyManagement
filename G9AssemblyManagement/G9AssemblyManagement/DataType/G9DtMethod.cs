@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using G9AssemblyManagement.Interfaces;
 
@@ -40,30 +42,74 @@ namespace G9AssemblyManagement.DataType
         }
 
         /// <summary>
-        ///     Execute specifies method with result
+        ///     Method to call the specified method.
         /// </summary>
-        /// <typeparam name="TType">Specifies value type</typeparam>
-        /// <param name="optionalParametersArray">Specifies optional parameters</param>
-        /// <returns>Return value</returns>
-        public TType CallMethodWithResult<TType>(params object[] optionalParametersArray)
+        /// <param name="optionalParametersArray">Specifies the parameters for the method if needed.</param>
+        public void CallMethod(params object[] optionalParametersArray)
         {
-            return (TType)MethodInfo.Invoke(_targetObject, optionalParametersArray);
+            CallMethodOnAnotherObject(_targetObject, optionalParametersArray);
         }
 
         /// <summary>
-        ///     Execute specifies method
+        ///     Method to call the specified method with the result.
         /// </summary>
-        /// <param name="optionalParametersArray">Specifies optional parameters</param>
+        /// <typeparam name="TType">Specifies the type for the method result.</typeparam>
+        /// <param name="optionalParametersArray">Specifies the parameters for the method if needed.</param>
         /// <returns>Return value</returns>
-        public void CallMethod(params object[] optionalParametersArray)
+        public TType CallMethodWithResult<TType>(params object[] optionalParametersArray)
         {
-            MethodInfo.Invoke(_targetObject, optionalParametersArray);
+            return CallMethodWithResultOnAnotherObject<TType>(_targetObject, optionalParametersArray);
+        }
+
+        /// <summary>
+        ///     Method to call the specified method on another object.
+        ///     <para />
+        ///     The specified method can be called on another object with the same structure if needed.
+        /// </summary>
+        /// <param name="anotherSameObject">
+        ///     Specifies another object for calling the method that must have the same structure as
+        ///     the primary object.
+        /// </param>
+        /// <param name="optionalParametersArray">Specifies the parameters for the method if needed.</param>
+        public void CallMethodOnAnotherObject(object anotherSameObject, params object[] optionalParametersArray)
+        {
+            MethodInfo.Invoke(anotherSameObject, optionalParametersArray);
+        }
+
+        /// <summary>
+        ///     Method to call the specified method on another object with the result.
+        ///     <para />
+        ///     The specified method can be called on another object with the same structure if needed.
+        /// </summary>
+        /// <typeparam name="TType">Specifies the type for the method result.</typeparam>
+        /// <param name="anotherSameObject">
+        ///     Specifies another object for calling the method that must have the same structure as
+        ///     the primary object.
+        /// </param>
+        /// <param name="optionalParametersArray">Specifies the parameters for the method if needed.</param>
+        /// <returns>Return value</returns>
+        public TType CallMethodWithResultOnAnotherObject<TType>(object anotherSameObject,
+            params object[] optionalParametersArray)
+        {
+            return (TType)MethodInfo.Invoke(anotherSameObject, optionalParametersArray);
         }
 
         /// <inheritdoc />
-        public IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : System.Attribute
+        public IList<TType> GetCustomAttributes<TType>(bool inherit) where TType : Attribute
         {
-            return (IList<TType>)MethodInfo.GetCustomAttributes(typeof(TType), inherit);
+            var result = MethodInfo.GetCustomAttributes(typeof(TType), inherit);
+            return result.Length == 0
+                ? null
+                : (IList<TType>)result;
+        }
+
+        /// <inheritdoc />
+        public TType GetCustomAttribute<TType>(bool inherit) where TType : Attribute
+        {
+            var result = MethodInfo.GetCustomAttributes(typeof(TType), inherit);
+            return result.Length == 0
+                ? null
+                : (TType)result.First();
         }
 
         #endregion

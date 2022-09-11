@@ -55,27 +55,39 @@ namespace G9AssemblyManagement.DataType
         }
 
         /// <inheritdoc />
-        public void SetValue<TType>(TType value)
+        public void SetValue(object value)
         {
-            FieldInfo.SetValue(_targetObject, value);
+            SetValueOnAnotherObject(_targetObject, value);
         }
 
         /// <inheritdoc />
-        public void SetValue(object value)
+        public void SetValueOnAnotherObject(object anotherSameObject, object value)
         {
-            SetValue<object>(value);
+            FieldInfo.SetValue(anotherSameObject, value);
         }
 
         /// <inheritdoc />
         public TType GetValue<TType>()
         {
-            return (TType)GetValue();
+            return (TType)GetValueOnAnotherObject(_targetObject);
         }
 
         /// <inheritdoc />
         public object GetValue()
         {
-            return FieldInfo.GetValue(_targetObject);
+            return GetValueOnAnotherObject(_targetObject);
+        }
+
+        /// <inheritdoc />
+        public TType GetValueOnAnotherObject<TType>(object anotherSameObject)
+        {
+            return (TType)GetValueOnAnotherObject(anotherSameObject);
+        }
+
+        /// <inheritdoc />
+        public object GetValueOnAnotherObject(object anotherSameObject)
+        {
+            return FieldInfo.GetValue(anotherSameObject);
         }
 
         /// <inheritdoc />

@@ -55,34 +55,46 @@ namespace G9AssemblyManagement.DataType
         }
 
         /// <inheritdoc />
-        public void SetValue<TType>(TType value)
+        public void SetValue(object value)
         {
-#if (NET35 || NET40)
-            PropertyInfo.SetValue(_targetObject, value, null);
-#else
-            PropertyInfo.SetValue(_targetObject, value);
-#endif
+            SetValueOnAnotherObject(_targetObject, value);
         }
 
         /// <inheritdoc />
-        public void SetValue(object value)
+        public void SetValueOnAnotherObject(object anotherSameObject, object value)
         {
-            SetValue<object>(value);
+#if (NET35 || NET40)
+            PropertyInfo.SetValue(anotherSameObject, value, null);
+#else
+            PropertyInfo.SetValue(anotherSameObject, value);
+#endif
         }
 
         /// <inheritdoc />
         public TType GetValue<TType>()
         {
-            return (TType)GetValue();
+            return (TType)GetValueOnAnotherObject(_targetObject);
         }
 
         /// <inheritdoc />
         public object GetValue()
         {
+            return GetValueOnAnotherObject(_targetObject);
+        }
+
+        /// <inheritdoc />
+        public TType GetValueOnAnotherObject<TType>(object anotherSameObject)
+        {
+            return (TType)GetValueOnAnotherObject(anotherSameObject);
+        }
+
+        /// <inheritdoc />
+        public object GetValueOnAnotherObject(object anotherSameObject)
+        {
 #if (NET35 || NET40)
-            return PropertyInfo.GetValue(_targetObject, null);
+            return PropertyInfo.GetValue(anotherSameObject, null);
 #else
-            return PropertyInfo.GetValue(_targetObject);
+            return PropertyInfo.GetValue(anotherSameObject);
 #endif
         }
 

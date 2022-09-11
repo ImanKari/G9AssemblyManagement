@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading;
 using G9AssemblyManagement.DataType;
 using G9AssemblyManagement.Enums;
-using ThreadState = System.Threading.ThreadState;
+#if NET35 || NET40
+#endif
+
 #if !NET35
 using System.Threading.Tasks;
 #endif
@@ -84,7 +86,8 @@ namespace G9AssemblyManagement.Core
                         .Select(action => new
                         {
                             Name = action.CustomName,
-                            Result = PerformanceTester(action.CustomAction, testMode, numberOfRepetitions / 2)
+                            Result = PerformanceTester(action.CustomAction, testMode,
+                                numberOfRepetitions / 2 + numberOfRepetitions % 2)
                         }), a => a.Name, b => b.Name,
                     (a, b) => new G9DtPerformanceResult(
                         a.Result.AverageExecutionTimeOnSingleCore == null
@@ -251,11 +254,20 @@ namespace G9AssemblyManagement.Core
         private static G9DtTuple<decimal> PerformanceTesterForSingleCore(Action customActionForTest,
             int numberOfRepetitions)
         {
+            PrepareSituationForPerformanceTest(true);
+
+            // run once outside of loop to avoid initialization costs
+            // warm up
+            customActionForTest();
+
             var startUsedMemory = GetCurrentUsedMemory(true);
             var sw = Stopwatch.StartNew();
             for (var i = 0; i < numberOfRepetitions; i++) customActionForTest();
             sw.Stop();
             var endUsedMemory = GetCurrentUsedMemory();
+
+            PrepareSituationForPerformanceTest();
+
             return new G9DtTuple<decimal>((decimal)sw.ElapsedMilliseconds / numberOfRepetitions,
                 (endUsedMemory - startUsedMemory) / numberOfRepetitions);
         }
@@ -269,47 +281,50 @@ namespace G9AssemblyManagement.Core
         private static G9DtTuple<decimal> PerformanceTesterForMultiCore(Action customActionForTest,
             int numberOfRepetitions)
         {
+            if (numberOfRepetitions <= 0)
+                throw new Exception($"The parameter '{numberOfRepetitions}' can't be under 1.");
+
+            PrepareSituationForPerformanceTest(true);
+
+            // run once outside of loop to avoid initialization costs
+            // warm up
+            customActionForTest();
+
             var startUsedMemory = GetCurrentUsedMemory(true);
             var sw = Stopwatch.StartNew();
-#if NET35
-            Thread lastTask = null;
-            Thread.AllocateDataSlot();
-            ThreadPool.SetMinThreads(Environment.ProcessorCount, Environment.ProcessorCount);
-            ThreadPool.SetMaxThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
 
+#if NET35
+
+            var counter = 1;
             for (var i = 0; i < numberOfRepetitions - 1; i++)
-            {
-                var i1 = i;
                 ThreadPool.QueueUserWorkItem(state =>
                 {
-                    customActionForTest();
+                    try
+                    {
+                        customActionForTest();
+                    }
+                    finally
+                    {
+                        Interlocked.Increment(ref counter);
+                    }
                 });
-            }
 
-            ThreadPool.QueueUserWorkItem(state =>
-            {
-                lastTask = new Thread(() =>
-                    customActionForTest());
-                lastTask.Start();
-            });
-
-
-            while (lastTask == null || (lastTask.ThreadState & ThreadState.Unstarted) == ThreadState.Unstarted)
-            {
-                Thread.Sleep(9);
-            }
-
-            lastTask.Join(TimeSpan.Zero);
+            while (counter < numberOfRepetitions)
+                Thread.Sleep(1);
 #else
-            var threads = Environment.ProcessorCount;
-            var options = new ParallelOptions
+            var option = new ParallelOptions()
             {
-                MaxDegreeOfParallelism = threads * 2
+                MaxDegreeOfParallelism = Environment.ProcessorCount <= 1 ? 10 : Environment.ProcessorCount * 5
             };
-            Parallel.For(0, numberOfRepetitions, options, i => { customActionForTest(); });
+            Parallel.For(0, numberOfRepetitions - 1, option, i =>
+            {
+                customActionForTest();
+            });
 #endif
             sw.Stop();
             var endUsedMemory = GetCurrentUsedMemory();
+
+            PrepareSituationForPerformanceTest();
 
             return new G9DtTuple<decimal>((decimal)sw.ElapsedMilliseconds / numberOfRepetitions,
                 (endUsedMemory - startUsedMemory) / numberOfRepetitions);
@@ -330,44 +345,46 @@ namespace G9AssemblyManagement.Core
         {
             if (numberOfRepetitions <= 0)
                 throw new Exception($"The parameter '{numberOfRepetitions}' can't be under 1.");
-#if !NET35
-            var threads = Environment.ProcessorCount;
-            var options = new ParallelOptions
-            {
-                MaxDegreeOfParallelism = threads * 2
-            };
-            Parallel.For(0, numberOfRepetitions, options,
-                i => { customActionForTest(Thread.CurrentThread.ManagedThreadId + i); });
-#else
-            Thread lastTask = null;
-            Thread.AllocateDataSlot();
-            ThreadPool.SetMinThreads(Environment.ProcessorCount, Environment.ProcessorCount);
-            ThreadPool.SetMaxThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
 
+            PrepareSituationForPerformanceTest(true);
+
+            // run once outside of loop to avoid initialization costs
+            // warm up
+            customActionForTest(Thread.CurrentThread.ManagedThreadId);
+
+#if NET35
+
+            var counter = 1;
             for (var i = 0; i < numberOfRepetitions - 1; i++)
             {
                 var i1 = i;
                 ThreadPool.QueueUserWorkItem(state =>
                 {
-                    customActionForTest(Thread.CurrentThread.ManagedThreadId + i1);
+                    try
+                    {
+                        customActionForTest(Thread.CurrentThread.ManagedThreadId + i1);
+                    }
+                    finally
+                    {
+                        Interlocked.Increment(ref counter);
+                    }
                 });
             }
 
-            ThreadPool.QueueUserWorkItem(state =>
+            while (counter < numberOfRepetitions)
+                Thread.Sleep(1);
+#else
+            var option = new ParallelOptions()
             {
-                lastTask = new Thread(() =>
-                    customActionForTest(Thread.CurrentThread.ManagedThreadId + numberOfRepetitions));
-                lastTask.Start();
+                MaxDegreeOfParallelism = Environment.ProcessorCount <= 1 ? 10 : Environment.ProcessorCount * 5
+            };
+            Parallel.For(0, numberOfRepetitions - 1, option, i =>
+            {
+                customActionForTest(Thread.CurrentThread.ManagedThreadId + i);
             });
-
-
-            while (lastTask == null || (lastTask.ThreadState & ThreadState.Unstarted) == ThreadState.Unstarted)
-            {
-                Thread.Sleep(9);
-            }
-
-            lastTask.Join(TimeSpan.Zero);
 #endif
+
+            PrepareSituationForPerformanceTest();
         }
 
         /// <summary>
@@ -379,6 +396,31 @@ namespace G9AssemblyManagement.Core
 
             return G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(GC.GetTotalMemory(start),
                 G9ESizeUnits.KiloByte);
+        }
+
+        /// <summary>
+        ///     Helper method for prepare situation for testing the performance
+        /// </summary>
+        private static void PrepareSituationForPerformanceTest(bool starter = false)
+        {
+            if (starter)
+            {
+                // Prevent the JIT Compiler from optimizing Fkt calls away
+                // ReSharper disable once UnusedVariable
+                long seed = Environment.TickCount;
+                // Run at highest priority to minimize fluctuations caused by other processes/threads
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+                Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            }
+
+            // Clean up
+            var processorCount = Environment.ProcessorCount <= 1 ? 5 : Environment.ProcessorCount;
+            Thread.AllocateDataSlot();
+            ThreadPool.SetMinThreads(processorCount, processorCount);
+            ThreadPool.SetMaxThreads(processorCount * 5, processorCount * 5);
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
         }
     }
 }

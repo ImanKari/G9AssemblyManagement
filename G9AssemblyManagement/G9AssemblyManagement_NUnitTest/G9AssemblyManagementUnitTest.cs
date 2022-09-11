@@ -27,7 +27,7 @@ namespace G9AssemblyManagement_NUnitTest
     public class G9AssemblyManagementUnitTest
     {
 #if NET35
-        private bool _isDotNet35 = true;
+        private readonly bool _isDotNet35 = true;
 #else
         private readonly bool _isDotNet35 = false;
 #endif
@@ -106,7 +106,7 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(1)]
+        [Order(2)]
         public void TestEfficientTypeFeatures()
         {
             // Some built-in .NET Types
@@ -145,8 +145,8 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(1)]
-        public void TestChangeTypeMethods()
+        [Order(3)]
+        public void TestSmartChangeType()
         {
             var v1 = 'a';
             var v2 = "G9TM";
@@ -197,7 +197,7 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(2)]
+        [Order(4)]
         public void TestG9AttrAddListenerOnGenerate()
         {
             // New instance of class 
@@ -287,7 +287,7 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(3)]
+        [Order(5)]
         public void TestInstanceListener()
         {
             var exceptionMessage = "Just for test, receive it in 'On receive exception'";
@@ -405,10 +405,10 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(4)]
+        [Order(6)]
         public void TestSafeThreadShock()
         {
-            var numberOfRepetition = _isDotNet35 ? 9_999 : 99_999;
+            var numberOfRepetition = _isDotNet35 ? 1_999 : 3_999;
 
             var object1 = new G9CInstanceTest();
             var object2 = new G9CThirdClass();
@@ -482,7 +482,7 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(5)]
+        [Order(7)]
         public void TestGetFieldsOfObject()
         {
             // Create objects from class and struct
@@ -591,10 +591,42 @@ namespace G9AssemblyManagement_NUnitTest
             fieldsOfObject5 = G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(object5,
                 G9EAccessModifier.Everything, s => s.Name.Contains("1"));
             Assert.True(fieldsOfObject5.Count == 3);
+
+
+            // Testing the getting the private parent children
+            // Without considerInheritedParent
+            var objectChildWithParent = new G9CObjectChild();
+            var fields = G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(objectChildWithParent);
+            Assert.True(fields.Count == 3 && fields.Count(s => s.Name == "_age") == 1);
+
+            // With considerInheritedParent
+            fields = G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(objectChildWithParent,
+                considerInheritedParent: true);
+            var ageFields = fields.Where(s => s.Name == "_age").ToArray();
+            Assert.True(fields.Count == 6 && ageFields.Length == 2 && ageFields[0].GetValue<int>() == 39 &&
+                        ageFields[1].GetValue<int>() == 99);
+
+            // Test on type
+            // Without considerInheritedParent
+            fields = G9Assembly.ObjectAndReflectionTools.GetFieldsOfType(typeof(G9CObjectChild));
+            Assert.True(fields.Count == 3 && fields.Count(s => s.Name == "_staticAge") == 1);
+
+            // With considerInheritedParent
+            fields = G9Assembly.ObjectAndReflectionTools.GetFieldsOfType(typeof(G9CObjectChild),
+                considerInheritedParent: true);
+            ageFields = fields.Where(s => s.Name == "_staticAge").ToArray();
+            Assert.True(fields.Count == 6 && ageFields.Length == 2 && ageFields[0].GetValue<int>() == 39 &&
+                        ageFields[1].GetValue<int>() == 99);
+
+
+            // Test using field on another object
+            ageFields = fields.Where(s => s.Name == "_age").ToArray();
+            Assert.True(ageFields[0].GetValueOnAnotherObject<int>(objectChildWithParent) == 39 &&
+                        ageFields[1].GetValueOnAnotherObject<int>(objectChildWithParent) == 99);
         }
 
         [Test]
-        [Order(6)]
+        [Order(8)]
         public void TestGetPropertiesOfObject()
         {
             // Create objects from class and struct
@@ -679,10 +711,33 @@ namespace G9AssemblyManagement_NUnitTest
             fieldsOfObject5 = G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(object5,
                 G9EAccessModifier.Everything, s => s.Name.Contains("1"));
             Assert.True(fieldsOfObject5.Count == 1);
+
+
+            // Testing the getting the private parent children
+            // Without considerInheritedParent
+            var objectChildWithParent = new G9CObjectChild();
+            var properties = G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(objectChildWithParent);
+            Assert.True(properties.Count == 1 && properties.Count(s => s.Name == "FullName") == 1);
+
+            // With considerInheritedParent
+            properties =
+                G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(objectChildWithParent,
+                    considerInheritedParent: true);
+            Assert.True(properties.Count == 2 && properties[0].GetValue<string>() == "G9TM" &&
+                        properties[1].GetValue<string>() == "G9TM-Parent");
+
+            // Test on type
+            // Without considerInheritedParent + Test using member on another object
+            properties =
+                G9Assembly.ObjectAndReflectionTools.GetPropertiesOfType(typeof(G9CObjectChild),
+                    considerInheritedParent: true);
+            Assert.True(properties.Count == 2 &&
+                        properties[0].GetValueOnAnotherObject<string>(objectChildWithParent) == "G9TM" &&
+                        properties[1].GetValueOnAnotherObject<string>(objectChildWithParent) == "G9TM-Parent");
         }
 
         [Test]
-        [Order(7)]
+        [Order(9)]
         public void TestGetMethodsOfObject()
         {
             // Create objects from class and struct
@@ -760,10 +815,33 @@ namespace G9AssemblyManagement_NUnitTest
             fieldsOfObject1 = G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(object1,
                 G9EAccessModifier.Everything, s => s.Name.Contains("1"));
             Assert.True(fieldsOfObject1.Count == 3);
+
+            // Testing the getting the private parent children
+            // Without considerInheritedParent
+            var objectChildWithParent = new G9CObjectChild();
+            var methods = G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(objectChildWithParent);
+            Assert.True(methods.Count(s => s.MethodName == "GetAge") == 1);
+
+            // With considerInheritedParent
+            methods = G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(objectChildWithParent,
+                considerInheritedParent: true);
+            var getAgeMethods = methods.Where(s => s.MethodName == "GetAge").ToArray();
+            Assert.True(getAgeMethods.Length == 2 &&
+                        getAgeMethods[0].CallMethodWithResult<int>() == 39 &&
+                        getAgeMethods[1].CallMethodWithResult<int>() == 99);
+
+            // Test on type
+            // Without considerInheritedParent + Test using member on another object
+            methods = G9Assembly.ObjectAndReflectionTools.GetMethodsOfType(typeof(G9CObjectChild),
+                considerInheritedParent: true);
+            getAgeMethods = methods.Where(s => s.MethodName == "GetAge").ToArray();
+            Assert.True(getAgeMethods.Length == 2 &&
+                        getAgeMethods[0].CallMethodWithResultOnAnotherObject<int>(objectChildWithParent) == 39 &&
+                        getAgeMethods[1].CallMethodWithResultOnAnotherObject<int>(objectChildWithParent) == 99);
         }
 
         [Test]
-        [Order(8)]
+        [Order(10)]
         public void TestGetGenericMethodsOfObject()
         {
             // Create objects from class and struct
@@ -858,10 +936,38 @@ namespace G9AssemblyManagement_NUnitTest
                 G9EAccessModifier.Everything,
                 s => s.GetGenericArguments().Length >= 3);
             Assert.True(fieldsOfObject2.Count == 1);
+
+
+            // Testing the getting the private parent children
+            // Without considerInheritedParent
+            var objectChildWithParent = new G9CObjectChild();
+            var genericMethods = G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfObject(objectChildWithParent);
+            Assert.True(genericMethods.Count == 1 &&
+                        genericMethods.Count(s => s.MethodName == "GetFakeTypeValue") == 1);
+
+            // With considerInheritedParent
+            genericMethods =
+                G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfObject(objectChildWithParent,
+                    considerInheritedParent: true);
+            Assert.True(genericMethods.Count == 2 &&
+                        genericMethods.Count(s => s.MethodName == "GetFakeTypeValue") == 2 &&
+                        genericMethods[0].CallMethodWithResult<int>(new[] { typeof(int) }, 39) == 39
+                        && genericMethods[1].CallMethodWithResult<int>(new[] { typeof(int) }, 99) == 99);
+
+            // Test on type
+            // Without considerInheritedParent + Test using member on another object
+            genericMethods =
+                G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfType(typeof(G9CObjectChild),
+                    considerInheritedParent: true);
+            Assert.True(genericMethods.Count == 2 &&
+                        genericMethods[0].CallMethodWithResultOnAnotherObject<int>(objectChildWithParent,
+                            new[] { typeof(int) }, 39) == 39 &&
+                        genericMethods[1].CallMethodWithResultOnAnotherObject<int>(objectChildWithParent,
+                            new[] { typeof(int) }, 99) == 99);
         }
 
         [Test]
-        [Order(9)]
+        [Order(11)]
         public void TestGetAllMembersOfObject()
         {
             // Create objects from class and struct
@@ -881,7 +987,7 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(10)]
+        [Order(12)]
         public void TestGetMembersFromStaticObject()
         {
             #region Test static member
@@ -962,8 +1068,7 @@ namespace G9AssemblyManagement_NUnitTest
             }
 
             // Get fields of type
-            var staticFields = G9Assembly.ObjectAndReflectionTools.GetFieldsOfType(typeof(G9DtStaticType),
-                G9EAccessModifier.Everything);
+            var staticFields = G9Assembly.ObjectAndReflectionTools.GetFieldsOfType(typeof(G9DtStaticType));
             // Total fields
             Assert.True(staticFields.Count == 2);
             // Test static field
@@ -972,8 +1077,7 @@ namespace G9AssemblyManagement_NUnitTest
                     .GetValue<string>() == G9DtStaticType.Name);
 
             // Get properties of type
-            var staticProperties = G9Assembly.ObjectAndReflectionTools.GetPropertiesOfType(typeof(G9DtStaticType),
-                G9EAccessModifier.Everything);
+            var staticProperties = G9Assembly.ObjectAndReflectionTools.GetPropertiesOfType(typeof(G9DtStaticType));
             // Total properties
             Assert.True(staticProperties.Count == 1);
             // Test static property
@@ -983,8 +1087,7 @@ namespace G9AssemblyManagement_NUnitTest
 
 
             // Get methods of type
-            var staticMethods = G9Assembly.ObjectAndReflectionTools.GetMethodsOfType(typeof(G9DtStaticType),
-                G9EAccessModifier.Everything);
+            var staticMethods = G9Assembly.ObjectAndReflectionTools.GetMethodsOfType(typeof(G9DtStaticType));
             // Total methods
             Assert.True(staticMethods.Count == 9);
             // Test static method
@@ -994,8 +1097,7 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Get generic methods of type
             var staticGenericMethods = G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfType(
-                typeof(G9DtStaticType),
-                G9EAccessModifier.Everything);
+                typeof(G9DtStaticType));
             // Total generic methods
             Assert.True(staticGenericMethods.Count == 1);
 
@@ -1008,8 +1110,7 @@ namespace G9AssemblyManagement_NUnitTest
             {
                 // Get generic methods of type
                 var genericMethodsList = G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfType(
-                    typeof(G9DtStaticType),
-                    G9EAccessModifier.Everything);
+                    typeof(G9DtStaticType));
 
                 // Total generic methods
                 Assert.True(genericMethodsList.Count == 1);
@@ -1018,13 +1119,13 @@ namespace G9AssemblyManagement_NUnitTest
                 Assert.True(
                     genericMethodsList.First(s => s.MethodName == nameof(G9DtStaticType.TestStaticGeneric))
                         .CallMethodWithResult<string>(new[] { typeof(string) }, $"G9TM{i}") == $"G9TM{i}");
-            }, _isDotNet35 ? 9_999 : 99_999);
+            }, _isDotNet35 ? 1_999 : 3_999);
 
             #endregion
         }
 
         [Test]
-        [Order(11)]
+        [Order(13)]
         public void TestCreateInstanceFromType()
         {
             // Create instance from a normal type
@@ -1101,8 +1202,8 @@ namespace G9AssemblyManagement_NUnitTest
         }
 
         [Test]
-        [Order(12)]
-        public void TestMergeObjectsValues()
+        [Order(14)]
+        public void TestMergeAndCompareObjectsValues()
         {
             // Defining three different objects.
             var objectA = new G9CMismatchTypeA();
@@ -1143,7 +1244,7 @@ namespace G9AssemblyManagement_NUnitTest
                 By paying attention to mode "enableTryToChangeType" that is set "false":
                     In this case, the objectC has the value "nine" for age; it definitely can't be changed to the int type.
                 */
-                G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC,
+                G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC, G9EAccessModifier.Public,
                     G9EValueMismatchChecking.PreventMismatchValues);
                 Assert.Fail();
             }
@@ -1178,7 +1279,7 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
             objectB = new G9CMismatchTypeB();
 
             // Merging objectB with objectC by trying smart change type.
-            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC,
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC, G9EAccessModifier.Public,
                 G9EValueMismatchChecking.PreventMismatchValues, true);
 
             // Testing the values between objects after merging.
@@ -1203,7 +1304,7 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
                  * Merging objectB with objectC by trying smart change type.
                  * In this case, the objectC has the value "nine" for age; it definitely can't be changed to the int type.
                  */
-                G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC2,
+                G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC2, G9EAccessModifier.Public,
                     G9EValueMismatchChecking.PreventMismatchValues, true);
                 Assert.Fail();
             }
@@ -1218,7 +1319,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
 
 
             // Merging objectB with objectC by "AllowMismatchValues" mode.
-            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC2,
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC2, G9EAccessModifier.Public,
                 G9EValueMismatchChecking.AllowMismatchValues, true);
 
             // Testing the values between objects after merging.
@@ -1234,7 +1335,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             objectB = new G9CMismatchTypeB();
 
             // Merging objectA with objectB just for all public members.
-            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectA, objectB,
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectA, objectB, G9EAccessModifier.Public,
                 G9EValueMismatchChecking.PreventMismatchValues);
 
             // The first test just recognizes the default value.
@@ -1242,8 +1343,8 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                         objectA.GetTime() != objectB.GetTime());
 
             // Merging objectA with objectB for all members (private/protect/public/...).
-            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectA, objectB,
-                G9EValueMismatchChecking.PreventMismatchValues, false, G9EAccessModifier.Everything);
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectA, objectB, G9EAccessModifier.Everything,
+                G9EValueMismatchChecking.PreventMismatchValues);
 
             // Testing private member
             Assert.True(objectA.GetTime() != new TimeSpan(9, 9, 9) && objectB.GetTime() == new TimeSpan(3, 6, 9) &&
@@ -1254,8 +1355,8 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             objectB = new G9CMismatchTypeB();
 
             // Ignore a member with custom filter
-            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectA, objectB,
-                G9EValueMismatchChecking.PreventMismatchValues, false, G9EAccessModifier.Everything,
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectA, objectB, G9EAccessModifier.Everything,
+                G9EValueMismatchChecking.PreventMismatchValues, false,
                 s => s.Name != "Age");
 
             Assert.True(objectA.Age != objectB.Age && objectA.ExDateTime == objectB.ExDateTime);
@@ -1267,24 +1368,31 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                  * In this case, the object has the value of "nine" for the "age" member; it definitely can't be changed to the int type, but with the custom process it can be done!
                  */
             Assert.True(objectB.Age == 99 && objectC2.Age == "nine");
-            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC2,
-                G9EValueMismatchChecking.PreventMismatchValues, true, G9EAccessModifier.Public, null,
+            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC2, G9EAccessModifier.Public,
+                G9EValueMismatchChecking.PreventMismatchValues, true, null,
                 (m1, m2) =>
                 {
                     // For the "Age" member
                     if (m1.Name == "Age")
+                    {
                         switch (m2.GetValue<string>())
                         {
                             case "nine":
-                                return 9;
+                                m1.SetValue(9);
+                                break;
                             case "eight":
-                                return 8;
+                                m1.SetValue(8);
+                                break;
                             default:
-                                return 0;
+                                m1.SetValue(0);
+                                break;
                         }
 
+                        return true;
+                    }
+
                     // For the other members
-                    return m2.GetValue();
+                    return false;
                 });
 
             Assert.True(objectB.Age == 9);
@@ -1313,35 +1421,86 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
 
                 Assert.True(newObjectB.Age == 99 && newObjectC2.Age == stringNumber);
                 G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(newObjectB, newObjectC2,
-                    G9EValueMismatchChecking.PreventMismatchValues, true, G9EAccessModifier.Public, null,
+                    G9EAccessModifier.Public,
+                    G9EValueMismatchChecking.PreventMismatchValues, true, null,
                     (m1, m2) =>
                     {
                         // For the "Age" member
                         if (m1.Name == "Age")
+                        {
                             switch (m2.GetValue<string>())
                             {
                                 case "nine":
-                                    return 9;
+                                    m1.SetValue(9);
+                                    break;
                                 case "eight":
-                                    return 8;
+                                    m1.SetValue(8);
+                                    break;
                                 default:
-                                    return 0;
+                                    m1.SetValue(0);
+                                    break;
                             }
 
+                            return true;
+                        }
+
                         // For the other members
-                        return m2.GetValue();
+                        return false;
                     });
 
                 Assert.True(newObjectB.Age == intNumber);
-            }, _isDotNet35 ? 999 : 99_999);
+            }, _isDotNet35 ? 999 : 3_999);
+
+
+            // Comparison object values
+            var compareObjectA = new G9CMismatchTypeA
+            {
+                Name = "G9TM"
+            };
+            var compareObjectB = new G9CMismatchTypeA
+            {
+                Name = "MT9G"
+            };
+
+            Assert.False(G9Assembly.ObjectAndReflectionTools.CompareObjectsValues(compareObjectA, compareObjectB,
+                out var unequalMembers));
+            Assert.True(unequalMembers.Count == 1 && unequalMembers[0].Item1.Name == unequalMembers[0].Item2.Name &&
+                        unequalMembers[0].Item1.GetValue<string>() == compareObjectA.Name &&
+                        unequalMembers[0].Item2.GetValue<string>() == compareObjectB.Name);
+
+            compareObjectA = new G9CMismatchTypeA
+            {
+                ExDateTime = DateTime.Parse("1990-01-09 23:23:23")
+            };
+            compareObjectB = new G9CMismatchTypeA
+            {
+                ExDateTime = DateTime.Parse("1990-01-09 9:9:9")
+            };
+            Assert.True(G9Assembly.ObjectAndReflectionTools.CompareObjectsValues(compareObjectA, compareObjectB,
+                            out var unequalMembers2, G9EAccessModifier.Public, false, null,
+                            (memberA, memberB) =>
+                            {
+                                if (memberA.Name == nameof(G9CMismatchTypeA.ExDateTime))
+                                {
+                                    if (memberA.GetValue<DateTime>().ToString("MM/dd/yyyy") ==
+                                        memberB.GetValue<DateTime>().ToString("MM/dd/yyyy"))
+                                        return G9EComparisonResult.Equal;
+                                    return G9EComparisonResult.Nonequal;
+                                }
+
+                                return G9EComparisonResult.Skip;
+                            })
+                        && unequalMembers2.Count == 0
+            );
         }
 
         [Test]
-        [Order(13)]
+        [Order(15)]
         public void TestPerformanceMethods()
         {
             // Number Of Repetitions
-            var numberOfRepetitions = _isDotNet35 ? 9_999 : 9_999_999;
+            var numberOfRepetitions = _isDotNet35 ? 1_999 : 3_999;
+
 
             // Just Test
             G9Assembly.PerformanceTools.MultiThreadShockTest(i =>
@@ -1401,10 +1560,6 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                         result3.AverageExecutionTimeOnSingleCore != null &&
                         result3.TestMode == G9EPerformanceTestMode.Both &&
                         result3.NumberOfRepetitions == numberOfRepetitions
-#if NETCOREAPP2_0_OR_GREATER
-                        &&
-                        result3.AverageExecutionTimeOnMultiCore < result3.AverageExecutionTimeOnSingleCore
-#endif
             );
 
             Thread.Sleep(99);
@@ -1426,7 +1581,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
 
             // Comparative Performance Test - More that two actions
             var comparativeResultB = G9Assembly.PerformanceTools.ComparativePerformanceTester(
-                G9EPerformanceTestMode.Both, 99_999,
+                G9EPerformanceTestMode.Both, 3_999,
                 // Test list speed
                 new G9DtCustomPerformanceAction("List Speed", () =>
                 {
@@ -1455,7 +1610,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
         }
 
         [Test]
-        [Order(14)]
+        [Order(16)]
         public void TestCryptographyMethods()
         {
             const string testText = "My Name Is GAM3R!";
@@ -1469,7 +1624,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                 "51022fb7f5528c1b71654721d01eaeabefa765028923ab1d3b444206d809014bf92a022f46e274bf38d6a071d02016de967cf51cbd381a130d75a884e9433b04";
             const string testTextCrc32Hash = "ee81e4db";
 
-#region Hashing Test
+            #region Hashing Test
 
             // MD5
             var md5Hash = G9Assembly.CryptographyTools.StringToCustomHash(G9EHashAlgorithm.MD5, testText);
@@ -1514,12 +1669,12 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             Assert.True(!string.IsNullOrEmpty(crc32Hash) && crc32Hash == testTextCrc32Hash.ToUpper());
             // http://www.sha1-online.com/
 
-#endregion
+            #endregion
 
             const string standardKey = "eShVmYp3s6v9y$B&";
             const string standardIv = "gUkXp2s5v8x/A?D(";
 
-#region AES Test
+            #region AES Test
 
             // AES encrypt, default config
             var aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(testText, standardKey, standardIv);
@@ -1566,7 +1721,6 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
 #else
             Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText.Trim('\0') == testText);
 #endif
-            
 
 
             // AES encrypt/decrypt, nonstandard keys
@@ -1582,14 +1736,13 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                     new G9DtAESConfig(keySize: 256, blockSize: 128, enableAutoFixKeySize: true));
             Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == newText);
 
-#endregion
+            #endregion
         }
 
         [Test]
-        [Order(15)]
+        [Order(17)]
         public void TestGeneralTools()
         {
-
             // ConvertByteSizeToAnotherSize
 
             const long byteSize = 1000000000;
@@ -1608,10 +1761,10 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             Assert.True(mb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.MegaByte));
             Assert.True(gb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.GigaByte));
             Assert.True(tb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.TeraByte));
-            Assert.True(pb ==  G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.PetaByte));
-            Assert.True(eb ==  G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.ExaByte));
-            Assert.True(zb ==  G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.ZettaByte));
-            Assert.True(yb ==  G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.YottaByte));
+            Assert.True(pb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.PetaByte));
+            Assert.True(eb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.ExaByte));
+            Assert.True(zb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.ZettaByte));
+            Assert.True(yb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.YottaByte));
 
             // Check directory path
             const string directory1 = @"I:\Project\!G9TM!\Page";
@@ -1621,11 +1774,16 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             const string directory5 = @"\asd|asd|asd";
 
 #if DEBUG
-            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory1, true, true) == G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory2, true, true) == G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory3, true, true) == G9EPatchCheckResult.PathExistenceIsIncorrect);
-            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory4, true, true) == G9EPatchCheckResult.PathDriveIsIncorrect);
-            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory5, true, true) == G9EPatchCheckResult.PathNameIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory1, true, true) ==
+                        G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory2, true, true) ==
+                        G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory3, true, true) ==
+                        G9EPatchCheckResult.PathExistenceIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory4, true, true) ==
+                        G9EPatchCheckResult.PathDriveIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory5, true, true) ==
+                        G9EPatchCheckResult.PathNameIsIncorrect);
 #else
             Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory1, false, false) == G9EPatchCheckResult.Correct);
             Assert.True(G9Assembly.GeneralTools.CheckDirectoryPathValidation(directory2, false, false) == G9EPatchCheckResult.Correct);
@@ -1641,13 +1799,20 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             const string file7 = @"okay.p-n|g";
 
 #if DEBUG
-            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file1, true, true) == G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file2, true, true) == G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file3, true, true) == G9EPatchCheckResult.PathExistenceIsIncorrect);
-            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file4, true, true) == G9EPatchCheckResult.PathDriveIsIncorrect);
-            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file5, true, true) == G9EPatchCheckResult.PathNameIsIncorrect);
-            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file6, true, false) == G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file7, true, true) == G9EPatchCheckResult.PathNameIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file1, true, true) ==
+                        G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file2, true, true) ==
+                        G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file3, true, true) ==
+                        G9EPatchCheckResult.PathExistenceIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file4, true, true) ==
+                        G9EPatchCheckResult.PathDriveIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file5, true, true) ==
+                        G9EPatchCheckResult.PathNameIsIncorrect);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file6, true, false) ==
+                        G9EPatchCheckResult.Correct);
+            Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file7, true, true) ==
+                        G9EPatchCheckResult.PathNameIsIncorrect);
 #else
             Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file1, false, false) == G9EPatchCheckResult.Correct);
             Assert.True(G9Assembly.GeneralTools.CheckFilePathValidation(file2, false, false) == G9EPatchCheckResult.Correct);
@@ -1655,12 +1820,18 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
         }
 
         [Test]
-        [Order(16)]
+        [Order(18)]
         public void TestNew()
         {
             //dynamic x = new G9ObjectData();
             //x.gsdf = "asdasd";
             //x["asd"] = "321312";
+        }
+
+        [Test]
+        [Order(19)]
+        public void TestHelper()
+        {
         }
     }
 }
