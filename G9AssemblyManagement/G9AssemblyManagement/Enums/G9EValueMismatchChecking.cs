@@ -6,12 +6,12 @@
     public enum G9EValueMismatchChecking : byte
     {
         /// <summary>
-        ///     Specifies that if two members' values don't have a shared type, the process ignores them.
+        ///     Specifies that if two members' values don't have a shared type and can't transfer their values, the process must ignore them.
         /// </summary>
         AllowMismatchValues,
 
         /// <summary>
-        ///     Specifies that if two members' values of objects don't have the same type, the process throws an exception.
+        ///     Specifies that if two members' values don't have a shared type and can't transfer their values, the process must throw an exception.
         /// </summary>
         PreventMismatchValues
     }

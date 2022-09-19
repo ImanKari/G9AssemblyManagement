@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Threading;
 using G9AssemblyManagement;
+using G9AssemblyManagement.Abstract;
 using G9AssemblyManagement.DataType;
 using G9AssemblyManagement.Enums;
 using G9AssemblyManagement_NUnitTest.DataType;
@@ -203,7 +203,10 @@ namespace G9AssemblyManagement_NUnitTest
         public void TestG9AttrAddListenerOnGenerate()
         {
             // New instance of class 
-            var firstTestClass = new G9CInstanceTest();
+            var firstTestClass = new G9CInstanceTest(); 
+
+
+
 
             // Get instances of type - three way
             // The first way
@@ -630,7 +633,6 @@ namespace G9AssemblyManagement_NUnitTest
             Assert.True(ageFields[0].GetCustomAttribute<IgnoreDataMemberAttribute>(true) != null &&
                         ageFields[1].GetCustomAttributes<IgnoreDataMemberAttribute>(true) != null &&
                         ageFields[1].GetCustomAttributes<IgnoreDataMemberAttribute>(true).Count == 1);
-
         }
 
         [Test]
@@ -991,7 +993,7 @@ namespace G9AssemblyManagement_NUnitTest
 
         [Test]
         [Order(11)]
-        public void TestGetAllMembersOfObject()
+        public void TestGetAllMembersOfObject() 
         {
             // Create objects from class and struct
             var object1 = new G9CObjectMembersTest();
@@ -1391,32 +1393,34 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                  * In this case, the object has the value of "nine" for the "age" member; it definitely can't be changed to the int type, but with the custom process it can be done!
                  */
             Assert.True(objectB.Age == 99 && objectC2.Age == "nine");
-            G9Assembly.ObjectAndReflectionTools.MergeObjectsValues(objectB, objectC2, G9EAccessModifier.Public,
-                G9EValueMismatchChecking.PreventMismatchValues, true, null,
-                (m1, m2) =>
-                {
-                    // For the "Age" member
-                    if (m1.Name == "Age")
+            G9Assembly.ObjectAndReflectionTools
+                .MergeObjectsValues(objectB, objectC2, G9EAccessModifier.Public,
+                    G9EValueMismatchChecking.PreventMismatchValues, true, null,
+                    (m1, m2) =>
                     {
-                        switch (m2.GetValue<string>())
+                        // For the "Age" member
+                        if (m1.Name == "Age")
                         {
-                            case "nine":
-                                m1.SetValue(9);
-                                break;
-                            case "eight":
-                                m1.SetValue(8);
-                                break;
-                            default:
-                                m1.SetValue(0);
-                                break;
+                            switch (m2.GetValue<string>())
+                            {
+                                case "nine":
+                                    m1.SetValue(9);
+                                    break;
+                                case "eight":
+                                    m1.SetValue(8);
+                                    break;
+                                default:
+                                    m1.SetValue(0);
+                                    break;
+                            }
+
+                            // Return true if the value change perform by custom process
+                            return true;
                         }
 
-                        return true;
-                    }
-
-                    // For the other members
-                    return false;
-                });
+                        // Return false if the value change would be passed to core
+                        return false;
+                    });
 
             Assert.True(objectB.Age == 9);
 
@@ -1464,10 +1468,11 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                                     break;
                             }
 
+                            // Return true if the value change perform by custom process
                             return true;
                         }
 
-                        // For the other members
+                        // Return false if the value change would be passed to core
                         return false;
                     });
 
@@ -1855,6 +1860,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
         [Order(19)]
         public void TestHelper()
         {
+            
         }
     }
 }
