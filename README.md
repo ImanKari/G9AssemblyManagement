@@ -5,7 +5,7 @@
 [![Github Repository](https://raw.githubusercontent.com/ImanKari/G9JSONHandler/main/G9JSONHandler/Asset/GitHub.png)](https://github.com/ImanKari/G9AssemblyManagement)
 
 # G9AssemblyManagement
-### An efficient .NET library developed for working on assembly levels and using essential basic structures. This library contains various valuable tools related to **[Types](#type-tools)**, **[Instances](#instance-tools)**, **[Objects](#object-and-reflection-tools)**, **[Reflections](#object-and-reflection-tools)**, **[Merging](#merging-two-objects)**, **[Cryptographies](#cryptography-tools)**, **[Performances](#performance-tools)**, and **[General Tools](#general-tools)**.
+### An efficient .NET library developed for working on assembly levels and using essential basic structures. This library contains various valuable tools related to [Types](#type-tools), [Instances](#instance-tools), [Objects](#object-and-reflection-tools), [Reflections](#object-and-reflection-tools), [Merging](#merging-two-objects), [Cryptographies](#cryptography-tools), [Performances](#performance-tools), and [General Tools](#general-tools).
 ### Indeed, there are so many utilities in this library, along with various overloads and parameters. But in the following, we review it as long as it is not beyond the scope of this guide.
 # Overview
 ## Type Tools
@@ -133,10 +133,10 @@ G9Assembly.InstanceTools.CreateInstanceFromTypeWithConstructorParameters(typeof(
 G9Assembly.InstanceTools.CreateUninitializedInstanceFromType<IPAddress>();
 // Method to create an instance from a generic type
 G9Assembly.InstanceTools.CreateInstanceFromGenericType(
-    typeof(G9DtGenericType<>), typeof(IPAddress));
+    typeof(GenericCustomType<>), typeof(IPAddress));
 // Method to create an instance from a generic type with the constructor that has parameters
 G9Assembly.InstanceTools.CreateInstanceFromGenericTypeWithConstructorParameters(
-    typeof(GenericCustomType),
+    typeof(GenericCustomType<,,>),
     // Custom generic types
     new[] { typeof(IPAddress), typeof(int), typeof(string) },
     // Specifies parameters
@@ -525,3 +525,6 @@ private static void Main()
 
 }
 ```
+
+# END
+## Be the best you can be; the future depends on it.
