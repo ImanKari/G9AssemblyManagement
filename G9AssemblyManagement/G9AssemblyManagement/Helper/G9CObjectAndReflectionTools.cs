@@ -13,6 +13,32 @@ namespace G9AssemblyManagement.Helper
     /// </summary>
     public class G9CObjectAndReflectionTools
     {
+        /// <summary>
+        ///     Method to create custom modifier
+        /// </summary>
+        /// <param name="customModifier">Specifies custom modifiers are to be included in the search.</param>
+        /// <returns>Return a custom BindingFlags object</returns>
+        public BindingFlags CreateCustomModifier(
+            G9EAccessModifier customModifier = G9EAccessModifier.Everything)
+        {
+            if (customModifier == G9EAccessModifier.Everything)
+                return BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+
+            var defaultBindingFlags = (customModifier & G9EAccessModifier.StaticAndInstance) ==
+                                      G9EAccessModifier.StaticAndInstance
+                ? BindingFlags.Instance | BindingFlags.Static
+                : (customModifier & G9EAccessModifier.Static) == G9EAccessModifier.Static
+                    ? BindingFlags.Static
+                    : BindingFlags.Instance;
+
+            if ((customModifier & G9EAccessModifier.Public) == G9EAccessModifier.Public)
+                defaultBindingFlags |= BindingFlags.Public;
+            if ((customModifier & G9EAccessModifier.NonPublic) == G9EAccessModifier.NonPublic)
+                defaultBindingFlags |= BindingFlags.NonPublic;
+
+            return defaultBindingFlags;
+        }
+
         #region GetFields Methods
 
         /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetFieldsOfObject" />
@@ -21,7 +47,7 @@ namespace G9AssemblyManagement.Helper
             Func<FieldInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), customFilter,
+                CreateCustomModifier(specifiedModifiers), customFilter,
                 considerInheritedParent);
         }
 
@@ -41,7 +67,7 @@ namespace G9AssemblyManagement.Helper
             bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), customFilter,
+                CreateCustomModifier(specifiedModifiers), customFilter,
                 null, initializeInstance, considerInheritedParent);
         }
 
@@ -65,7 +91,7 @@ namespace G9AssemblyManagement.Helper
             Func<PropertyInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), customFilter,
+                CreateCustomModifier(specifiedModifiers), customFilter,
                 considerInheritedParent);
         }
 
@@ -86,7 +112,7 @@ namespace G9AssemblyManagement.Helper
             bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), customFilter,
+                CreateCustomModifier(specifiedModifiers), customFilter,
                 null, initializeInstance, considerInheritedParent);
         }
 
@@ -111,7 +137,7 @@ namespace G9AssemblyManagement.Helper
             Func<MethodInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers),
+                CreateCustomModifier(specifiedModifiers),
                 customFilter, considerInheritedParent
             );
         }
@@ -133,7 +159,7 @@ namespace G9AssemblyManagement.Helper
             bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), customFilter, null,
+                CreateCustomModifier(specifiedModifiers), customFilter, null,
                 initializeInstance, considerInheritedParent
             );
         }
@@ -160,7 +186,7 @@ namespace G9AssemblyManagement.Helper
             Func<MethodInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers)
+                CreateCustomModifier(specifiedModifiers)
                 ,
                 customFilter, considerInheritedParent);
         }
@@ -181,7 +207,7 @@ namespace G9AssemblyManagement.Helper
             bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers)
+                CreateCustomModifier(specifiedModifiers)
                 , customFilter,
                 null, initializeInstance, considerInheritedParent);
         }
@@ -209,7 +235,7 @@ namespace G9AssemblyManagement.Helper
             Func<MethodInfo, bool> customFilterForGenericMethods = null, bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers),
+                CreateCustomModifier(specifiedModifiers),
                 customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods,
                 considerInheritedParent);
         }
@@ -237,7 +263,7 @@ namespace G9AssemblyManagement.Helper
             bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers),
+                CreateCustomModifier(specifiedModifiers),
                 customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods,
                 null, initializeInstance, considerInheritedParent);
         }
@@ -269,7 +295,7 @@ namespace G9AssemblyManagement.Helper
             Func<G9IMember, G9IMember, bool> customProcess = null, bool considerInheritedParent = false)
         {
             G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), valueMismatch,
+                CreateCustomModifier(specifiedModifiers), valueMismatch,
                 enableTryToChangeType,
                 customFilter, customProcess, considerInheritedParent);
         }
@@ -300,7 +326,7 @@ namespace G9AssemblyManagement.Helper
             Func<G9IMember, G9IMember, G9EComparisonResult> customProcess = null, bool considerInheritedParent = false)
         {
             return G9CObjectAndReflectionHandler.CompareObjectsValues(firstObject, secondObject, out unequalMembers,
-                G9CObjectAndReflectionHandler.CreateCustomModifier(specifiedModifiers), enableTryToChangeType,
+                CreateCustomModifier(specifiedModifiers), enableTryToChangeType,
                 customFilter, customProcess, considerInheritedParent);
         }
 

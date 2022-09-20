@@ -13,32 +13,6 @@ namespace G9AssemblyManagement.Core
     /// </summary>
     internal static class G9CObjectAndReflectionHandler
     {
-        /// <summary>
-        ///     Method to create custom modifier
-        /// </summary>
-        /// <param name="customModifier">Specifies custom modifiers are to be included in the search.</param>
-        /// <returns>Return a custom BindingFlags object</returns>
-        public static BindingFlags CreateCustomModifier(
-            G9EAccessModifier customModifier = G9EAccessModifier.Everything)
-        {
-            if (customModifier == G9EAccessModifier.Everything)
-                return BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-
-            var defaultBindingFlags = (customModifier & G9EAccessModifier.StaticAndInstance) ==
-                                      G9EAccessModifier.StaticAndInstance
-                ? BindingFlags.Instance | BindingFlags.Static
-                : (customModifier & G9EAccessModifier.Static) == G9EAccessModifier.Static
-                    ? BindingFlags.Static
-                    : BindingFlags.Instance;
-
-            if ((customModifier & G9EAccessModifier.Public) == G9EAccessModifier.Public)
-                defaultBindingFlags |= BindingFlags.Public;
-            if ((customModifier & G9EAccessModifier.NonPublic) == G9EAccessModifier.NonPublic)
-                defaultBindingFlags |= BindingFlags.NonPublic;
-
-            return defaultBindingFlags;
-        }
-
         #region merging Methods
 
         /// <summary>
