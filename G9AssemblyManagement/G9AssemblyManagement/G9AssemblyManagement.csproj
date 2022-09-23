@@ -6,12 +6,12 @@
 	  <Authors>Iman Kari</Authors>
 	  <Company>G9Studio</Company>
 	  <Product>G9 Assembly Management</Product>
-	  <Description>An efficient library for working on assembly levels in .NET</Description>
+	  <Description>An efficient .NET library has been developed to work on assembly levels and use essential basic structures. This library contains various valuable tools related to Types, Instances, Objects, Reflections, Merging, Cryptographies, Performances, and General Tools. Indeed, there are so many utilities in this library, along with various overloads and parameters. But in the following, we review it as long as it is not beyond the scope of this guide.</Description>
 	  <Copyright>G9Studio - 2021</Copyright>
 	  <PackageProjectUrl>http://www.G9TM.com</PackageProjectUrl>
 	  <RepositoryUrl>https://github.com/ImanKari/G9AssemblyManagement</RepositoryUrl>
 	  <RepositoryType>GitHub</RepositoryType>
-	  <PackageTags>Assembly Management dependency injection attribute</PackageTags>
+	  <PackageTags>Assembly Management dependency injection attribute Type Instance Object Reflection Merging Cryptography Performance General Tool Tools</PackageTags>
 	  <PackageReleaseNotes>-- Changed the method location (CreateCustomModifier)
 -- Completed tests.</PackageReleaseNotes>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
