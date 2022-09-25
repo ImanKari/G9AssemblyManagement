@@ -493,7 +493,7 @@ G9Assembly.InputOutputTools.WaitForAccessToFile(
     filePath,
     // Specifies a callback for invoking.
     // The specified callback invokes when the desired specified access would be available. In addition,
-    // it has a parameter "A" that provides a usable opened file stream on your specified file.
+    // it has a parameter that provides a usable opened file stream on your specified file.
     fs =>
     {
         var data = Encoding.UTF8.GetBytes("Programmers never die because they are tiny gods!");
