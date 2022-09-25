@@ -11,7 +11,7 @@ namespace G9AssemblyManagement.Core
     /// <summary>
     ///     Helper class for objects and reflections
     /// </summary>
-    internal static class G9CObjectAndReflectionHandler
+    internal static class G9CReflectionHandler
     {
         #region merging Methods
 

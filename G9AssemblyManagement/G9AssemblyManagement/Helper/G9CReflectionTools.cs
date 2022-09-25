@@ -11,7 +11,7 @@ namespace G9AssemblyManagement.Helper
     /// <summary>
     ///     Helper class for objects and reflections
     /// </summary>
-    public class G9CObjectAndReflectionTools
+    public class G9CReflectionTools
     {
         /// <summary>
         ///     Method to create custom modifier
@@ -41,43 +41,43 @@ namespace G9AssemblyManagement.Helper
 
         #region GetFields Methods
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetFieldsOfObject" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetFieldsOfObject" />
         public IList<G9DtField> GetFieldsOfObject(object targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<FieldInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject,
+            return G9CReflectionHandler.GetFieldsOfObject(targetObject,
                 CreateCustomModifier(specifiedModifiers), customFilter,
                 considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetFieldsOfObject" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetFieldsOfObject" />
         public IList<G9DtField> GetFieldsOfObject(object targetObject,
             BindingFlags specifiedModifiers,
             Func<FieldInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetFieldsOfObject(targetObject, specifiedModifiers, customFilter,
+            return G9CReflectionHandler.GetFieldsOfObject(targetObject, specifiedModifiers, customFilter,
                 considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetFieldsOfType" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetFieldsOfType" />
         public IList<G9DtField> GetFieldsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<FieldInfo, bool> customFilter = null, bool initializeInstance = false,
             bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType,
+            return G9CReflectionHandler.GetFieldsOfType(targetType,
                 CreateCustomModifier(specifiedModifiers), customFilter,
                 null, initializeInstance, considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetFieldsOfType" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetFieldsOfType" />
         public IList<G9DtField> GetFieldsOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<FieldInfo, bool> customFilter = null, bool initializeInstance = false,
             bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetFieldsOfType(targetType, specifiedModifiers, customFilter, null,
+            return G9CReflectionHandler.GetFieldsOfType(targetType, specifiedModifiers, customFilter, null,
                 initializeInstance, considerInheritedParent);
         }
 
@@ -85,44 +85,44 @@ namespace G9AssemblyManagement.Helper
 
         #region GetProperties Methods
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetPropertiesOfObject" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetPropertiesOfObject" />
         public IList<G9DtProperty> GetPropertiesOfObject(object targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<PropertyInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject,
+            return G9CReflectionHandler.GetPropertiesOfObject(targetObject,
                 CreateCustomModifier(specifiedModifiers), customFilter,
                 considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetPropertiesOfObject" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetPropertiesOfObject" />
         public IList<G9DtProperty> GetPropertiesOfObject(object targetObject,
             BindingFlags specifiedModifiers,
             Func<PropertyInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfObject(targetObject, specifiedModifiers, customFilter,
+            return G9CReflectionHandler.GetPropertiesOfObject(targetObject, specifiedModifiers, customFilter,
                 considerInheritedParent);
         }
 
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetPropertiesOfType" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetPropertiesOfType" />
         public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<PropertyInfo, bool> customFilter = null, bool initializeInstance = false,
             bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType,
+            return G9CReflectionHandler.GetPropertiesOfType(targetType,
                 CreateCustomModifier(specifiedModifiers), customFilter,
                 null, initializeInstance, considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetPropertiesOfType" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetPropertiesOfType" />
         public IList<G9DtProperty> GetPropertiesOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<PropertyInfo, bool> customFilter = null, bool initializeInstance = false,
             bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetPropertiesOfType(targetType,
+            return G9CReflectionHandler.GetPropertiesOfType(targetType,
                 specifiedModifiers, customFilter,
                 null, initializeInstance, considerInheritedParent);
         }
@@ -131,46 +131,46 @@ namespace G9AssemblyManagement.Helper
 
         #region GetMethods Methods
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetMethodsOfObject" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetMethodsOfObject" />
         public IList<G9DtMethod> GetMethodsOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject,
+            return G9CReflectionHandler.GetMethodsOfObject(targetObject,
                 CreateCustomModifier(specifiedModifiers),
                 customFilter, considerInheritedParent
             );
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetMethodsOfObject" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetMethodsOfObject" />
         public IList<G9DtMethod> GetMethodsOfObject(object targetObject,
             BindingFlags specifiedModifiers,
             Func<MethodInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetMethodsOfObject(targetObject, specifiedModifiers,
+            return G9CReflectionHandler.GetMethodsOfObject(targetObject, specifiedModifiers,
                 customFilter, considerInheritedParent
             );
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetMethodsOfType" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetMethodsOfType" />
         public IList<G9DtMethod> GetMethodsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null, bool initializeInstance = false,
             bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType,
+            return G9CReflectionHandler.GetMethodsOfType(targetType,
                 CreateCustomModifier(specifiedModifiers), customFilter, null,
                 initializeInstance, considerInheritedParent
             );
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetMethodsOfType" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetMethodsOfType" />
         public IList<G9DtMethod> GetMethodsOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<MethodInfo, bool> customFilter = null, bool initializeInstance = false,
             bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetMethodsOfType(targetType,
+            return G9CReflectionHandler.GetMethodsOfType(targetType,
                 specifiedModifiers, customFilter, null,
                 initializeInstance, considerInheritedParent
             );
@@ -180,45 +180,45 @@ namespace G9AssemblyManagement.Helper
 
         #region GetGenericMethodsOfObject Methods
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetGenericMethodsOfObject" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetGenericMethodsOfObject" />
         public IList<G9DtGenericMethod> GetGenericMethodsOfObject(object targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject,
+            return G9CReflectionHandler.GetGenericMethodsOfObject(targetObject,
                 CreateCustomModifier(specifiedModifiers)
                 ,
                 customFilter, considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetGenericMethodsOfObject" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetGenericMethodsOfObject" />
         public IList<G9DtGenericMethod> GetGenericMethodsOfObject(object targetObject,
             BindingFlags specifiedModifiers,
             Func<MethodInfo, bool> customFilter = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfObject(targetObject, specifiedModifiers,
+            return G9CReflectionHandler.GetGenericMethodsOfObject(targetObject, specifiedModifiers,
                 customFilter, considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetGenericMethodsOfType" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetGenericMethodsOfType" />
         public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<MethodInfo, bool> customFilter = null, bool initializeInstance = false,
             bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType,
+            return G9CReflectionHandler.GetGenericMethodsOfType(targetType,
                 CreateCustomModifier(specifiedModifiers)
                 , customFilter,
                 null, initializeInstance, considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetGenericMethodsOfType" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetGenericMethodsOfType" />
         public IList<G9DtGenericMethod> GetGenericMethodsOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<MethodInfo, bool> customFilter = null, bool initializeInstance = false,
             bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetGenericMethodsOfType(targetType, specifiedModifiers, customFilter,
+            return G9CReflectionHandler.GetGenericMethodsOfType(targetType, specifiedModifiers, customFilter,
                 null, initializeInstance, considerInheritedParent);
         }
 
@@ -226,7 +226,7 @@ namespace G9AssemblyManagement.Helper
 
         #region GetAllMembersOfObject Methods
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetAllMembersOfObject" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetAllMembersOfObject" />
         public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<FieldInfo, bool> customFilterForFields = null,
@@ -234,13 +234,13 @@ namespace G9AssemblyManagement.Helper
             Func<MethodInfo, bool> customFilterMethods = null,
             Func<MethodInfo, bool> customFilterForGenericMethods = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject,
+            return G9CReflectionHandler.GetAllMembersOfObject(targetObject,
                 CreateCustomModifier(specifiedModifiers),
                 customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods,
                 considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetAllMembersOfObject" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetAllMembersOfObject" />
         public G9DtMember GetAllMembersOfObject<TObject>(TObject targetObject,
             BindingFlags specifiedModifiers,
             Func<FieldInfo, bool> customFilterForFields = null,
@@ -248,12 +248,12 @@ namespace G9AssemblyManagement.Helper
             Func<MethodInfo, bool> customFilterMethods = null,
             Func<MethodInfo, bool> customFilterForGenericMethods = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfObject(targetObject, specifiedModifiers,
+            return G9CReflectionHandler.GetAllMembersOfObject(targetObject, specifiedModifiers,
                 customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods,
                 considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetAllMembersOfType" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetAllMembersOfType" />
         public G9DtMember GetAllMembersOfType(Type targetType,
             G9EAccessModifier specifiedModifiers = G9EAccessModifier.Everything,
             Func<FieldInfo, bool> customFilterForFields = null,
@@ -262,13 +262,13 @@ namespace G9AssemblyManagement.Helper
             Func<MethodInfo, bool> customFilterForGenericMethods = null, bool initializeInstance = false,
             bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType,
+            return G9CReflectionHandler.GetAllMembersOfType(targetType,
                 CreateCustomModifier(specifiedModifiers),
                 customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods,
                 null, initializeInstance, considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.GetAllMembersOfType" />
+        /// <inheritdoc cref="G9CReflectionHandler.GetAllMembersOfType" />
         public G9DtMember GetAllMembersOfType(Type targetType,
             BindingFlags specifiedModifiers,
             Func<FieldInfo, bool> customFilterForFields = null,
@@ -277,7 +277,7 @@ namespace G9AssemblyManagement.Helper
             Func<MethodInfo, bool> customFilterForGenericMethods = null,
             bool initializeInstance = false, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.GetAllMembersOfType(targetType, specifiedModifiers,
+            return G9CReflectionHandler.GetAllMembersOfType(targetType, specifiedModifiers,
                 customFilterForFields, customFilterForProperties, customFilterMethods, customFilterForGenericMethods,
                 null, initializeInstance, considerInheritedParent);
         }
@@ -286,7 +286,7 @@ namespace G9AssemblyManagement.Helper
 
         #region MergeObjectsValues Methods
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.MergeObjectsValues" />
+        /// <inheritdoc cref="G9CReflectionHandler.MergeObjectsValues" />
         public void MergeObjectsValues(object mainObject, object targetObject,
             G9EAccessModifier specifiedModifiers,
             G9EValueMismatchChecking valueMismatch = G9EValueMismatchChecking.AllowMismatchValues,
@@ -294,13 +294,13 @@ namespace G9AssemblyManagement.Helper
             Func<G9IMember, bool> customFilter = null,
             Func<G9IMember, G9IMember, bool> customProcess = null, bool considerInheritedParent = false)
         {
-            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject,
+            G9CReflectionHandler.MergeObjectsValues(mainObject, targetObject,
                 CreateCustomModifier(specifiedModifiers), valueMismatch,
                 enableTryToChangeType,
                 customFilter, customProcess, considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.MergeObjectsValues" />
+        /// <inheritdoc cref="G9CReflectionHandler.MergeObjectsValues" />
         public void MergeObjectsValues(object mainObject, object targetObject,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public,
             G9EValueMismatchChecking valueMismatch = G9EValueMismatchChecking.AllowMismatchValues,
@@ -308,7 +308,7 @@ namespace G9AssemblyManagement.Helper
             Func<G9IMember, bool> customFilter = null,
             Func<G9IMember, G9IMember, bool> customProcess = null, bool considerInheritedParent = false)
         {
-            G9CObjectAndReflectionHandler.MergeObjectsValues(mainObject, targetObject, specifiedModifiers,
+            G9CReflectionHandler.MergeObjectsValues(mainObject, targetObject, specifiedModifiers,
                 valueMismatch,
                 enableTryToChangeType, customFilter, customProcess, considerInheritedParent);
         }
@@ -317,7 +317,7 @@ namespace G9AssemblyManagement.Helper
 
         #region CompareObjectsValues Methods
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.CompareObjectsValues" />
+        /// <inheritdoc cref="G9CReflectionHandler.CompareObjectsValues" />
         public bool CompareObjectsValues(object firstObject, object secondObject,
             out IList<G9DtTuple<G9IMember>> unequalMembers,
             G9EAccessModifier specifiedModifiers,
@@ -325,12 +325,12 @@ namespace G9AssemblyManagement.Helper
             Func<G9IMember, bool> customFilter = null,
             Func<G9IMember, G9IMember, G9EComparisonResult> customProcess = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.CompareObjectsValues(firstObject, secondObject, out unequalMembers,
+            return G9CReflectionHandler.CompareObjectsValues(firstObject, secondObject, out unequalMembers,
                 CreateCustomModifier(specifiedModifiers), enableTryToChangeType,
                 customFilter, customProcess, considerInheritedParent);
         }
 
-        /// <inheritdoc cref="G9CObjectAndReflectionHandler.CompareObjectsValues" />
+        /// <inheritdoc cref="G9CReflectionHandler.CompareObjectsValues" />
         public bool CompareObjectsValues(object firstObject, object secondObject,
             out IList<G9DtTuple<G9IMember>> unequalMembers,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public,
@@ -338,7 +338,7 @@ namespace G9AssemblyManagement.Helper
             Func<G9IMember, bool> customFilter = null,
             Func<G9IMember, G9IMember, G9EComparisonResult> customProcess = null, bool considerInheritedParent = false)
         {
-            return G9CObjectAndReflectionHandler.CompareObjectsValues(firstObject, secondObject, out unequalMembers,
+            return G9CReflectionHandler.CompareObjectsValues(firstObject, secondObject, out unequalMembers,
                 specifiedModifiers, enableTryToChangeType, customFilter, customProcess, considerInheritedParent);
         }
 

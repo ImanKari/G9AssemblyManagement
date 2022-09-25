@@ -179,7 +179,7 @@ namespace G9AssemblyManagement.Core
 
                 // The first search is related to the "Parse" method that has the same parameter type as the value type.
                 var methods =
-                    G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(
+                    G9Assembly.ReflectionTools.GetMethodsOfObject(
                         instance, G9EAccessModifier.Everything,
                         s =>
                             // Specifies name
@@ -190,7 +190,7 @@ namespace G9AssemblyManagement.Core
                 if (valueTypeCode != TypeCode.String && methods == null)
                 {
                     value = value.ToString();
-                    methods = G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(instance,
+                    methods = G9Assembly.ReflectionTools.GetMethodsOfObject(instance,
                         G9EAccessModifier.Everything,
                         s =>
                             // Specifies name

@@ -22,7 +22,7 @@ namespace G9AssemblyManagement
         /// <summary>
         ///     Access to object tools (and reflections)
         /// </summary>
-        public static readonly G9CObjectAndReflectionTools ObjectAndReflectionTools = new G9CObjectAndReflectionTools();
+        public static readonly G9CReflectionTools ReflectionTools = new G9CReflectionTools();
 
         /// <summary>
         ///     Access to general tools
@@ -38,6 +38,11 @@ namespace G9AssemblyManagement
         ///     Access to performance tools
         /// </summary>
         public static readonly G9CPerformanceTools PerformanceTools = new G9CPerformanceTools();
+
+        /// <summary>
+        ///     Access to input and output tools
+        /// </summary>
+        public static readonly G9CInputOutputTools InputOutputTools = new G9CInputOutputTools();
 
         #endregion
     }

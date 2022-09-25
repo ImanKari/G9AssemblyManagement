@@ -5,7 +5,7 @@
 [![Github Repository](https://raw.githubusercontent.com/ImanKari/G9JSONHandler/main/G9JSONHandler/Asset/GitHub.png)](https://github.com/ImanKari/G9AssemblyManagement)
 
 # G9AssemblyManagement
-### An efficient .NET library has been developed to work on assembly levels and use essential basic structures. This library contains various valuable tools related to [Types](#type-tools), [Instances](#instance-tools), [Objects](#object-and-reflection-tools), [Reflections](#object-and-reflection-tools), [Merging](#merging-two-objects), [Cryptographies](#cryptography-tools), [Performances](#performance-tools), and [General Tools](#general-tools). Indeed, there are so many utilities in this library, along with various overloads and parameters. But in the following, we review it as long as it is not beyond the scope of this guide.
+### An efficient .NET library has been developed to work on assembly levels and use essential basic structures. This library contains various valuable tools related to [Types](#type-tools), [Instances](#instance-tools), [Reflections](#reflection-tools), [Merging](#merging-two-objects), [Cryptographies](#cryptography-tools), [Performances](#performance-tools), and [I/O Tools](#input-output-tools). Indeed, there are so many utilities in this library, along with various overloads and parameters. But in the following, we review it as long as it is not beyond the scope of this guide.
 # ❇️Guide
 ## Type Tools
 ### This helper tool provides many various utilities for working by the types.
@@ -141,30 +141,30 @@ G9Assembly.InstanceTools.CreateInstanceFromGenericTypeWithConstructorParameters(
     // Specifies parameters
     "Param 1", "param 2" );
 ```
-## Object And Reflection Tools
+## Reflection Tools
 ### This helper tool consists of various tools related to reflections and objects. 
 This tool provides many helpful methods for working with object members (reflection). All of the methods shown below have many functional parameters like the access modifier, custom filter, and so on that aren't shown:
 ```csharp
 // Note: The output of the whole reflection methods below is an array.
 
 // Method to get fields of an object
-var fields = G9Assembly.ObjectAndReflectionTools.GetFieldsOfObject(myCustomObject);
+var fields = G9Assembly.ReflectionTools.GetFieldsOfObject(myCustomObject);
 // Method to get properties of an object
-var properties = G9Assembly.ObjectAndReflectionTools.GetPropertiesOfObject(myCustomObject);
+var properties = G9Assembly.ReflectionTools.GetPropertiesOfObject(myCustomObject);
 
 // Common methods between fields and properties
 Console.WriteLine(fields[0].GetValue()); // Method for getting the value of fields/properties.
 properties[0].SetValue("Custom value"); // Method for setting a new value for fields/properties.
 
 // Method to get Methods of an object
-var methods = G9Assembly.ObjectAndReflectionTools.GetMethodsOfObject(myCustomObject)
+var methods = G9Assembly.ReflectionTools.GetMethodsOfObject(myCustomObject)
 methods[0].CallMethod(); // method without result
 var result1 = methods[1].CallMethodWithResult<int>(
     // If the desired method has parameters.
     6, 3); // method with result.
 
 // Method to get generic methods of an object
-var generigMethods = G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfObject(object1);
+var generigMethods = G9Assembly.ReflectionTools.GetGenericMethodsOfObject(object1);
 generigMethods[0].CallMethod(); // method without result
 var result2 = generigMethods[1].CallMethodWithResult<int>(
     // Specifies the generic types for the method.
@@ -175,15 +175,15 @@ var result2 = generigMethods[1].CallMethodWithResult<int>(
 
 // There are also similar methods for working on type members.
 // Method to get properties of a type
-G9Assembly.ObjectAndReflectionTools.GetPropertiesOfType(typeof(myCustomObject));
+G9Assembly.ReflectionTools.GetPropertiesOfType(typeof(myCustomObject));
 // Method to get fields of a type
-G9Assembly.ObjectAndReflectionTools.GetFieldsOfType(typeof(myCustomObject));
+G9Assembly.ReflectionTools.GetFieldsOfType(typeof(myCustomObject));
 // Method to get properties of a type
-G9Assembly.ObjectAndReflectionTools.GetPropertiesOfType(typeof(myCustomObject));
+G9Assembly.ReflectionTools.GetPropertiesOfType(typeof(myCustomObject));
 // Method to get Methods of a type
-G9Assembly.ObjectAndReflectionTools.GetMethodsOfType(typeof(myCustomObject));
+G9Assembly.ReflectionTools.GetMethodsOfType(typeof(myCustomObject));
 // Method to get generic methods of a type
-G9Assembly.ObjectAndReflectionTools.GetGenericMethodsOfType(typeof(myCustomObject));
+G9Assembly.ReflectionTools.GetGenericMethodsOfType(typeof(myCustomObject));
 ```
 ### Merging two objects
 
@@ -211,59 +211,59 @@ Method of merging
 ```csharp
 private static void Main()
 {
-     var objectA = new MyCustomClassA();
-     var objectB = new MyCustomClassB();
+    var objectA = new MyCustomClassA();
+    var objectB = new MyCustomClassB();
 
-     G9Assembly.ObjectAndReflectionTools
-        // In this case, the members' values of object B are set on Object A.
-        .MergeObjectsValues(objectA, objectB, 
-            // Specifies the desired access modifier.
-            G9EAccessModifier.Public,
-            // Specifies that if two members' values don't have a shared type and can't transfer their values, the process must ignore them.
-            // In this case, both objects have the same member with the name "Percent," But in the first one, it's Float, and in the second one, it's String. So, a mismatching occurs, but the core ignores it according to this setting (AllowMismatchValues).
-            G9EValueMismatchChecking.AllowMismatchValues, 
-            // Specifies that if a mismatch occurs between two members' values, an automatic try to change type must happen or not.
-            // If it is set to 'true,' the value of "Percent" will automatically convert from String to Float.
-            false, 
-            // Specifies a custom filter for searching object's members if needed.
-            // In this case, members with the name "CurrentDateTime" are ignored.
-            member => member.Name != "CurrentDateTime",
-            // Specifies a custom process for desired members if needed.
-            // Notice: The function's result specifies whether the custom process handled merging or not.
-            // If it's returned 'true.' Specifies that the custom process has done the merging process, and the core mustn't do anything.
-            // If it's returned 'false.' Specifies that the custom process skipped the merging process, So the core must do it.
-            // In the below case, the custom process just does the merging process on the member with the name "Age":
-            (m1, m2) =>
+    G9Assembly.ObjectAndReflectionTools
+    // In this case, the members' values of object B are set on Object A.
+    .MergeObjectsValues(objectA, objectB, 
+        // Specifies the desired access modifier.
+        G9EAccessModifier.Public,
+        // Specifies that if two members' values don't have a shared type and can't transfer their values, the process must ignore them.
+        // In this case, both objects have the same member with the name "Percent," But in the first one, it's Float, and in the second one, it's String. So, a mismatching occurs, but the core ignores it according to this setting (AllowMismatchValues).
+        G9EValueMismatchChecking.AllowMismatchValues, 
+        // Specifies that if a mismatch occurs between two members' values, an automatic try to change type must happen or not.
+        // If it is set to 'true,' the value of "Percent" will automatically convert from String to Float.
+        false, 
+        // Specifies a custom filter for searching object's members if needed.
+        // In this case, members with the name "CurrentDateTime" are ignored.
+        member => member.Name != "CurrentDateTime",
+        // Specifies a custom process for desired members if needed.
+        // Notice: The function's result specifies whether the custom process handled merging or not.
+        // If it's returned 'true.' Specifies that the custom process has done the merging process, and the core mustn't do anything.
+        // If it's returned 'false.' Specifies that the custom process skipped the merging process, So the core must do it.
+        // In the below case, the custom process just does the merging process on the member with the name "Age":
+        (m1, m2) =>
+        {
+            // For the "Age" member
+            if (m1.Name == "Age")
             {
-                // For the "Age" member
-                if (m1.Name == "Age")
+                switch (m2.GetValue<string>())
                 {
-                    switch (m2.GetValue<string>())
-                    {
-                        case "nine":
-                            m1.SetValue(9);
-                            break;
-                        case "eight":
-                            m1.SetValue(8);
-                            break;
-                        default:
-                            m1.SetValue(0);
-                            break;
-                    }
-
-                    // Returns true if the desired process performs the value-changing.
-                    // In simple words, it's done it.
-                    return true;
+                    case "nine":
+                        m1.SetValue(9);
+                        break;
+                    case "eight":
+                        m1.SetValue(8);
+                        break;
+                    default:
+                        m1.SetValue(0);
+                        break;
                 }
 
-                // Returns false if the value-changing process needs to pass to the core.
-                return false;
-            });
+                // Returns true if the desired process performs the value-changing.
+                // In simple words, it's done it.
+                return true;
+            }
 
-            // Result
-            Console.WriteLine(objectA.Age); // 8
-            Console.WriteLine(objectA.Name); // St2
-            Console.WriteLine(objectA.Percent); // 99.9
+            // Returns false if the value-changing process needs to pass to the core.
+            return false;
+        });
+
+        // Result
+        Console.WriteLine(objectA.Age); // 8
+        Console.WriteLine(objectA.Name); // St2
+        Console.WriteLine(objectA.Percent); // 99.9
 }
 ```
 
@@ -406,47 +406,8 @@ private static void Main()
 ```
 - Note: The output of this method has many details that are beyond the scope of this article.
 
-## General Tools
-### In simple terms, it provides useful general tools.
-Provides a practical method to convert byte size to another size:
-```csharp
-private static void Main()
-{
-    const long byteSize = 1000000000;
-
-    var kiloByte = G9Assembly.GeneralTools
-        .ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.KiloByte); 
-    // 976562.5M
-
-    var megaByte = G9Assembly.GeneralTools
-        .ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.MegaByte); 
-    // 953.67431640625M
-    
-    var gigaByte = G9Assembly.GeneralTools
-        .ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.GigaByte);
-    // 0.931322574615478515625M
-    
-    var teraByte = G9Assembly.GeneralTools
-        .ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.TeraByte);
-    // 0.0009094947017729282379150391M
-    
-    var petaByte = G9Assembly.GeneralTools
-        .ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.PetaByte);
-    // 0.0000008881784197001283877825M
-
-    var exaByte = G9Assembly.GeneralTools
-        .ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.ExaByte);
-    // 0.0000000008673617379884012722M
-
-    var zettaByte = G9Assembly.GeneralTools
-        .ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.ZettaByte);
-    // 0.0000000000008470329472543013M
-
-    var yottaByte = G9Assembly.GeneralTools
-        .ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.YottaByte);
-    // 0.000000000000000827180612553M
-}
-```
+## Input Output Tools
+### In simple terms, it provides useful I/O tools.
 Checking a path on the computer in terms of validation can consist of many things, like validation, path existence, and drive existence. Here with a method all of them are handled:
 ```csharp
 private static void Main()
@@ -465,23 +426,23 @@ private static void Main()
     // Note 2: The third parameter specifies whether the directory path in terms of existence must be checked or not.
     // Note 3: The result of the below methods is an Enum type.
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckDirectoryPathValidation(directory1, true, false));
     // Result: G9EPatchCheckResult.Correct
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckDirectoryPathValidation(directory2, true, false));
     // Result: G9EPatchCheckResult.Correct
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckDirectoryPathValidation(directory3, true, true));
     // Result: G9EPatchCheckResult.PathExistenceIsIncorrect
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckDirectoryPathValidation(directory4, true, true));
     // Result: G9EPatchCheckResult.PathDriveIsIncorrect
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckDirectoryPathValidation(directory5, true, true));
     // Result: G9EPatchCheckResult.PathNameIsIncorrect
 
@@ -494,36 +455,60 @@ private static void Main()
     const string file6 = @"okay.png";
     const string file7 = @"okay.p-n|g";
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckFilePathValidation(file1, false, false));
     // G9EPatchCheckResult.Correct
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckFilePathValidation(file2, true, false));
     // G9EPatchCheckResult.Correct
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckFilePathValidation(file3, true, true));
     // G9EPatchCheckResult.PathExistenceIsIncorrect
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckFilePathValidation(file4, true, true));
     // G9EPatchCheckResult.PathDriveIsIncorrect
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckFilePathValidation(file5, true, true));
     // G9EPatchCheckResult.PathNameIsIncorrect
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckFilePathValidation(file6, true, false));
     // G9EPatchCheckResult.Correct
 
-    Console.WriteLine(G9Assembly.GeneralTools
+    Console.WriteLine(G9Assembly.InputOutputTools
         .CheckFilePathValidation(file7, true, true));
     // G9EPatchCheckResult.PathNameIsIncorrect
 
 }
 ```
+### Method to make a wait system for access to the file with specified access and custom options.
 
+```csharp
+G9Assembly.InputOutputTools.WaitForAccessToFile(
+    // Specifies the full path of desired file.
+    filePath,
+    // Specifies a callback for invoking.
+    // The specified callback invokes when the desired specified access would be available. In addition,
+    // it has a parameter "A" that provides a usable opened file stream on your specified file.
+    fs =>
+    {
+        var data = Encoding.UTF8.GetBytes("Programmers never die because they are tiny gods!");
+        fs.Write(data, 0, data.Length);
+    },
+    // Specifies how the operating system should open a file.
+    FileMode.CreateNew,
+    // Defines constants for read, write, or read/write access to a file.
+    FileAccess.Write,
+    // Contains constants for controlling the kind of access other objects can have to the same file.
+    FileShare.Write,
+    // Specifies how many times must be tried.
+    9,
+    // Specifies how much time must be considered between each try in milliseconds.
+    99);
+```
 # END
 ## Be the best you can be; the future depends on it. 🚀
