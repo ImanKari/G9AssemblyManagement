@@ -80,7 +80,7 @@ namespace G9AssemblyManagement.Core
         ///     Specifies a callback for invoking.
         ///     <para />
         ///     The specified callback invokes when the desired specified access would be available. In addition, it has a
-        ///     parameter "A" that provides a usable opened file stream on your specified file.
+        ///     parameter that provides a usable opened file stream on your specified file.
         /// </param>
         /// <param name="fileMode">Specifies how the operating system should open a file.</param>
         /// <param name="fileAccess">Defines constants for read, write, or read/write access to a file.</param>
