@@ -44,7 +44,7 @@ namespace G9AssemblyManagement.Core
         ///     <para />
         ///     If it's set 'true.' All inherited parents will check, and their members will be got.
         /// </param>
-        public static void MergeObjectsValues(object mainObject, object targetObject,
+        public static void MergeObjectsValues<TTypeMain, TTypeTarget>(ref TTypeMain mainObject, TTypeTarget targetObject,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public,
             G9EValueMismatchChecking valueMismatch = G9EValueMismatchChecking.AllowMismatchValues,
             bool enableTryToChangeType = false,

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -210,9 +210,7 @@ namespace G9AssemblyManagement_NUnitTest
         public void TestG9AttrAddListenerOnGenerate()
         {
             // New instance of class 
-            var firstTestClass = new G9CInstanceTest(); 
-
-
+            var firstTestClass = new G9CInstanceTest();
 
 
             // Get instances of type - three way
@@ -1000,7 +998,7 @@ namespace G9AssemblyManagement_NUnitTest
 
         [Test]
         [Order(11)]
-        public void TestGetAllMembersOfObject() 
+        public void TestGetAllMembersOfObject()
         {
             // Create objects from class and struct
             var object1 = new G9CObjectMembersTest();
@@ -1250,7 +1248,7 @@ namespace G9AssemblyManagement_NUnitTest
                         objectA.ExDateTime != objectB.ExDateTime);
 
             // Merging object objectA with object objectB
-            G9Assembly.ReflectionTools.MergeObjectsValues(objectA, objectB);
+            G9Assembly.ReflectionTools.MergeObjectsValues(ref objectA, objectB);
 
             // Testing the values between objects after merging.
             Assert.True(objectA.Name != "G9TM" && objectA.Age != 32 &&
@@ -1260,7 +1258,7 @@ namespace G9AssemblyManagement_NUnitTest
 
             // Defining new value for the object again.
             objectA = new G9CMismatchTypeA();
-            G9Assembly.ReflectionTools.MergeObjectsValues(objectA, objectB);
+            G9Assembly.ReflectionTools.MergeObjectsValues(ref objectA, objectB);
 
             // Testing the values between objects after merging again.
             Assert.True(objectA.Name != "G9TM" && objectA.Age != 32 &&
@@ -1276,7 +1274,7 @@ namespace G9AssemblyManagement_NUnitTest
                 By paying attention to mode "enableTryToChangeType" that is set "false":
                     In this case, the objectC has the value "nine" for age; it definitely can't be changed to the int type.
                 */
-                G9Assembly.ReflectionTools.MergeObjectsValues(objectB, objectC, G9EAccessModifier.Public,
+                G9Assembly.ReflectionTools.MergeObjectsValues(ref objectB, objectC, G9EAccessModifier.Public,
                     G9EValueMismatchChecking.PreventMismatchValues);
                 Assert.Fail();
             }
@@ -1290,7 +1288,7 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
             }
 
             // Merging objectB with objectC by "AllowMismatchValues" mode.
-            G9Assembly.ReflectionTools.MergeObjectsValues(objectB, objectC);
+            G9Assembly.ReflectionTools.MergeObjectsValues(ref objectB, objectC);
 
             // Testing the values between objects after merging.
             /*
@@ -1298,7 +1296,7 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
              *   The merging process ignores the "Age" member because of mismatching in type.
              *   The merging process ignores the "IpAddress" member because of mismatching in type.
              *   The merging process ignores the "Percent" member because of mismatching in type.
-            */
+             */
             Assert.True(objectB.Name != "G9TM 2" && objectB.Age == 99 &&
                         objectB.ExDateTime != DateTime.Parse("1999-03-06") &&
                         objectB.IpAddress == IPAddress.IPv6Loopback && objectB.Percent == 99.9f &&
@@ -1311,14 +1309,14 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
             objectB = new G9CMismatchTypeB();
 
             // Merging objectB with objectC by trying smart change type.
-            G9Assembly.ReflectionTools.MergeObjectsValues(objectB, objectC, G9EAccessModifier.Public,
+            G9Assembly.ReflectionTools.MergeObjectsValues(ref objectB, objectC, G9EAccessModifier.Public,
                 G9EValueMismatchChecking.PreventMismatchValues, true);
 
             // Testing the values between objects after merging.
             /*
              * By paying attention to the "G9EValueMismatchChecking.PreventMismatchValues" mode as well as "enableTryToChangeType":
              *   All mismatches are solved with the automatic smart change type process.
-            */
+             */
             // Testing the values between objects after merging.
             Assert.True(objectB.Name != "G9TM 2" && objectB.Age != 99 &&
                         objectB.ExDateTime != DateTime.Parse("1999-03-06") &&
@@ -1336,7 +1334,7 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
                  * Merging objectB with objectC by trying smart change type.
                  * In this case, the objectC has the value "nine" for age; it definitely can't be changed to the int type.
                  */
-                G9Assembly.ReflectionTools.MergeObjectsValues(objectB, objectC2, G9EAccessModifier.Public,
+                G9Assembly.ReflectionTools.MergeObjectsValues(ref objectB, objectC2, G9EAccessModifier.Public,
                     G9EValueMismatchChecking.PreventMismatchValues, true);
                 Assert.Fail();
             }
@@ -1346,19 +1344,19 @@ In the second object, the member's name is 'Age' with the value '109' and the ty
 In the first object, the member's name is 'Age' with the type 'System.Int32'.
 In the second object, the member's name is 'Age' with the value 'nine' and the type 'System.String'." &&
                             e.InnerException.GetType() == typeof(FormatException) && e.InnerException.Message ==
-                            "Input string was not in a correct format.");
+                            "The input string 'nine' was not in a correct format.");
             }
 
 
             // Merging objectB with objectC by "AllowMismatchValues" mode.
-            G9Assembly.ReflectionTools.MergeObjectsValues(objectB, objectC2, G9EAccessModifier.Public,
+            G9Assembly.ReflectionTools.MergeObjectsValues(ref objectB, objectC2, G9EAccessModifier.Public,
                 G9EValueMismatchChecking.AllowMismatchValues, true);
 
             // Testing the values between objects after merging.
             /*
              * By paying attention to the "G9EValueMismatchChecking.AllowMismatchValues" mode:
              *   The merging process ignores the "Age" member because of mismatching in type.
-            */
+             */
             Assert.True(objectB.Age == 99 && objectB.Age.ToString() != objectC2.Age &&
                         objectB.Percent != 99.9f && objectB.Percent.ToString() == objectC2.Percent);
 
@@ -1367,7 +1365,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             objectB = new G9CMismatchTypeB();
 
             // Merging objectA with objectB just for all public members.
-            G9Assembly.ReflectionTools.MergeObjectsValues(objectA, objectB, G9EAccessModifier.Public,
+            G9Assembly.ReflectionTools.MergeObjectsValues(ref objectA, objectB, G9EAccessModifier.Public,
                 G9EValueMismatchChecking.PreventMismatchValues);
 
             // The first test just recognizes the default value.
@@ -1375,7 +1373,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                         objectA.GetTime() != objectB.GetTime());
 
             // Merging objectA with objectB for all members (private/protect/public/...).
-            G9Assembly.ReflectionTools.MergeObjectsValues(objectA, objectB, G9EAccessModifier.Everything,
+            G9Assembly.ReflectionTools.MergeObjectsValues(ref objectA, objectB, G9EAccessModifier.Everything,
                 G9EValueMismatchChecking.PreventMismatchValues);
 
             // Testing private member
@@ -1387,7 +1385,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             objectB = new G9CMismatchTypeB();
 
             // Ignore a member with custom filter
-            G9Assembly.ReflectionTools.MergeObjectsValues(objectA, objectB, G9EAccessModifier.Everything,
+            G9Assembly.ReflectionTools.MergeObjectsValues(ref objectA, objectB, G9EAccessModifier.Everything,
                 G9EValueMismatchChecking.PreventMismatchValues, false,
                 s => s.Name != "Age");
 
@@ -1396,12 +1394,12 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             // Defining new value for the object again.
             objectB = new G9CMismatchTypeB();
             /*
-                 * Merging objectB with objectC by trying smart change type.
-                 * In this case, the object has the value of "nine" for the "age" member; it definitely can't be changed to the int type, but with the custom process it can be done!
-                 */
+             * Merging objectB with objectC by trying smart change type.
+             * In this case, the object has the value of "nine" for the "age" member; it definitely can't be changed to the int type, but with the custom process it can be done!
+             */
             Assert.True(objectB.Age == 99 && objectC2.Age == "nine");
             G9Assembly.ReflectionTools
-                .MergeObjectsValues(objectB, objectC2, G9EAccessModifier.Public,
+                .MergeObjectsValues(ref objectB, objectC2, G9EAccessModifier.Public,
                     G9EValueMismatchChecking.PreventMismatchValues, true, null,
                     (m1, m2) =>
                     {
@@ -1454,7 +1452,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                 };
 
                 Assert.True(newObjectB.Age == 99 && newObjectC2.Age == stringNumber);
-                G9Assembly.ReflectionTools.MergeObjectsValues(newObjectB, newObjectC2,
+                G9Assembly.ReflectionTools.MergeObjectsValues(ref newObjectB, newObjectC2,
                     G9EAccessModifier.Public,
                     G9EValueMismatchChecking.PreventMismatchValues, true, null,
                     (m1, m2) =>
@@ -1712,64 +1710,66 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             #region AES Test
 
             // AES encrypt, default config
-            var aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(testText, standardKey, standardIv);
+            var aesCryptography = G9Assembly.CryptographyTools.InitAesCryptography(standardKey, standardIv);
+            var aesEncryptionText = aesCryptography.EncryptString(testText);
             Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
 
             // AES decrypt, default config
-            var aesDecryptionText =
-                G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, standardKey, standardIv);
+            var aesDecryptionText = aesCryptography.DecryptString(aesEncryptionText);
             Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == testText);
 
             // AES encrypt/decrypt, custom config (CFB/CBC/ECB) (ANSIX923/ISO10126/None/Zeros)
-            aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(testText, standardKey, standardIv,
+            aesCryptography = G9Assembly.CryptographyTools.InitAesCryptography(standardKey, standardIv,
                 new G9DtAESConfig(PaddingMode.ANSIX923, CipherMode.CFB));
+            aesEncryptionText = aesCryptography.EncryptString(testText);
             Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
-            aesDecryptionText = G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, standardKey,
-                standardIv, new G9DtAESConfig(PaddingMode.ANSIX923, CipherMode.CFB));
+            aesDecryptionText = aesCryptography.DecryptString(aesEncryptionText);
             Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == testText);
 
             // AES encrypt/decrypt, custom config
-            aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(testText, standardKey, standardIv,
+            aesCryptography = G9Assembly.CryptographyTools.InitAesCryptography(standardKey, standardIv,
                 new G9DtAESConfig(PaddingMode.ISO10126));
+            aesEncryptionText = aesCryptography.EncryptString(testText);
             Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
-            aesDecryptionText = G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, standardKey,
-                standardIv, new G9DtAESConfig(PaddingMode.ISO10126));
+            aesDecryptionText = aesCryptography.DecryptString(aesEncryptionText);
             Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == testText);
 
             // AES encrypt/decrypt, custom config
             var newText = testText.PadRight(32, '*');
-            aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(newText, standardKey, standardIv,
+            aesCryptography = G9Assembly.CryptographyTools.InitAesCryptography(standardKey, standardIv,
                 new G9DtAESConfig(PaddingMode.None, CipherMode.ECB));
+            aesEncryptionText = aesCryptography.EncryptString(newText);
             Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
-            aesDecryptionText = G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, standardKey,
-                standardIv, new G9DtAESConfig(PaddingMode.None, CipherMode.ECB));
+            aesDecryptionText = aesCryptography.DecryptString(aesEncryptionText);
             Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == newText);
 
             // AES encrypt/decrypt, custom config
-            aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(testText, standardKey, standardIv,
+            aesCryptography = G9Assembly.CryptographyTools.InitAesCryptography(standardKey, standardIv,
                 new G9DtAESConfig(PaddingMode.Zeros, CipherMode.CFB));
+            aesEncryptionText = aesCryptography.EncryptString(testText);
             Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
-            aesDecryptionText = G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, standardKey,
-                standardIv, new G9DtAESConfig(PaddingMode.Zeros, CipherMode.CFB));
+            aesDecryptionText = aesCryptography.DecryptString(aesEncryptionText);
 #if NETCOREAPP2_0_OR_GREATER
             Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == testText);
 #else
             Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText.Trim('\0') == testText);
 #endif
 
-
-            // AES encrypt/decrypt, nonstandard keys
-            newText = testText.PadLeft(99);
             const string nonstandardKey = "G9";
             const string nonstandardIv = "TM";
-
-            aesEncryptionText = G9Assembly.CryptographyTools.AesEncryptString(newText, nonstandardKey, nonstandardIv,
+            aesCryptography = G9Assembly.CryptographyTools.InitAesCryptography(nonstandardKey, nonstandardIv,
                 new G9DtAESConfig(keySize: 256, blockSize: 128, enableAutoFixKeySize: true));
-            Assert.True(!string.IsNullOrEmpty(aesEncryptionText));
-            aesDecryptionText =
-                G9Assembly.CryptographyTools.AesDecryptString(aesEncryptionText, nonstandardKey, nonstandardIv,
-                    new G9DtAESConfig(keySize: 256, blockSize: 128, enableAutoFixKeySize: true));
-            Assert.True(!string.IsNullOrEmpty(aesDecryptionText) && aesDecryptionText == newText);
+
+            // AES encrypt/decrypt, nonstandard keys
+            G9Assembly.PerformanceTools.MultiThreadShockTest(rndNumber =>
+            {
+                var newTextTest = rndNumber.ToString().PadLeft(99, '#');
+                var aesEncryptionTextNew = aesCryptography.EncryptString(newTextTest);
+                Assert.True(!string.IsNullOrEmpty(aesEncryptionTextNew));
+                var aesDecryptionTextNew =
+                    aesCryptography.DecryptString(aesEncryptionTextNew);
+                Assert.True(aesDecryptionTextNew == newTextTest);
+            }, 9_999);
 
             #endregion
         }
@@ -1809,54 +1809,55 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             // Check directory path
             const string directory1 = @"I:\Project\!G9TM!\Page";
             const string directory2 = @"\Project\!G9TM!\Page";
-            const string directory3 = @"I:\Project\!!!!!!!";
-            const string directory4 = @"X:\Project\!G9TM!\Page";
-            const string directory5 = @"\asd|asd|asd";
+            const string directory3 = @"I:\Pr|o<je>ct\!!!!!!!";
+            const string directory4 = @"\asd|asd|asd";
 
-#if DEBUG
-            Assert.True(G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory1, true, true) ==
+            Assert.True(G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory1, false, false, false) ==
                         G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory2, true, true) ==
+            Assert.True(G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory2, false, false, false) ==
                         G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory3, true, true) ==
-                        G9EPatchCheckResult.PathExistenceIsIncorrect);
-            Assert.True(G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory4, true, true) ==
-                        G9EPatchCheckResult.PathDriveIsIncorrect);
-            Assert.True(G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory5, true, true) ==
+            Assert.True(G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory3, false, false, false) ==
                         G9EPatchCheckResult.PathNameIsIncorrect);
-#else
-            Assert.True(G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory1, false, false) == G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory2, false, false) == G9EPatchCheckResult.Correct);
-#endif
+            Assert.True(G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory4, false, false, false) ==
+                        G9EPatchCheckResult.PathNameIsIncorrect);
+
+            try
+            {
+                G9Assembly.InputOutputTools.CheckDirectoryPathValidation(directory4, false, false, true);
+                Assert.Fail("It must have an exception.");
+            }
+            catch (Exception e)
+            {
+                Assert.True(e.Message ==
+                            "The specified path '\\asd|asd|asd' for the specified parameter 'directoryPath' is incorrect as a path. The program can't use it as a path with these characters. (Parameter 'paramName')");
+            }
 
             // Check file path
             const string file1 = @"I:\Project\!G9TM!\Page\First.png";
             const string file2 = @"\Project\!G9TM!\Page\First.png";
-            const string file3 = @"I:\Project\!!!!!!!\First.png";
-            const string file4 = @"X:\Project\!G9TM!\Page\First.png";
-            const string file5 = @"\Fi|r|st.png";
-            const string file6 = @"okay.png";
-            const string file7 = @"okay.p-n|g";
+            const string file3 = @"\Fi|r|st.png";
+            const string file4 = @"okay.p-n|g";
 
-#if DEBUG
-            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file1, true, true) ==
+            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file1, false, false, false) ==
                         G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file2, true, true) ==
+            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file2, false, false, false) ==
                         G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file3, true, true) ==
-                        G9EPatchCheckResult.PathExistenceIsIncorrect);
-            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file4, true, true) ==
-                        G9EPatchCheckResult.PathDriveIsIncorrect);
-            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file5, true, true) ==
+            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file3, false, false, false) ==
                         G9EPatchCheckResult.PathNameIsIncorrect);
-            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file6, true, false) ==
-                        G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file7, true, true) ==
+            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file4, false, false, false) ==
                         G9EPatchCheckResult.PathNameIsIncorrect);
-#else
-            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file1, false, false) == G9EPatchCheckResult.Correct);
-            Assert.True(G9Assembly.InputOutputTools.CheckFilePathValidation(file2, false, false) == G9EPatchCheckResult.Correct);
-#endif
+
+            try
+            {
+                G9Assembly.InputOutputTools.CheckFilePathValidation(file4, false, false, true);
+                Assert.Fail("It must have an exception.");
+            }
+            catch (Exception e)
+            {
+                Assert.True(e.Message ==
+                            "The specified path 'okay.p-n|g' for the specified parameter 'filePath' is incorrect as a path. The program can't use it as a path with these characters. (Parameter 'paramName')");
+            }
+
 
             var filePath = Path.Combine(_appPath, "test.txt");
             if (File.Exists(filePath))
@@ -1864,7 +1865,6 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
 
             G9Assembly.InputOutputTools.WaitForAccessToFile(
                 filePath,
-
                 fs =>
                 {
                     var data = Encoding.UTF8.GetBytes("Programmers never die because they are tiny gods!");
@@ -1872,9 +1872,7 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
                 },
                 FileMode.CreateNew,
                 FileAccess.Write,
-                FileShare.Write,
-                9,
-                99);
+                FileShare.Write);
 
             var t = new Thread(() =>
             {
@@ -1891,10 +1889,8 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             Thread.Sleep(369);
 
             // Wait for file access
-            G9Assembly.InputOutputTools.WaitForAccessToFile(filePath, stream =>
-            {
-                _ = stream.ReadByte();
-            }, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite, 6, 500);
+            G9Assembly.InputOutputTools.WaitForAccessToFile(filePath, stream => { _ = stream.ReadByte(); },
+                FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite, 6, 500);
         }
 
         [Test]
@@ -1910,7 +1906,32 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
         [Order(20)]
         public void TestHelper()
         {
-            
+            const string testText = "Programmers never die because they are tiny gods.";
+            const string standardKey = "eShVmYp3s6v9y$B&";
+            const string standardIv = "gUkXp2s5v8x/A?D(";
+
+            var aesInit = G9Assembly.CryptographyTools.InitAesCryptography(
+                // Specifies custom private key.
+                standardKey,
+                // Specifies custom initialization vector.
+                standardIv,
+                // Specifies the custom config for encryption and decryption.
+                // It's optional; by default, the values below are set for that.
+                new G9DtAESConfig(
+                    PaddingMode.PKCS7
+                ));
+
+            // AES encryption algorithm
+            var aesEncryptionText =
+                aesInit.EncryptString(
+                    // Specifies plain text.
+                    testText);
+
+            // AES decryption algorithm
+            var aesDecryptionText =
+                aesInit.DecryptString(
+                    // Specifies cipher text.
+                    aesEncryptionText);
         }
     }
 }

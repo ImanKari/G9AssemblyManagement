@@ -1,6 +1,6 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using G9AssemblyManagement.Core;
+using G9AssemblyManagement.Core.Cryptography;
 using G9AssemblyManagement.DataType;
 using G9AssemblyManagement.Enums;
 
@@ -11,6 +11,8 @@ namespace G9AssemblyManagement.Helper
     /// </summary>
     public class G9CCryptography
     {
+        #region Hashing methods
+
         /// <summary>
         ///     Generate hash text from text
         /// </summary>
@@ -42,99 +44,32 @@ namespace G9AssemblyManagement.Helper
             return G9CCryptographyHandler.CreateHash(hashAlgorithm, bytesForHashing);
         }
 
-        /// <summary>
-        ///     Method to get a hash algorithm size
-        /// </summary>
-        /// <param name="hashAlgorithm">Specifies the algorithm of hashing.</param>
+        /// <inheritdoc cref="G9CCryptographyHandler.GetHashAlgorithmSize" />
         public byte GetHashAlgorithmSize(G9EHashAlgorithm hashAlgorithm)
         {
             return G9CCryptographyHandler.GetHashAlgorithmSize(hashAlgorithm);
         }
 
-        /// <summary>
-        ///     Method to encrypt a normal string to cipher string.
-        /// </summary>
-        /// <param name="plainText">Specifies plain text for encrypting.</param>
-        /// <param name="privateKey">Specifies custom private key for encrypting.</param>
-        /// <param name="ivKey">Specifies custom iv key for encrypting.</param>
-        /// <param name="aesConfig">
-        ///     Specifies the basis config of AES.
-        ///     <para />
-        ///     By default, the key size and key block are set to 128, the padding mode is set to 'PKCS7', and the cipher mode is
-        ///     set to 'CBC.'
-        /// </param>
-        /// <param name="customEncoder">
-        ///     Specifies the custom encoder if needed.
-        ///     <para />
-        ///     By default, it's 'UTF8'.
-        /// </param>
-        /// <returns>The encrypted text</returns>
-        public string AesEncryptString(string plainText, string privateKey, string ivKey,
+        #endregion
+
+        #region AES Cryptography
+
+        /// <inheritdoc cref="G9CCryptographyHandler.InitAesCryptography" />
+        public G9CAesCryptography InitAesCryptography(string privateKey, string ivKey,
             G9DtAESConfig aesConfig = default, Encoding customEncoder = null)
         {
-            return G9CCryptographyHandler.AesEncryptString(plainText, privateKey, ivKey, aesConfig, customEncoder);
+            customEncoder = customEncoder ?? Encoding.UTF8;
+            return InitAesCryptography(customEncoder.GetBytes(privateKey), customEncoder.GetBytes(ivKey), aesConfig,
+                customEncoder);
         }
 
-        /// <summary>
-        ///     Method to decrypt a cipher string to normal string.
-        /// </summary>
-        /// <param name="cipherText">Specifies cipher text for encrypting.</param>
-        /// <param name="privateKey">Specifies custom private key for encrypting.</param>
-        /// <param name="ivKey">Specifies custom iv key for encrypting.</param>
-        /// <param name="aesConfig">
-        ///     Specifies the basis config of AES.
-        ///     <para />
-        ///     By default, the key size and key block are set to 128, the padding mode is set to 'PKCS7', and the cipher mode is
-        ///     set to 'CBC.'
-        /// </param>
-        /// <param name="customEncoder">
-        ///     Specifies the custom encoder if needed.
-        ///     <para />
-        ///     By default, it's 'UTF8'.
-        /// </param>
-        /// <returns>The decrypted text</returns>
-        public string AesDecryptString(string cipherText, string privateKey, string ivKey,
+        /// <inheritdoc cref="G9CCryptographyHandler.InitAesCryptography" />
+        public G9CAesCryptography InitAesCryptography(byte[] privateKey, byte[] ivKey,
             G9DtAESConfig aesConfig = default, Encoding customEncoder = null)
         {
-            return G9CCryptographyHandler.AesDecryptString(cipherText, privateKey, ivKey, aesConfig, customEncoder);
+            return G9CCryptographyHandler.InitAesCryptography(privateKey, ivKey, aesConfig, customEncoder);
         }
 
-        /// <summary>
-        ///     Method to encrypt a normal byte array to cipher byte array.
-        /// </summary>
-        /// <param name="byteArray">Specifies normal byte array for encrypting.</param>
-        /// <param name="privateKey">Specifies custom private key for encrypting.</param>
-        /// <param name="ivKey">Specifies custom iv key for encrypting.</param>
-        /// <param name="aesConfig">
-        ///     Specifies the basis config of AES.
-        ///     <para />
-        ///     By default, the key size and key block are set to 128, the padding mode is set to 'PKCS7', and the cipher mode is
-        ///     set to 'CBC.'
-        /// </param>
-        /// <returns>The encrypted text</returns>
-        public byte[] AesEncryptByteArray(byte[] byteArray, byte[] privateKey, byte[] ivKey,
-            G9DtAESConfig aesConfig = default)
-        {
-            return G9CCryptographyHandler.AesEncryptByteArray(byteArray, privateKey, ivKey, aesConfig);
-        }
-
-        /// <summary>
-        ///     Method to decrypt a cipher byte array to normal byte array.
-        /// </summary>
-        /// <param name="cipherByteArray">Specifies cipher byte array for encrypting.</param>
-        /// <param name="privateKey">Specifies custom private key for encrypting.</param>
-        /// <param name="ivKey">Specifies custom iv key for encrypting.</param>
-        /// <param name="aesConfig">
-        ///     Specifies the basis config of AES.
-        ///     <para />
-        ///     By default, the key size and key block are set to 128, the padding mode is set to 'PKCS7', and the cipher mode is
-        ///     set to 'CBC.'
-        /// </param>
-        /// <returns>The decrypted byte array</returns>
-        public byte[] AesDecryptByteArray(byte[] cipherByteArray, byte[] privateKey, byte[] ivKey,
-            G9DtAESConfig aesConfig = default)
-        {
-            return G9CCryptographyHandler.AesDecryptByteArray(cipherByteArray, privateKey, ivKey, aesConfig);
-        }
+        #endregion
     }
 }

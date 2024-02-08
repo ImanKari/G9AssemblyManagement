@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>net35;net40;net45;netstandard2.0;netstandard2.1</TargetFrameworks>
-	  <Version>1.4.5.0</Version>
+	  <TargetFrameworks>net35;net40;net45;netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
+	  <Version>1.4.5.1</Version>
 	  <Authors>Iman Kari</Authors>
 	  <Company>G9Studio</Company>
 	  <Product>G9 Assembly Management</Product>
@@ -16,14 +16,14 @@
 -- Redigned Structure.
 -- Completed tests.</PackageReleaseNotes>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <AssemblyVersion>1.4.5.0</AssemblyVersion>
-	  <FileVersion>1.4.5.0</FileVersion>
+	  <AssemblyVersion>1.4.5.1</AssemblyVersion>
+	  <FileVersion>1.4.5.1</FileVersion>
 	  <ApplicationIcon></ApplicationIcon>
 	  <PackageIcon>G9-Icon.png</PackageIcon>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
 	  <PackageIconUrl />
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
-	  <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+	  <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
 
 	  <EmbedAllSources>True</EmbedAllSources>
 	  <!--<SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
@@ -112,8 +112,13 @@
     </PackageReference>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Set &quot;NugetLocalTargetPath=I:\LocalNugetPackages\&quot;&#xD;&#xA;if exist &quot;%25NugetLocalTargetPath%25&quot; (&#xD;&#xA;  xcopy &quot;bin\$(ConfigurationName)\*.nupkg&quot; &quot;%25NugetLocalTargetPath%25&quot; /C /Y&#xD;&#xA;) else (&#xD;&#xA;  echo 'Post-build event command line' : warning -9: 'Nuget target path not exist!'&#xD;&#xA;)" />
-  </Target>
+	<Target Name="CopyPackage" AfterTargets="Pack">
+		<Copy SourceFiles="$(OutputPath)$(PackageId).$([System.Text.RegularExpressions.Regex]::Replace(&quot;$(PackageVersion)&quot;, &quot;^(.+?)(\.0+)$&quot;, &quot;$1&quot;)).nupkg"
+		      DestinationFolder="Z:\LocalNugetPackages\"
+		      Condition="Exists('Z:\LocalNugetPackages\')"/>
+		<Copy SourceFiles="$(OutputPath)$(PackageId).$([System.Text.RegularExpressions.Regex]::Replace(&quot;$(PackageVersion)&quot;, &quot;^(.+?)(\.0+)$&quot;, &quot;$1&quot;)).symbols.nupkg"
+		      DestinationFolder="Z:\LocalNugetPackages\"
+		      Condition="Exists('Z:\LocalNugetPackages\')"/>
+	</Target>
 
 </Project>

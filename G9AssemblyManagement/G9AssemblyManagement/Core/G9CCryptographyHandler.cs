@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using G9AssemblyManagement.Core.Class.Hashing;
+using G9AssemblyManagement.Core.Cryptography;
 using G9AssemblyManagement.DataType;
 using G9AssemblyManagement.Enums;
 
@@ -15,7 +14,7 @@ namespace G9AssemblyManagement.Core
     /// </summary>
     internal static class G9CCryptographyHandler
     {
-        private static readonly Dictionary<G9EHashAlgorithm, byte> AlgorithmSizeCollection =
+        public static readonly Dictionary<G9EHashAlgorithm, byte> AlgorithmSizeCollection =
             new Dictionary<G9EHashAlgorithm, byte>
             {
                 { G9EHashAlgorithm.MD5, 16 },
@@ -31,6 +30,33 @@ namespace G9AssemblyManagement.Core
             if (customEncoder == null)
                 customEncoder = Encoding.UTF8;
         }
+
+        #region AES Cryptography
+
+        /// <summary>
+        ///     Method to get a prepared object of cryptography by specified custom configs.
+        /// </summary>
+        /// <param name="privateKey">Specifies custom private key for encrypting.</param>
+        /// <param name="ivKey">Specifies custom iv key for encrypting.</param>
+        /// <param name="aesConfig">
+        ///     Specifies the basis config of AES.
+        ///     <para />
+        ///     By default, the key size and key block are set to 128, the padding mode is set to 'PKCS7', and the cipher mode is
+        ///     set to 'CBC.'
+        /// </param>
+        /// <param name="customEncoder">
+        ///     Specifies the custom encoder if needed.
+        ///     <para />
+        ///     By default, it's 'UTF8'.
+        /// </param>
+        /// <returns>Prepared object of cryptography by specified custom configs.</returns>
+        public static G9CAesCryptography InitAesCryptography(byte[] privateKey, byte[] ivKey,
+            G9DtAESConfig aesConfig = default, Encoding customEncoder = null)
+        {
+            return new G9CAesCryptography(privateKey, ivKey, aesConfig, customEncoder);
+        }
+
+        #endregion
 
         #region Hashing Methods
 
@@ -72,10 +98,7 @@ namespace G9AssemblyManagement.Core
         /// <returns>Return hash byte array from normal byte array</returns>
         public static byte[] CreateHash(G9EHashAlgorithm hashAlgorithm, byte[] bytesForHashing)
         {
-            if (hashAlgorithm == G9EHashAlgorithm.CRC32)
-            {
-                return new G9CCrc32().ComputeHash(bytesForHashing);
-            }
+            if (hashAlgorithm == G9EHashAlgorithm.CRC32) return new G9CCrc32().ComputeHash(bytesForHashing);
 
             using (var hashAlgorithmParser = HashAlgorithm.Create(hashAlgorithm.ToString()))
             {
@@ -127,209 +150,6 @@ namespace G9AssemblyManagement.Core
 
             return sb.ToString();
 #endif
-        }
-
-        #endregion
-
-        #region AES Cryptography
-
-        /// <summary>
-        ///     Method to initialize the standard AES.
-        /// </summary>
-        /// <param name="aesConfig">Specifies the basis config of AES.</param>
-        /// <returns>A created object of AES by basis config</returns>
-        private static Aes AesBaseInitializer(G9DtAESConfig aesConfig)
-        {
-            var customAes = Aes.Create();
-            customAes.KeySize = aesConfig.KeySize;
-            customAes.BlockSize = aesConfig.BlockSize;
-            customAes.Padding = aesConfig.PaddingMode;
-            customAes.Mode = aesConfig.CipherMode;
-            return customAes;
-        }
-
-        /// <summary>
-        ///     Method to encrypt a normal string to cipher string.
-        /// </summary>
-        /// <param name="plainText">Specifies plain text for encrypting.</param>
-        /// <param name="privateKey">Specifies custom private key for encrypting.</param>
-        /// <param name="ivKey">Specifies custom iv key for encrypting.</param>
-        /// <param name="aesConfig">
-        ///     Specifies the basis config of AES.
-        ///     <para />
-        ///     By default, the key size and key block are set to 128, the padding mode is set to 'PKCS7', and the cipher mode is
-        ///     set to 'CBC.'
-        /// </param>
-        /// <param name="customEncoder">
-        ///     Specifies the custom encoder if needed.
-        ///     <para />
-        ///     By default, it's 'UTF8'.
-        /// </param>
-        /// <returns>The encrypted text</returns>
-        public static string AesEncryptString(string plainText, string privateKey, string ivKey,
-            G9DtAESConfig aesConfig = default, Encoding customEncoder = null)
-        {
-            if (customEncoder == null)
-                customEncoder = Encoding.UTF8;
-
-
-            var result = AesEncryptByteArray(customEncoder.GetBytes(plainText), customEncoder.GetBytes(privateKey),
-                customEncoder.GetBytes(ivKey), aesConfig);
-            return Convert.ToBase64String(result, 0, result.Length);
-        }
-
-        /// <summary>
-        ///     Method to decrypt a cipher string to normal string.
-        /// </summary>
-        /// <param name="cipherText">Specifies cipher text for encrypting.</param>
-        /// <param name="privateKey">Specifies custom private key for encrypting.</param>
-        /// <param name="ivKey">Specifies custom iv key for encrypting.</param>
-        /// <param name="aesConfig">
-        ///     Specifies the basis config of AES.
-        ///     <para />
-        ///     By default, the key size and key block are set to 128, the padding mode is set to 'PKCS7', and the cipher mode is
-        ///     set to 'CBC.'
-        /// </param>
-        /// <param name="customEncoder">
-        ///     Specifies the custom encoder if needed.
-        ///     <para />
-        ///     By default, it's 'UTF8'.
-        /// </param>
-        /// <returns>The decrypted text</returns>
-        public static string AesDecryptString(string cipherText, string privateKey, string ivKey,
-            G9DtAESConfig aesConfig = default, Encoding customEncoder = null)
-        {
-            if (customEncoder == null)
-                customEncoder = Encoding.UTF8;
-
-            return customEncoder.GetString(AesDecryptByteArray(Convert.FromBase64String(cipherText),
-                customEncoder.GetBytes(privateKey),
-                customEncoder.GetBytes(ivKey), aesConfig));
-        }
-
-        /// <summary>
-        ///     Method to encrypt a normal byte array to cipher byte array.
-        /// </summary>
-        /// <param name="byteArray">Specifies normal byte array for encrypting.</param>
-        /// <param name="privateKey">Specifies custom private key for encrypting.</param>
-        /// <param name="ivKey">Specifies custom iv key for encrypting.</param>
-        /// <param name="aesConfig">
-        ///     Specifies the basis config of AES.
-        ///     <para />
-        ///     By default, the key size and key block are set to 128, the padding mode is set to 'PKCS7', and the cipher mode is
-        ///     set to 'CBC.'
-        /// </param>
-        /// <returns>The encrypted text</returns>
-        public static byte[] AesEncryptByteArray(byte[] byteArray, byte[] privateKey, byte[] ivKey,
-            G9DtAESConfig aesConfig = default)
-        {
-            if (Equals(aesConfig, default(G9DtAESConfig)))
-                aesConfig = new G9DtAESConfig(PaddingMode.PKCS7);
-
-            // Fixing the keys sizes
-            if (aesConfig.EnableAutoFixKeySize)
-                FixedKeyAndIvSize(ref privateKey, ref ivKey, aesConfig.KeySize);
-
-            var customAes = AesBaseInitializer(aesConfig);
-            using (var encryptor =
-                   customAes.CreateEncryptor(privateKey, ivKey))
-            {
-                return PerformCryptography(byteArray, encryptor);
-            }
-        }
-
-        /// <summary>
-        ///     Method to decrypt a cipher byte array to normal byte array.
-        /// </summary>
-        /// <param name="cipherByteArray">Specifies cipher byte array for encrypting.</param>
-        /// <param name="privateKey">Specifies custom private key for encrypting.</param>
-        /// <param name="ivKey">Specifies custom iv key for encrypting.</param>
-        /// <param name="aesConfig">
-        ///     Specifies the basis config of AES.
-        ///     <para />
-        ///     By default, the key size and key block are set to 128, the padding mode is set to 'PKCS7', and the cipher mode is
-        ///     set to 'CBC.'
-        /// </param>
-        /// <returns>The decrypted byte array</returns>
-        public static byte[] AesDecryptByteArray(byte[] cipherByteArray, byte[] privateKey, byte[] ivKey,
-            G9DtAESConfig aesConfig = default)
-        {
-            if (Equals(aesConfig, default(G9DtAESConfig)))
-                aesConfig = new G9DtAESConfig(PaddingMode.PKCS7);
-
-            // Fixing the keys sizes
-            if (aesConfig.EnableAutoFixKeySize)
-                FixedKeyAndIvSize(ref privateKey, ref ivKey, aesConfig.KeySize);
-
-            var customAes = AesBaseInitializer(aesConfig);
-            using (var decryptor =
-                   customAes.CreateDecryptor(privateKey, ivKey))
-            {
-                return PerformCryptography(cipherByteArray,
-                    decryptor);
-            }
-        }
-
-        /// <summary>
-        ///     Helper method for encrypting and decrypting.
-        /// </summary>
-        /// <param name="data">Specifies data for encrypting or decrypting.</param>
-        /// <param name="cryptoTransform">Access to encryptor or decryptor</param>
-        /// <returns></returns>
-        private static byte[] PerformCryptography(byte[] data, ICryptoTransform cryptoTransform)
-        {
-            using (var ms = new MemoryStream())
-            using (var cryptoStream = new CryptoStream(ms, cryptoTransform, CryptoStreamMode.Write))
-            {
-                cryptoStream.Write(data, 0, data.Length);
-                cryptoStream.FlushFinalBlock();
-                return ms.ToArray();
-            }
-        }
-
-        /// <summary>
-        ///     Method to fix the size of keys with an arbitrary process.
-        /// </summary>
-        /// <param name="key">Specifies key</param>
-        /// <param name="iv">Specifies Iv</param>
-        /// <param name="keySize">Specifies the standard key size</param>
-        private static void FixedKeyAndIvSize(ref byte[] key, ref byte[] iv, int keySize)
-        {
-            var keyByteSize = keySize / 8;
-            if (key.Length > keyByteSize) key = key.Take(keyByteSize).ToArray();
-            if (iv.Length > 16) iv = iv.Take(keyByteSize).ToArray();
-
-            var stackKey = new Stack<byte>(key);
-            var stackIv = new Stack<byte>(iv);
-
-            var number = 9;
-            while (true)
-            {
-                var breakTime = true;
-
-                if (stackKey.Count < keyByteSize)
-                {
-                    stackKey.Push((byte)(number-- * 9));
-                    stackKey.Push(stackKey.Pop());
-                    breakTime = false;
-                }
-
-                if (stackIv.Count < 16)
-                {
-                    stackIv.Push((byte)(number-- * 9));
-                    stackIv.Push(stackIv.Pop());
-                    breakTime = false;
-                }
-
-                if (breakTime)
-                    break;
-
-                if (number < 3)
-                    number = 9;
-            }
-
-            key = stackKey.ToArray();
-            iv = stackIv.ToArray();
         }
 
         #endregion

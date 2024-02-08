@@ -216,7 +216,7 @@ private static void Main()
 
     G9Assembly.ObjectAndReflectionTools
     // In this case, the members' values of object B are set on Object A.
-    .MergeObjectsValues(objectA, objectB, 
+    .MergeObjectsValues(ref objectA, objectB, 
         // Specifies the desired access modifier.
         G9EAccessModifier.Public,
         // Specifies that if two members' values don't have a shared type and can't transfer their values, the process must ignore them.
@@ -302,50 +302,37 @@ private static void Main()
     const string standardKey = "eShVmYp3s6v9y$B&";
     const string standardIv = "gUkXp2s5v8x/A?D(";
 
+    var aesInit = G9Assembly.CryptographyTools.InitAesCryptography(
+        // Specifies custom private key.
+        standardKey,
+        // Specifies custom initialization vector.
+        standardIv,
+        // Specifies the custom config for encryption and decryption.
+        // It's optional; by default, the values below are set for that.
+        new G9DtAESConfig(
+            paddingMode: PaddingMode.PKCS7,
+            cipherMode: CipherMode.CBC,
+            keySize: 128,
+            blockSize: 128,
+            // Specifies that if the key size isn't standard.
+            // The process must fix it or not. (With an arbitrary process)
+            enableAutoFixKeySize: false
+        ));
+
     // AES encryption algorithm
     var aesEncryptionText =
-        G9Assembly.CryptographyTools
-            .AesEncryptString(
+        aesInit.EncryptString(
                 // Specifies plain text.
-                testText,
-                // Specifies custom private key.
-                standardKey,
-                // Specifies custom initialization vector.
-                standardIv,
-                // Specifies the custom config for encryption and decryption.
-                // It's optional; by default, the values below are set for that.
-                new G9DtAESConfig(
-                    paddingMode: PaddingMode.PKCS7,
-                    cipherMode: CipherMode.CBC,
-                    keySize: 128,
-                    blockSize: 128,
-                    // Specifies that if the key size isn't standard. The process must fix it or not. (With an arbitrary process)
-                    enableAutoFixKeySize: false
-                ));
+                testText);
 
-    // Note: The only differences between the above and below methods are two things.
-    // The first one is their name, and the second one is their first parameter.
-
-    // AES encryption algorithm
+    // AES decryption algorithm
     var aesDecryptionText =
-        G9Assembly.CryptographyTools
-            .AesDecryptString(
+        aesInit.DecryptString(
                 // Specifies cipher text.
-                aesEncryptionText,
-                // Specifies custom private key.
-                standardKey,
-                // Specifies custom initialization vector.
-                standardIv,
-                // Specifies the custom config for encryption and decryption.
-                // It's optional; by default, the values below are set for that.
-                new G9DtAESConfig(
-                    paddingMode: PaddingMode.PKCS7,
-                    cipherMode: CipherMode.CBC,
-                    keySize: 128,
-                    blockSize: 128,
-                    // Specifies that if the key size isn't standard. The process must fix it or not. (With an arbitrary process)
-                    enableAutoFixKeySize: false
-                ));
+                aesEncryptionText);
+
+    Console.WriteLine(testText == aesDecryptionText);
+    // true
 }
 ```
 ## Performance Tools
@@ -424,26 +411,27 @@ private static void Main()
     // Notes about the following methods:
     // Note 1: The second parameter specifies whether the directory drive in terms of existence must be checked or not.
     // Note 2: The third parameter specifies whether the directory path in terms of existence must be checked or not.
-    // Note 3: The result of the below methods is an Enum type.
+    // Note 3: The fourth parameter specifies if the validation isn't correct, an exception must be thrown or not.
+    // Note 4: The result of the below methods is an Enum type.
 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckDirectoryPathValidation(directory1, true, false));
+        .CheckDirectoryPathValidation(directory1, true, false, false));
     // Result: G9EPatchCheckResult.Correct
 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckDirectoryPathValidation(directory2, true, false));
+        .CheckDirectoryPathValidation(directory2, true, false, false));
     // Result: G9EPatchCheckResult.Correct
 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckDirectoryPathValidation(directory3, true, true));
+        .CheckDirectoryPathValidation(directory3, true, true, false));
     // Result: G9EPatchCheckResult.PathExistenceIsIncorrect
 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckDirectoryPathValidation(directory4, true, true));
+        .CheckDirectoryPathValidation(directory4, true, true, false));
     // Result: G9EPatchCheckResult.PathDriveIsIncorrect
 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckDirectoryPathValidation(directory5, true, true));
+        .CheckDirectoryPathValidation(directory5, true, true, false));
     // Result: G9EPatchCheckResult.PathNameIsIncorrect
 
     // File paths
@@ -456,31 +444,31 @@ private static void Main()
     const string file7 = @"okay.p-n|g";
 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckFilePathValidation(file1, false, false));
+        .CheckFilePathValidation(file1, false, false, false));
     // G9EPatchCheckResult.Correct
 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckFilePathValidation(file2, true, false));
+        .CheckFilePathValidation(file2, true, false, false));
     // G9EPatchCheckResult.Correct
-
+ 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckFilePathValidation(file3, true, true));
+        .CheckFilePathValidation(file3, true, true, false));
     // G9EPatchCheckResult.PathExistenceIsIncorrect
 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckFilePathValidation(file4, true, true));
+        .CheckFilePathValidation(file4, true, true, false));
     // G9EPatchCheckResult.PathDriveIsIncorrect
 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckFilePathValidation(file5, true, true));
+        .CheckFilePathValidation(file5, true, true, false));
     // G9EPatchCheckResult.PathNameIsIncorrect
 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckFilePathValidation(file6, true, false));
+        .CheckFilePathValidation(file6, true, false, false));
     // G9EPatchCheckResult.Correct
 
     Console.WriteLine(G9Assembly.InputOutputTools
-        .CheckFilePathValidation(file7, true, true));
+        .CheckFilePathValidation(file7, true, true, false));
     // G9EPatchCheckResult.PathNameIsIncorrect
 
 }

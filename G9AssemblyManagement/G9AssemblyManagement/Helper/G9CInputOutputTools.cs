@@ -7,23 +7,22 @@ namespace G9AssemblyManagement.Helper
 {
     public class G9CInputOutputTools
     {
-
-
         /// <inheritdoc cref="G9CInputOutputHandler.CheckDirectoryPathValidation" />
         public G9EPatchCheckResult CheckDirectoryPathValidation(string directoryPath, bool checkDirectoryDrive,
-            bool checkDirectoryExist)
+            bool checkDirectoryExist, bool throwException)
         {
             return G9CInputOutputHandler.CheckDirectoryPathValidation(directoryPath, checkDirectoryDrive,
-                checkDirectoryExist);
+                checkDirectoryExist, throwException);
         }
 
         /// <inheritdoc cref="G9CInputOutputHandler.CheckFilePathValidation" />
         public G9EPatchCheckResult CheckFilePathValidation(string filePath, bool checkFileDrive,
-            bool checkFileExist)
+            bool checkFileExist, bool throwException)
         {
             return G9CInputOutputHandler.CheckFilePathValidation(filePath, checkFileDrive,
-                checkFileExist);
+                checkFileExist, throwException);
         }
+
 
         /// <inheritdoc cref="G9CInputOutputHandler.WaitForAccessToFile" />
         public void WaitForAccessToFile(string fullPath, Action<FileStream> onAvailableAccess, FileMode fileMode,

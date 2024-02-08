@@ -287,28 +287,28 @@ namespace G9AssemblyManagement.Helper
         #region MergeObjectsValues Methods
 
         /// <inheritdoc cref="G9CReflectionHandler.MergeObjectsValues" />
-        public void MergeObjectsValues(object mainObject, object targetObject,
+        public void MergeObjectsValues<TTypeMain, TTypeTarget>(ref TTypeMain mainObject, TTypeTarget targetObject,
             G9EAccessModifier specifiedModifiers,
             G9EValueMismatchChecking valueMismatch = G9EValueMismatchChecking.AllowMismatchValues,
             bool enableTryToChangeType = false,
             Func<G9IMember, bool> customFilter = null,
             Func<G9IMember, G9IMember, bool> customProcess = null, bool considerInheritedParent = false)
         {
-            G9CReflectionHandler.MergeObjectsValues(mainObject, targetObject,
+            G9CReflectionHandler.MergeObjectsValues(ref mainObject, targetObject,
                 CreateCustomModifier(specifiedModifiers), valueMismatch,
                 enableTryToChangeType,
                 customFilter, customProcess, considerInheritedParent);
         }
 
         /// <inheritdoc cref="G9CReflectionHandler.MergeObjectsValues" />
-        public void MergeObjectsValues(object mainObject, object targetObject,
+        public void MergeObjectsValues<TTypeMain, TTypeTarget>(ref TTypeMain mainObject, TTypeTarget targetObject,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public,
             G9EValueMismatchChecking valueMismatch = G9EValueMismatchChecking.AllowMismatchValues,
             bool enableTryToChangeType = false,
             Func<G9IMember, bool> customFilter = null,
             Func<G9IMember, G9IMember, bool> customProcess = null, bool considerInheritedParent = false)
         {
-            G9CReflectionHandler.MergeObjectsValues(mainObject, targetObject, specifiedModifiers,
+            G9CReflectionHandler.MergeObjectsValues(ref mainObject, targetObject, specifiedModifiers,
                 valueMismatch,
                 enableTryToChangeType, customFilter, customProcess, considerInheritedParent);
         }

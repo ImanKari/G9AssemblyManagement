@@ -357,12 +357,12 @@ namespace G9AssemblyManagement.Core
             var counter = 1;
             for (var i = 0; i < numberOfRepetitions - 1; i++)
             {
-                var i1 = i;
+                var i1 = Thread.CurrentThread.ManagedThreadId + i;
                 ThreadPool.QueueUserWorkItem(state =>
                 {
                     try
                     {
-                        customActionForTest(Thread.CurrentThread.ManagedThreadId + i1);
+                        customActionForTest(i1);
                     }
                     finally
                     {
@@ -380,7 +380,8 @@ namespace G9AssemblyManagement.Core
             };
             Parallel.For(0, numberOfRepetitions - 1, option, i =>
             {
-                customActionForTest(Thread.CurrentThread.ManagedThreadId + i);
+                var i1 = Thread.CurrentThread.ManagedThreadId + i;
+                customActionForTest(i1);
             });
 #endif
 
