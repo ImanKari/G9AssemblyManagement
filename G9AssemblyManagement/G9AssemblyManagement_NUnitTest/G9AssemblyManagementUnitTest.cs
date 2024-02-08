@@ -1800,6 +1800,16 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             Assert.True(eb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.ExaByte));
             Assert.True(zb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.ZettaByte));
             Assert.True(yb == G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(byteSize, G9ESizeUnits.YottaByte));
+
+
+            
+            Assert.True(G9Assembly.GeneralTools.GetAssemblyVersion(typeof(G9Assembly).Assembly) ==
+                        typeof(G9Assembly).Assembly.GetName().Version?.ToString());
+
+
+            Assert.True(G9Assembly.GeneralTools.GetAssemblyVersion(GetType().Assembly) ==
+                        GetType().Assembly.GetName().Version?.ToString());
+
         }
 
         [Test]
@@ -1891,6 +1901,75 @@ In the second object, the member's name is 'Age' with the value 'nine' and the t
             // Wait for file access
             G9Assembly.InputOutputTools.WaitForAccessToFile(filePath, stream => { _ = stream.ReadByte(); },
                 FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite, 6, 500);
+
+
+            // Get path
+            Assert.True(!string.IsNullOrEmpty(G9Assembly.InputOutputTools.GetExecutableDirectory()));
+            Assert.True(!string.IsNullOrEmpty(G9Assembly.InputOutputTools.GetBaseCurrentDirectory()));
+
+
+            // Embedded Resources - Stream
+            const string mbrPath1 = "EmbeddedResources.Test.Test.1.png";
+            const string textFilePath = "ebr_copy_test/1/a.txt";
+            List<G9DtEmbeddedResourceFile> embStructure = new List<G9DtEmbeddedResourceFile>()
+            {
+                new G9DtEmbeddedResourceFile("EmbeddedResources.Test.Test.1.png", "ebr_copy_test/1/1.png"),
+                new G9DtEmbeddedResourceFile("EmbeddedResources.Test.Test.2.png", "ebr_copy_test/1/2.png"),
+                new G9DtEmbeddedResourceFile("EmbeddedResources.Test.Test.3.png", "ebr_copy_test/1/3.png"),
+                new G9DtEmbeddedResourceFile("EmbeddedResources.Test.Test.a.txt", textFilePath),
+            };
+
+
+            try
+            {
+                G9Assembly.InputOutputTools.EmbeddedResourceGetStreamFromFile(typeof(G9Assembly).Assembly, mbrPath1);
+                Assert.Fail("It cannot pass!");
+            }
+            catch (Exception e)
+            {
+                Assert.True(e.Message.StartsWith("The specified embedded resource file is not found in the address:"));
+            }
+
+            // Pass
+            Assert.True(G9Assembly.InputOutputTools.EmbeddedResourceGetStreamFromFile(GetType().Assembly, mbrPath1).Length == 5429);
+            
+
+            // Embedded Resources - Test copy
+            G9Assembly.InputOutputTools.EmbeddedResourceCopyFilesToPath(
+                GetType().Assembly,
+                embStructure,
+                (s, bytes) =>
+                {
+                    if (s.EndsWith("a.txt"))
+                    {
+                        // Change specific target file
+                        var str = Encoding.UTF8.GetString(bytes);
+                        str = str.Replace("<ReplacePlace>", "G9Team");
+                        return Encoding.UTF8.GetBytes(str);
+                    }
+
+                    // Without Change
+                    return bytes;
+                }, 
+                true,
+                FileMode.Create,
+                FileAccess.Write,
+                FileShare.Write);
+
+
+            Assert.True(File.ReadAllText(textFilePath) == "This Is G9Team.");
+
+            try
+            {
+                G9Assembly.InputOutputTools.EmbeddedResourceCopyFilesToPath(
+                    GetType().Assembly, embStructure,
+                    (s, bytes) => throw new NotImplementedException(),
+                    true, FileMode.Create);
+            }
+            catch (Exception ex)
+            {
+                Assert.Pass();
+            }
         }
 
         [Test]

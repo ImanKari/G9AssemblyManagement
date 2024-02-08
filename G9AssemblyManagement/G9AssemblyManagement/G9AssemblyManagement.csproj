@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFrameworks>net35;net40;net45;netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
-	  <Version>1.4.5.1</Version>
+	  <Version>1.4.5.21</Version>
 	  <Authors>Iman Kari</Authors>
 	  <Company>G9Studio</Company>
 	  <Product>G9 Assembly Management</Product>

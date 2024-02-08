@@ -15,15 +15,10 @@ namespace G9AssemblyManagement.Helper
             return G9CToolsHandler.ConvertByteSizeToAnotherSize(byteSize, unit);
         }
 
-        /// <summary>
-        ///     Method to get the current version of the assembly.
-        /// </summary>
-        /// <returns>The current version of the assembly</returns>
-        public string GetAssemblyVersion()
+        /// <inheritdoc cref="G9CToolsHandler.GetAssemblyVersion" />
+        public string GetAssemblyVersion(Assembly targetAssembly)
         {
-            return string.IsNullOrEmpty(Assembly.GetExecutingAssembly().GetName().Version.ToString())
-                ? Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? "0.0.0.0"
-                : Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            return G9CToolsHandler.GetAssemblyVersion(targetAssembly);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using G9AssemblyManagement.DataType;
 using G9AssemblyManagement.Enums;
 
 namespace G9AssemblyManagement.Core
@@ -190,7 +191,11 @@ namespace G9AssemblyManagement.Core
         }
 
 
-        public static string GetRunDirectory()
+        /// <summary>
+        ///     Method to get executable directory.
+        /// </summary>
+        /// <returns>Return executable directory</returns>
+        public static string GetExecutableDirectory()
         {
             return
 #if !NETSTANDARD1_3_OR_GREATER && !NETCOREAPP
@@ -200,34 +205,84 @@ namespace G9AssemblyManagement.Core
 #endif
         }
 
-        public static string GetBaseDirectory()
+        /// <summary>
+        ///     Method to get current directory.
+        /// </summary>
+        /// <returns>Method to get current directory</returns>
+        public static string GetBaseCurrentDirectory()
         {
-            var x = Environment.CurrentDirectory;
-            return Directory.GetCurrentDirectory();
+            return Environment.CurrentDirectory;
         }
 
-
-        public static void CopyEmbeddedResourceToPath(IList<string> embeddedResourcesPath, string targetDirectoryPath,
-            Func<string, byte[], byte[]> customProcess, FileMode fileMode = FileMode.Create,
-            FileAccess fileAccess = FileAccess.Write, FileShare fileShare = FileShare.Write, bool createPath = true)
+        /// <summary>
+        ///     Method to get a stream from a file that is an embedded resource.
+        /// </summary>
+        /// <param name="assemblyHasEmbeddedResource">Specifies the target assembly for catching the file.</param>
+        /// <param name="embeddedResourceAddress">Specifies the address if embedded resource file.</param>
+        /// <returns>Stream</returns>
+        /// <exception cref="InvalidOperationException">
+        ///     If the embedded file isn't available, throw an exception: The specified
+        ///     embedded resource file is not found in the address...
+        /// </exception>
+        public static Stream EmbeddedResourceGetStreamFromFile(Assembly assemblyHasEmbeddedResource,
+            string embeddedResourceAddress)
         {
-            // Check path validation
-            _ = CheckDirectoryPathValidation(targetDirectoryPath, true, !createPath, true);
+            // ReSharper disable once PossibleNullReferenceException
+            embeddedResourceAddress = $"{assemblyHasEmbeddedResource.FullName.Split(',')[0]}.{embeddedResourceAddress}";
 
-            // Create directory if needed
-            if (createPath && !Directory.Exists(targetDirectoryPath))
-                Directory.CreateDirectory(targetDirectoryPath);
+            var resource = assemblyHasEmbeddedResource.GetManifestResourceStream(embeddedResourceAddress);
+            return resource ?? throw new InvalidOperationException(
+                $"The specified embedded resource file is not found in the address: '{embeddedResourceAddress}'.");
+        }
 
-            var assembly = Assembly.GetExecutingAssembly();
-
+        /// <summary>
+        ///     Method to copy multiple files from embedded resource addresses to a target directory.
+        /// </summary>
+        /// <param name="assemblyHasEmbeddedResource">Specifies the target assembly for catching the file.</param>
+        /// <param name="embeddedResourcesPath">Specifies the embedded resource path array.</param>
+        /// <param name="customProcess">
+        ///     Specifies a custom process for copying. By that, you can make the needed changes in the
+        ///     file before copying.
+        /// </param>
+        /// <param name="createPathIfNotExist">
+        ///     Specifies if the target path (for copying) does not exist, It must be created or
+        ///     not.
+        /// </param>
+        /// <param name="fileMode">Specifies the file mode for creating a copy</param>
+        /// <param name="fileAccess">Specifies the file access for creating.</param>
+        /// <param name="fileShare">Specifies the file share for creating.</param>
+        /// <exception cref="InvalidOperationException">
+        ///     If the embedded file isn't available, throw an exception: The specified
+        ///     embedded resource file is not found in the address...
+        /// </exception>
+        public static void EmbeddedResourceCopyFilesToPath(
+            Assembly assemblyHasEmbeddedResource,
+            IList<G9DtEmbeddedResourceFile> embeddedResourcesPath,
+            Func<string, byte[], byte[]> customProcess,
+            bool createPathIfNotExist = false,
+            FileMode fileMode = FileMode.CreateNew,
+            FileAccess fileAccess = FileAccess.Write,
+            FileShare fileShare = FileShare.Write)
+        {
             // Loop for copying all the specified embedded resource
-            foreach (var emPath in embeddedResourcesPath)
-                using (var resource = assembly.GetManifestResourceStream(emPath))
+            foreach (var emStructure in embeddedResourcesPath)
+            {
+                var directoryPath = Path.GetDirectoryName(emStructure.TargetFilePath);
+                // Check path validation
+                _ = CheckDirectoryPathValidation(directoryPath, true, !createPathIfNotExist, true);
+
+                // Create directory if needed
+                if (createPathIfNotExist && !Directory.Exists(directoryPath))
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    Directory.CreateDirectory(directoryPath);
+
+                using (var resource = EmbeddedResourceGetStreamFromFile(assemblyHasEmbeddedResource,
+                           emStructure.EmbeddedResourceFilePath))
                 {
                     // Check validation of specified embedded resource in the path
                     if (resource == null)
                         throw new InvalidOperationException(
-                            $"The specified embedded resource in path '{embeddedResourcesPath}' isn't found!");
+                            $"The specified embedded resource file is not found in the address: '{embeddedResourcesPath}'.");
 
                     // Read the data of embedded resource
                     var dataBytes = new byte[resource.Length];
@@ -235,12 +290,13 @@ namespace G9AssemblyManagement.Core
 
                     // If a custom process exists, the core uses it.
                     if (customProcess != null)
-                        dataBytes = customProcess(emPath, dataBytes);
+                        dataBytes = customProcess(emStructure.EmbeddedResourceFilePath, dataBytes);
 
                     // Write the embedded resource in desired path.
-                    WaitForAccessToFile(targetDirectoryPath, fs => { fs.Write(dataBytes, 0, dataBytes.Length); },
+                    WaitForAccessToFile(emStructure.TargetFilePath, fs => { fs.Write(dataBytes, 0, dataBytes.Length); },
                         fileMode, fileAccess, fileShare);
                 }
+            }
         }
     }
 }

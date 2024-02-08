@@ -1,10 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	  <TargetFrameworks>net35;net40;net45;net8.0</TargetFrameworks>
+	  <!--<TargetFrameworks>net8.0</TargetFrameworks>-->
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="EmbeddedResources\Test\Test\1.png" />
+    <None Remove="EmbeddedResources\Test\Test\2.png" />
+    <None Remove="EmbeddedResources\Test\Test\3.png" />
+    <None Remove="EmbeddedResources\Test\Test\a.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="EmbeddedResources\Test\Test\1.png" />
+    <EmbeddedResource Include="EmbeddedResources\Test\Test\2.png" />
+    <EmbeddedResource Include="EmbeddedResources\Test\Test\3.png" />
+    <EmbeddedResource Include="EmbeddedResources\Test\Test\a.txt" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.1" />

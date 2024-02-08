@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using G9AssemblyManagement.Core;
+using G9AssemblyManagement.DataType;
 using G9AssemblyManagement.Enums;
 
 namespace G9AssemblyManagement.Helper
@@ -31,6 +34,37 @@ namespace G9AssemblyManagement.Helper
         {
             G9CInputOutputHandler.WaitForAccessToFile(fullPath, onAvailableAccess, fileMode, fileAccess, fileShare,
                 countOfTrying, gapBetweenEachTry);
+        }
+
+        /// <inheritdoc cref="G9CInputOutputHandler.GetExecutableDirectory" />
+        public string GetExecutableDirectory()
+        {
+            return G9CInputOutputHandler.GetExecutableDirectory();
+        }
+
+        /// <inheritdoc cref="G9CInputOutputHandler.GetBaseCurrentDirectory" />
+        public string GetBaseCurrentDirectory()
+        {
+            return G9CInputOutputHandler.GetBaseCurrentDirectory();
+        }
+
+        /// <inheritdoc cref="G9CInputOutputHandler.EmbeddedResourceGetStreamFromFile" />
+        public Stream EmbeddedResourceGetStreamFromFile(Assembly assemblyHasEmbeddedResource, string embeddedResourceAddress)
+        {
+            return G9CInputOutputHandler.EmbeddedResourceGetStreamFromFile(assemblyHasEmbeddedResource, embeddedResourceAddress);
+        }
+
+        /// <inheritdoc cref="G9CInputOutputHandler.EmbeddedResourceCopyFilesToPath" />
+        public void EmbeddedResourceCopyFilesToPath(
+            Assembly assemblyHasEmbeddedResource,
+            IList<G9DtEmbeddedResourceFile> embeddedResourcesPath,
+            Func<string, byte[], byte[]> customProcess,
+            bool createPathIfNotExist = false,
+            FileMode fileMode = FileMode.CreateNew,
+            FileAccess fileAccess = FileAccess.Write,
+            FileShare fileShare = FileShare.Write)
+        {
+            G9CInputOutputHandler.EmbeddedResourceCopyFilesToPath(assemblyHasEmbeddedResource, embeddedResourcesPath, customProcess, createPathIfNotExist, fileMode, fileAccess, fileShare);
         }
     }
 }

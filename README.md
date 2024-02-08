@@ -5,19 +5,27 @@
 [![Github Repository](https://raw.githubusercontent.com/ImanKari/G9JSONHandler/main/G9JSONHandler/Asset/GitHub.png)](https://github.com/ImanKari/G9AssemblyManagement)
 
 # G9AssemblyManagement
+
 ### An efficient .NET library has been developed to work on assembly levels and use essential basic structures. This library contains various valuable tools related to [Types](#type-tools), [Instances](#instance-tools), [Reflections](#reflection-tools), [Merging](#merging-two-objects), [Cryptographies](#cryptography-tools), [Performances](#performance-tools), and [I/O Tools](#input-output-tools). Indeed, there are so many utilities in this library, along with various overloads and parameters. But in the following, we review it as long as it is not beyond the scope of this guide.
+
 # ❇️Guide
+
 ## Type Tools
+
 ### This helper tool provides many various utilities for working by the types.
+
 Tool for getting inherited types from a specified type:
+
 ```csharp
 var result = G9Assembly.TypeTools.GetInheritedTypesFromType(typeof(IPAddress));
 Console.WriteLine(result.Count); //  1
 Console.WriteLine(result[0].Name); // ReadOnlyIPAddress
 ```
+
 - Indeed, the type 'ReadOnlyIPAddress' is derived from the type 'IPAddress.'
 
 This tool checks whether a specified type is a built-in .NET type or not:
+
 ```csharp
 // Some built-in .NET Types
 var v1 = 1;
@@ -31,24 +39,30 @@ Console.WriteLine(G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v1.GetType())); /
 Console.WriteLine(G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v3.GetType())); // true
 Console.WriteLine(G9Assembly.TypeTools.IsTypeBuiltInDotNetType(v4.GetType())); // false
 ```
+
 A practical tool for changing the type of an object along with an intelligent value-changing process in possible conditions:
+
 ```csharp
 // Changes to string and number
-var consoleColorString = G9Assembly.TypeTools.SmartChangeType<string>(ConsoleColor.DarkMagenta); 
+var consoleColorString = G9Assembly.TypeTools.SmartChangeType<string>(ConsoleColor.DarkMagenta);
 // "DarkMagenta"
-var consoleColorNumber = G9Assembly.TypeTools.SmartChangeType<int>(ConsoleColor.DarkMagenta); 
+var consoleColorNumber = G9Assembly.TypeTools.SmartChangeType<int>(ConsoleColor.DarkMagenta);
 // 5
 
 // Changes to primary type from string and number
-var consoleColor = G9Assembly.TypeTools.SmartChangeType<ConsoleColor>(consoleColorString); 
+var consoleColor = G9Assembly.TypeTools.SmartChangeType<ConsoleColor>(consoleColorString);
 // ConsoleColor.DarkMagenta
-consoleColor = G9Assembly.TypeTools.SmartChangeType<ConsoleColor>(consoleColorNumber); 
+consoleColor = G9Assembly.TypeTools.SmartChangeType<ConsoleColor>(consoleColorNumber);
 // ConsoleColor.DarkMagenta
 ```
+
 ## Instance Tools
+
 ### This helper tool provides many practical utilities for working by the instances.
+
 We sometimes need to access some instances of an object that aren't specified where they have been created, a process that is a little similar to dependency injection. In this case, this tool provides two ways of doing that. \
 Sample classes:
+
 ```csharp
 // In this scenario, we must inherit the abstract class 'G9AClassInitializer' in our desired classes.
 
@@ -70,7 +84,9 @@ public class MyCustomClassB : G9AClassInitializer
     }
 }
 ```
+
 First way:
+
 ```csharp
 // In the following, each created instance of the above samples is accessible in the following way:
 
@@ -94,7 +110,9 @@ private static void Main()
     Console.WriteLine(instancesOfClassA[0].GetClassName()); // MyCustomClassB
 }
 ```
+
 Second way:
+
 ```csharp
 // Or, with a listener, we can control the new instance, removed instance, and exceptions:
 private static void Main()
@@ -120,7 +138,9 @@ private static void Main()
         );
 }
 ```
+
 Sometimes, we need to create an instance of a type that there are many ways depending on the conditions:
+
 ```csharp
 // Method to create an instance from a type, first way:
 G9Assembly.InstanceTools.CreateInstanceFromType<CustomType>();
@@ -141,9 +161,13 @@ G9Assembly.InstanceTools.CreateInstanceFromGenericTypeWithConstructorParameters(
     // Specifies parameters
     "Param 1", "param 2" );
 ```
+
 ## Reflection Tools
-### This helper tool consists of various tools related to reflections and objects. 
+
+### This helper tool consists of various tools related to reflections and objects.
+
 This tool provides many helpful methods for working with object members (reflection). All of the methods shown below have many functional parameters like the access modifier, custom filter, and so on that aren't shown:
+
 ```csharp
 // Note: The output of the whole reflection methods below is an array.
 
@@ -185,11 +209,14 @@ G9Assembly.ReflectionTools.GetMethodsOfType(typeof(myCustomObject));
 // Method to get generic methods of a type
 G9Assembly.ReflectionTools.GetGenericMethodsOfType(typeof(myCustomObject));
 ```
+
 ### Merging two objects
 
 The merger tool provides an operational process for merging two objects. With that, you can make a custom process for integrating two things under many conditions. The method of merging is explained below.\
 Sample classes
+
 ```csharp
+// First sample
 public class MyCustomClassA
 {
     public int Age = 99;
@@ -207,7 +234,9 @@ public class MyCustomClassB
     public string Percent = "39.9f";
 }
 ```
+
 Method of merging
+
 ```csharp
 private static void Main()
 {
@@ -216,15 +245,15 @@ private static void Main()
 
     G9Assembly.ObjectAndReflectionTools
     // In this case, the members' values of object B are set on Object A.
-    .MergeObjectsValues(ref objectA, objectB, 
+    .MergeObjectsValues(ref objectA, objectB,
         // Specifies the desired access modifier.
         G9EAccessModifier.Public,
         // Specifies that if two members' values don't have a shared type and can't transfer their values, the process must ignore them.
         // In this case, both objects have the same member with the name "Percent," But in the first one, it's Float, and in the second one, it's String. So, a mismatching occurs, but the core ignores it according to this setting (AllowMismatchValues).
-        G9EValueMismatchChecking.AllowMismatchValues, 
+        G9EValueMismatchChecking.AllowMismatchValues,
         // Specifies that if a mismatch occurs between two members' values, an automatic try to change type must happen or not.
         // If it is set to 'true,' the value of "Percent" will automatically convert from String to Float.
-        false, 
+        false,
         // Specifies a custom filter for searching object's members if needed.
         // In this case, members with the name "CurrentDateTime" are ignored.
         member => member.Name != "CurrentDateTime",
@@ -268,8 +297,11 @@ private static void Main()
 ```
 
 ## Cryptography Tools
+
 ### This small tool provides the essential methods for cryptography.
+
 There are many hashing methods, and the most practical of them is provided here:
+
 ```csharp
 private static void Main()
 {
@@ -294,7 +326,9 @@ private static void Main()
         .StringToCustomHash(G9EHashAlgorithm.CRC32, testText);
 }
 ```
+
 And also, there are many cryptography methods, and the most practical of them (AES type) is provided here:
+
 ```csharp
 private static void Main()
 {
@@ -335,9 +369,13 @@ private static void Main()
     // true
 }
 ```
+
 ## Performance Tools
+
 ### A helpful tool that is more used for testing performances.
+
 The first one is used for testing multi-thread requests. It's like a simulated area that runs a custom code block many times:
+
 ```csharp
 private static void Main()
 {
@@ -353,7 +391,9 @@ private static void Main()
     );
 }
 ```
+
 The second method compares two code blocks in terms of speed and memory usage:
+
 ```csharp
 private static void Main()
 {
@@ -378,7 +418,7 @@ private static void Main()
         basisData = basisData + "AaA";
         _ = string.IsNullOrEmpty(basisData);
     }
-    
+
     // Single-core and multi-core test
     var desiredNumberOfRepetitions = 999999;
      var comparativeResult = G9Assembly.PerformanceTools
@@ -391,11 +431,15 @@ private static void Main()
             StringSum1, StringSum2);
 }
 ```
+
 - Note: The output of this method has many details that are beyond the scope of this article.
 
 ## Input Output Tools
+
 ### In simple terms, it provides useful I/O tools.
+
 Checking a path on the computer in terms of validation can consist of many things, like validation, path existence, and drive existence. Here with a method all of them are handled:
+
 ```csharp
 private static void Main()
 {
@@ -450,7 +494,7 @@ private static void Main()
     Console.WriteLine(G9Assembly.InputOutputTools
         .CheckFilePathValidation(file2, true, false, false));
     // G9EPatchCheckResult.Correct
- 
+
     Console.WriteLine(G9Assembly.InputOutputTools
         .CheckFilePathValidation(file3, true, true, false));
     // G9EPatchCheckResult.PathExistenceIsIncorrect
@@ -473,6 +517,7 @@ private static void Main()
 
 }
 ```
+
 ### Method to make a wait system for access to the file with specified access and custom options.
 
 ```csharp
@@ -498,5 +543,110 @@ G9Assembly.InputOutputTools.WaitForAccessToFile(
     // Specifies how much time must be considered between each try in milliseconds.
     99);
 ```
+
+### Embedded Resource
+
+#### How to set a file as the Embedded Resource?
+
+##### In Visual Studio:
+
+[![G9TM](https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files-images/vs-embeddedresource-sml.png)](https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files?tabs=windows)
+
+##### In Visual Studio for Mac:
+
+[![G9TM](https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files-images/xs-embeddedresource-sml.png)](https://learn.microsoft.com/en-us/xamarin/xamarin-forms/data-cloud/data/files?tabs=windows)
+
+##### Or In 'project.csproj' file:
+
+```xml
+<ItemGroup>
+  <EmbeddedResource Include="EmbeddedResources\Test\Test\a.txt" />
+</ItemGroup>
+```
+
+#### Method to get a stream from a file that is an embedded resource.
+
+```csharp
+// Embedded resouce file path
+const string mbrPath1 = "EmbeddedResources.Test.Test.1.png";
+// Access to stream of embedded resource file path
+var stream = G9Assembly.InputOutputTools.EmbeddedResourceGetStreamFromFile(
+    // Specifies the target assembly for catching the file.
+    GetType().Assembly,
+    // Specifies the address if embedded resource file.
+    mbrPath1);
+```
+
+#### Method to copy multiple files from embedded resource addresses to a target directory.
+
+```csharp
+// Embedded resouce file data type
+ List<G9DtEmbeddedResourceFile> embStructure = new List<G9DtEmbeddedResourceFile>()
+ {
+     new G9DtEmbeddedResourceFile("EmbeddedResources.Test.Test.1.png", "ebr_copy_test/1/1.png"),
+     new G9DtEmbeddedResourceFile("EmbeddedResources.Test.Test.2.png", "ebr_copy_test/1/2.png"),
+     new G9DtEmbeddedResourceFile("EmbeddedResources.Test.Test.3.png", "ebr_copy_test/1/3.png"),
+     new G9DtEmbeddedResourceFile("EmbeddedResources.Test.Test.a.txt", "ebr_copy_test/1/a.txt"),
+ };
+// Copy multiple files from embedded resource addresses to a target directory.
+ G9Assembly.InputOutputTools.EmbeddedResourceCopyFilesToPath(
+    // Specifies the target assembly for catching the file.
+     GetType().Assembly,
+     // Specifies the embedded resource path array.
+     embStructure,
+     // Specifies a custom process for copying.
+     // By that, you can make the needed changes in the file before copying.
+     (s, bytes) =>
+     {
+        // a.txt file
+         if (s.EndsWith("a.txt"))
+         {
+             // Change specific target file
+             var str = Encoding.UTF8.GetString(bytes);
+             str = str.Replace("<ReplacePlace>", "G9Team");
+             // rerun new data (with changes)
+             return Encoding.UTF8.GetBytes(str);
+         }
+
+         // Without Change
+         return bytes;
+     },
+     // Specifies if the target path (for copying) does not exist, It must be created or not.
+     true,
+     // Specifies the file mode for creating a copy
+     FileMode.Create,
+     // Specifies the file access for creating.
+     FileAccess.Write,
+     // Specifies the file share for creating.
+     FileShare.Write);
+```
+
+## General Tools
+
+### Some practical tools for everything.
+
+Convert file volume units (bytes, kilobytes, etc.) to each other:
+
+```csharp
+const long byteSize = 1000000000;
+G9Assembly.GeneralTools.ConvertByteSizeToAnotherSize(
+    // Specifies the byte size
+    byteSize,
+    // Specifies a unit for converting
+    // Byte - KiloByte - MegaByte - GigaByte - TeraByte - PetaByte - ...
+     G9ESizeUnits.Byte))
+```
+
+Get the assembly version
+
+```csharp
+// Method to get the current version of the assembly.
+var version = G9Assembly.GeneralTools.GetAssemblyVersion(
+    // Specifies the target assembly for getting the version
+    GetType().Assembly
+);
+```
+
 # END
+
 ## Be the best you can be; the future depends on it. 🚀
