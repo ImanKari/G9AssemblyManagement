@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using G9AssemblyManagement.DataType;
 using G9AssemblyManagement.Enums;
@@ -44,7 +45,8 @@ namespace G9AssemblyManagement.Core
         ///     <para />
         ///     If it's set 'true.' All inherited parents will check, and their members will be got.
         /// </param>
-        public static void MergeObjectsValues<TTypeMain, TTypeTarget>(ref TTypeMain mainObject, TTypeTarget targetObject,
+        public static void MergeObjectsValues<TTypeMain, TTypeTarget>(ref TTypeMain mainObject,
+            TTypeTarget targetObject,
             BindingFlags specifiedModifiers = BindingFlags.Instance | BindingFlags.Public,
             G9EValueMismatchChecking valueMismatch = G9EValueMismatchChecking.AllowMismatchValues,
             bool enableTryToChangeType = false,
@@ -752,6 +754,144 @@ In the second object, the member's name is '{memberB.Name}' with the value '{mem
                 GetGenericMethodsOfType(targetType, specifiedModifiers, customFilterForGenericMethods, targetObject,
                     initializeInstance, considerInheritedParent)
             );
+        }
+
+        #endregion
+
+        #region GetAttributes Methods
+
+        /// <summary>
+        ///     Method to get specified attribute from an object
+        /// </summary>
+        /// <typeparam name="TAttr">Specifies the type of an attribute</typeparam>
+        /// <param name="target">Specifies a target object for getting specified attributes</param>
+        /// <param name="memberName">Specifies the member in object that you want </param>
+        /// <param name="inherit">
+        ///     true to search this member's inheritance chain to find the attributes; otherwise, false. This
+        ///     parameter is ignored for properties and events; see Remarks.
+        /// </param>
+        /// <returns>An attribute object if that existed, otherwise return null</returns>
+        public static TAttr[] GetCustomAttributes<TAttr>(object target, string memberName, bool inherit)
+            where TAttr : Attribute
+        {
+            var res = GetCustomAttributes(typeof(TAttr), target, memberName, inherit);
+            return res.Length > 0
+                    ? res.Select(s => (TAttr)s).ToArray()
+                    :
+#if NET8_0_OR_GREATER
+                    []
+#else
+                new TAttr[0]
+#endif
+                ;
+        }
+
+        /// <summary>
+        ///     Method to get specified attribute from an object
+        /// </summary>
+        /// <typeparam name="TAttr">Specifies the type of an attribute</typeparam>
+        /// <typeparam name="TObject">Specifies the type of target object</typeparam>
+        /// <param name="target">Specifies a target object for getting specified attributes</param>
+        /// <param name="selectMemberExpression">An expression for selecting a member</param>
+        /// <param name="inherit">
+        ///     true to search this member's inheritance chain to find the attributes; otherwise, false. This
+        ///     parameter is ignored for properties and events; see Remarks.
+        /// </param>
+        /// <returns>An attribute object if that existed, otherwise return null</returns>
+        public static TAttr[] GetCustomAttributes<TAttr, TObject>(TObject target,
+            Expression<Func<TObject, object>> selectMemberExpression, bool inherit)
+            where TAttr : Attribute
+        {
+            // Extract the member info from the expression
+            var memberExpression = GetMemberExpression(selectMemberExpression);
+            if (memberExpression == null)
+                throw new ArgumentException("The expression is not a member access expression.",
+                    nameof(selectMemberExpression));
+
+            // Get the member name
+            var memberName = memberExpression.Member.Name;
+
+            var res = GetCustomAttributes(typeof(TAttr), target, memberName, inherit);
+            return res.Length > 0
+                    ? res.Select(s => (TAttr)s).ToArray()
+                    :
+#if NET8_0_OR_GREATER
+                    []
+#else
+                new TAttr[0]
+#endif
+                ;
+        }
+
+        /// <summary>
+        ///     Method to get specified attribute from an object
+        /// </summary>
+        /// <param name="typeOfAttribute">Specifies the type of an attribute for searching and getting</param>
+        /// <param name="target">Specifies a target object for getting specified attributes</param>
+        /// <param name="selectMemberExpression">An expression for selecting a member</param>
+        /// <param name="inherit">
+        ///     true to search this member's inheritance chain to find the attributes; otherwise, false. This
+        ///     parameter is ignored for properties and events; see Remarks.
+        /// </param>
+        /// <returns>An attribute object if that existed, otherwise return null</returns>
+        public static object[] GetCustomAttributes<TObject>(Type typeOfAttribute, TObject target,
+            Expression<Func<TObject, object>> selectMemberExpression, bool inherit)
+        {
+            // Extract the member info from the expression
+            var memberExpression = GetMemberExpression(selectMemberExpression);
+            if (memberExpression == null)
+                throw new ArgumentException("The expression is not a member access expression.",
+                    nameof(selectMemberExpression));
+
+            // Get the member name
+            var memberName = memberExpression.Member.Name;
+
+            // Get custom attributes of the member
+            var res = GetCustomAttributes(typeOfAttribute, target, memberName, inherit);
+            return res.Length > 0
+                    ? res
+                    :
+#if NET8_0_OR_GREATER
+                    []
+#else
+                    new object[0]
+#endif
+                ;
+        }
+
+        /// <summary>
+        ///     Method to get specified attribute from an object
+        /// </summary>
+        /// <param name="typeOfAttribute">Specifies the type of an attribute for searching and getting</param>
+        /// ///
+        /// <param name="target">Specifies a target object for getting specified attributes</param>
+        /// <param name="memberName">Specifies the member in object that you want </param>
+        /// <param name="inherit">
+        ///     true to search this member's inheritance chain to find the attributes; otherwise, false. This
+        ///     parameter is ignored for properties and events; see Remarks.
+        /// </param>
+        /// <returns>An attribute object if that existed, otherwise return null</returns>
+        public static object[] GetCustomAttributes(Type typeOfAttribute, object target, string memberName, bool inherit)
+        {
+            var member = target.GetType().GetMember(memberName,
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+            // ReSharper disable once UseCollectionExpression
+            return member.Length == 0
+                ? new object[0]
+                : member.SelectMany(s => s.GetCustomAttributes(typeOfAttribute, inherit)).ToArray();
+        }
+
+        /// <summary>
+        ///     Get member Expression
+        /// </summary>
+        private static MemberExpression GetMemberExpression<TObject>(Expression<Func<TObject, object>> expression)
+        {
+            if (expression.Body is MemberExpression memberExpression) return memberExpression;
+
+            if (expression.Body is UnaryExpression unaryExpression &&
+                unaryExpression.Operand is MemberExpression operand) return operand;
+
+            return null;
         }
 
         #endregion

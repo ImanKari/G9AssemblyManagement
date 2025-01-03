@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFrameworks>net35;net40;net45;netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
-	  <Version>1.4.5.21</Version>
+	  <Version>1.4.5.25</Version>
 	  <Authors>Iman Kari</Authors>
 	  <Company>G9Studio</Company>
 	  <Product>G9 Assembly Management</Product>
@@ -16,17 +16,15 @@
 -- Redigned Structure.
 -- Completed tests.</PackageReleaseNotes>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <AssemblyVersion>1.4.5.1</AssemblyVersion>
-	  <FileVersion>1.4.5.1</FileVersion>
+	  <AssemblyVersion>1.4.5.25</AssemblyVersion>
+	  <FileVersion>1.4.5.25</FileVersion>
 	  <ApplicationIcon></ApplicationIcon>
 	  <PackageIcon>G9-Icon.png</PackageIcon>
 	  <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-	  <PackageIconUrl />
+
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-
 	  <EmbedAllSources>True</EmbedAllSources>
-	  <!--<SymbolPackageFormat>snupkg</SymbolPackageFormat>-->
 	  <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 	  <PublishRepositoryUrl>true</PublishRepositoryUrl>
 	  <IncludeSymbols>true</IncludeSymbols>
@@ -34,8 +32,10 @@
 	  <Deterministic>true</Deterministic>
 	  <EmbedUntrackedSources>true</EmbedUntrackedSources>
 	  <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
 	<ItemGroup>

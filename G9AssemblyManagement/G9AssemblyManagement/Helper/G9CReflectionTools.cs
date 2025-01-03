@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using G9AssemblyManagement.Core;
 using G9AssemblyManagement.DataType;
@@ -340,6 +341,38 @@ namespace G9AssemblyManagement.Helper
         {
             return G9CReflectionHandler.CompareObjectsValues(firstObject, secondObject, out unequalMembers,
                 specifiedModifiers, enableTryToChangeType, customFilter, customProcess, considerInheritedParent);
+        }
+
+        #endregion
+
+        #region GetAttributes Methods
+
+        /// <inheritdoc cref="G9CReflectionHandler.GetCustomAttributes" />
+        public TAttr[] GetCustomAttributes<TAttr>(object target, string memberName, bool inherit)
+            where TAttr : Attribute
+        {
+            return G9CReflectionHandler.GetCustomAttributes<TAttr>(target, memberName, inherit);
+        }
+
+        /// <inheritdoc cref="G9CReflectionHandler.GetCustomAttributes" />
+        public TAttr[] GetCustomAttributes<TAttr, TObject>(TObject target,
+            Expression<Func<TObject, object>> selectMemberExpression, bool inherit)
+            where TAttr : Attribute
+        {
+            return G9CReflectionHandler.GetCustomAttributes<TAttr, TObject>(target, selectMemberExpression, inherit);
+        }
+
+        /// <inheritdoc cref="G9CReflectionHandler.GetCustomAttributes" />
+        public object[] GetCustomAttributes<TObject>(Type typeOfAttribute, TObject target,
+            Expression<Func<TObject, object>> selectMemberExpression, bool inherit)
+        {
+            return G9CReflectionHandler.GetCustomAttributes(typeOfAttribute, target, selectMemberExpression, inherit);
+        }
+
+        /// <inheritdoc cref="G9CReflectionHandler.GetCustomAttributes" />
+        public object[] GetCustomAttributes(Type typeOfAttribute, object target, string memberName, bool inherit)
+        {
+            return G9CReflectionHandler.GetCustomAttributes(typeOfAttribute, target, memberName, inherit);
         }
 
         #endregion
